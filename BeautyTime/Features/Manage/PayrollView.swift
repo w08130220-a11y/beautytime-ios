@@ -62,6 +62,7 @@ struct PayrollView: View {
 private struct CommissionSettingsTab: View {
     let store: PayrollManageStore
     @State private var showAddTier = false
+    @State private var showEditProductRate = false
 
     var body: some View {
         ScrollView {
@@ -101,11 +102,25 @@ private struct CommissionSettingsTab: View {
 
                 // Product Commission
                 if let settings = store.commissionSettings {
-                    VStack(alignment: .leading, spacing: BTSpacing.sm) {
-                        Text("產品抽成")
-                            .font(.headline)
+                    VStack(alignment: .leading, spacing: BTSpacing.md) {
+                        HStack {
+                            Text("產品抽成")
+                                .font(.headline)
+                            Spacer()
+                            Button {
+                                showEditProductRate = true
+                            } label: {
+                                Label("編輯", systemImage: "pencil.circle")
+                                    .font(.subheadline)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
                         Text("\(Int((settings.productCommissionRate ?? 0) * 100))%")
                             .font(.title3)
+                        Text("員工銷售產品時的抽成比例")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(BTSpacing.lg)
@@ -117,6 +132,54 @@ private struct CommissionSettingsTab: View {
         .sheet(isPresented: $showAddTier) {
             AddCommissionTierSheet(store: store)
         }
+        .sheet(isPresented: $showEditProductRate) {
+            EditProductRateSheet(store: store)
+        }
+    }
+}
+
+private struct EditProductRateSheet: View {
+    let store: PayrollManageStore
+    @Environment(\.dismiss) private var dismiss
+    @State private var rate: Double = 0
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("產品抽成比例") {
+                    VStack(alignment: .leading) {
+                        Text("抽成比例 (%)").font(.caption)
+                        TextField("0", value: $rate, format: .number)
+                            .keyboardType(.numberPad)
+                    }
+                    Text("員工銷售產品時，從產品售價中抽取的比例。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .navigationTitle("編輯產品抽成")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("取消") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("儲存") {
+                        Task {
+                            await store.updateCommissionSettings([
+                                "providerId": store.providerId,
+                                "productCommissionRate": rate / 100.0
+                            ] as [String: Any])
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                rate = (store.commissionSettings?.productCommissionRate ?? 0) * 100
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 
