@@ -120,6 +120,7 @@ struct ManageView: View {
                     NavigationLink {
                         PayrollView()
                             .environment(payrollStore)
+                            .environment(staffStore)
                     } label: {
                         Label("薪資管理", systemImage: "dollarsign.circle.fill")
                     }

@@ -410,11 +410,23 @@ struct PayrollRecord: Codable, Identifiable {
     let month: Int?
     let year: Int?
     let baseSalary: Double?
+    let totalAllowances: Double?
+    let serviceRevenue: Double?
+    let serviceCommission: Double?
+    let productRevenue: Double?
+    let productCommission: Double?
+    let designationBonus: Double?
     let commission: Double?
     let deductions: Double?
+    let deductionNote: String?
+    let totalPay: Double?
     let totalAmount: Double?
     let status: PayrollStatus?
     let staff: StaffMember?
+
+    var displayTotal: Double {
+        totalPay ?? totalAmount ?? 0
+    }
 }
 
 enum PayrollStatus: String, Codable {
