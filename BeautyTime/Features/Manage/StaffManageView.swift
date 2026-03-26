@@ -204,19 +204,27 @@ private struct StaffFormSheet: View {
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
 
-        let body: [String: Any] = [
-            "providerId": store.providerId,
-            "name": name,
-            "role": role.rawValue,
-            "title": title,
-            "specialties": specialties,
-            "photoUrl": photoUrl,
-            "isActive": isActive
-        ]
-
         if let member {
+            // Update: 可送所有欄位
+            var body: [String: Any] = [
+                "name": name,
+                "role": role.rawValue,
+                "isActive": isActive
+            ]
+            if !title.isEmpty { body["title"] = title }
+            if !specialties.isEmpty { body["specialties"] = specialties }
+            if !photoUrl.isEmpty { body["photoUrl"] = photoUrl }
             await store.updateStaffMember(id: member.id, body: body)
         } else {
+            // Create: 只送 CreateStaffDto 允許的欄位
+            var body: [String: Any] = [
+                "providerId": store.providerId,
+                "name": name,
+                "role": role.rawValue
+            ]
+            if !title.isEmpty { body["title"] = title }
+            if !specialties.isEmpty { body["specialties"] = specialties }
+            if isActive != true { body["isActive"] = isActive }
             await store.createStaffMember(body)
         }
     }
