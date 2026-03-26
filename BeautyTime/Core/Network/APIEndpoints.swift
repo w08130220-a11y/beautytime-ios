@@ -12,6 +12,8 @@ enum APIEndpoints {
         static let line = "/api/auth/line"
         static let apple = "/api/auth/apple"
         static let me = "/api/auth/me"
+        static let phoneSendOTP = "/api/auth/phone/send-otp"
+        static let phoneVerifyOTP = "/api/auth/phone/verify-otp"
     }
 
     // MARK: - Providers
@@ -61,10 +63,9 @@ enum APIEndpoints {
     enum Bookings {
         static let create = "/api/bookings"
         static let my = "/api/bookings/my"
-        static let provider = "/api/bookings/provider"
+        static func provider(_ providerId: String) -> String { "/api/bookings/provider/\(providerId)" }
         static func cancel(_ id: String) -> String { "/api/bookings/\(id)/cancel" }
-        static func confirm(_ id: String) -> String { "/api/bookings/\(id)/confirm" }
-        static func complete(_ id: String) -> String { "/api/bookings/\(id)/complete" }
+        static func status(_ id: String) -> String { "/api/bookings/\(id)/status" }
         static func dispute(_ id: String) -> String { "/api/bookings/\(id)/dispute" }
         static func pay(_ id: String) -> String { "/api/bookings/\(id)/pay" }
     }
@@ -96,12 +97,12 @@ enum APIEndpoints {
         static func purchase(_ planId: String) -> String { "/api/vouchers/purchase/\(planId)" }
         static let my = "/api/vouchers/my"
         static let provider = "/api/vouchers/provider"
-        static func generateToken(_ id: String) -> String { "/api/vouchers/\(id)/token" }
+        static func generateToken(_ id: String) -> String { "/api/vouchers/\(id)/generate-token" }
         static let verifyToken = "/api/vouchers/verify-token"
         static let redeem = "/api/vouchers/redeem"
         static func cancel(_ id: String) -> String { "/api/vouchers/\(id)/cancel" }
         static func transactions(_ id: String) -> String { "/api/vouchers/\(id)/transactions" }
-        static let batchCount = "/api/vouchers/batch-count"
+        static let batchCount = "/api/vouchers/transactions/batch"
         static let sold = "/api/vouchers/sold"
         static let liability = "/api/vouchers/liability"
         static let liabilityByCustomer = "/api/vouchers/liability-by-customer"
@@ -178,7 +179,7 @@ enum APIEndpoints {
     enum Customers {
         static let list = "/api/customers"
         static func detail(_ id: String) -> String { "/api/customers/\(id)" }
-        static let addNote = "/api/customers/notes"
+        static func addNote(_ customerId: String) -> String { "/api/customers/\(customerId)/notes" }
         static func deleteNote(_ noteId: String) -> String { "/api/customers/notes/\(noteId)" }
     }
 
@@ -197,7 +198,7 @@ enum APIEndpoints {
         static func updateCommissionTier(_ id: String) -> String { "/api/payroll/commission-tiers/\(id)" }
         static let salaryConfigs = "/api/payroll/salary-configs"
         static func salaryConfig(_ staffId: String) -> String { "/api/payroll/salary-configs/\(staffId)" }
-        static let records = "/api/payroll"
+        static let records = "/api/payroll/records"
         static let generate = "/api/payroll/generate"
         static let status = "/api/payroll/status"
     }
@@ -241,9 +242,19 @@ enum APIEndpoints {
         static let providerImage = "/api/settings/provider/image"
     }
 
+    // MARK: - Orders (商家訂單管理)
+
+    enum Orders {
+        static let list = "/api/orders"
+        static func updateStatus(_ id: String) -> String { "/api/orders/\(id)/status" }
+        static func cancel(_ id: String) -> String { "/api/orders/\(id)/cancel" }
+    }
+
     // MARK: - Marketing
 
     enum Marketing {
         static let templates = "/api/marketing/templates"
+        static let save = "/api/marketing/templates"
+        static func update(_ id: String) -> String { "/api/marketing/templates/\(id)" }
     }
 }

@@ -13,6 +13,9 @@ packages:
   Kingfisher:
     url: https://github.com/onevcat/Kingfisher.git
     from: "8.0.0"
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS.git
+    from: "8.0.0"
 
 targets:
   BeautyTime:
@@ -36,3 +39,5 @@ targets:
     dependencies:
       - package: KeychainAccess
       - package: Kingfisher
+      - package: GoogleSignIn
+        product: GoogleSignIn

@@ -116,6 +116,22 @@ class PayrollManageStore {
         isLoading = false
     }
 
+    func updateCommissionTier(id: String, body: [String: Any]) async {
+        isLoading = true
+        do {
+            let updated: CommissionTier = try await api.patch(
+                path: APIEndpoints.Payroll.updateCommissionTier(id),
+                body: JSONBody(body)
+            )
+            if let idx = commissionTiers.firstIndex(where: { $0.id == id }) {
+                commissionTiers[idx] = updated
+            }
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
+    }
+
     func deleteCommissionTier(id: String) async {
         do {
             try await api.delete(path: APIEndpoints.Payroll.deleteCommissionTier(id))

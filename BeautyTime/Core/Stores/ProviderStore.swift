@@ -88,7 +88,7 @@ class ProviderStore {
             providerStaff = response.staff ?? []
             providerReviews = response.reviews ?? []
             providerPortfolio = response.portfolio ?? []
-            providerHours = response.businessHours ?? []
+            providerHours = response.allHours
         } catch {
             self.error = error.localizedDescription
         }

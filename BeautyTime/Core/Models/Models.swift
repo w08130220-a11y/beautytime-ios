@@ -617,7 +617,12 @@ struct ProviderDetailResponse: Codable {
     let reviews: [Review]?
     let portfolio: [PortfolioItem]?
     let businessHours: [BusinessHour]?
+    let hours: [BusinessHour]?
     let voucherPlans: [VoucherPlan]?
+
+    var allHours: [BusinessHour] {
+        businessHours ?? hours ?? []
+    }
 }
 
 // PopularTag is already defined above
@@ -703,11 +708,31 @@ struct VoucherLiability: Codable {
 
 struct MarketingTemplate: Codable, Identifiable {
     let id: String
+    let providerId: String?
     let name: String?
     let content: String?
+    let message: String?
     let type: String?
     let isActive: Bool?
+    let enabled: Bool?
     let createdAt: Date?
+
+    var displayMessage: String {
+        message ?? content ?? ""
+    }
+
+    var isEnabled: Bool {
+        enabled ?? isActive ?? true
+    }
+
+    var typeName: String {
+        switch type {
+        case "birthday": return "生日祝福"
+        case "revisit": return "回訪提醒"
+        case "promotion": return "促銷活動"
+        default: return type ?? "未分類"
+        }
+    }
 }
 
 // MARK: - User Preference (Survey)

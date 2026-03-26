@@ -1,0 +1,5915 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth/send-otp": {
+      "post": {
+        "operationId": "AuthController_sendOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "驗證碼已發送"
+          },
+          "400": {
+            "description": "此信箱尚未註冊（login 模式）"
+          }
+        },
+        "summary": "發送 OTP 驗證碼到信箱",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/verify-otp": {
+      "post": {
+        "operationId": "AuthController_verifyOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "驗證成功，回傳 token 和用戶資訊"
+          },
+          "401": {
+            "description": "驗證碼錯誤或已過期"
+          }
+        },
+        "summary": "驗證 OTP 並取得 JWT token",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/check-email": {
+      "get": {
+        "operationId": "AuthController_checkEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "回傳 { exists: boolean }"
+          }
+        },
+        "summary": "檢查信箱是否已註冊",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/google": {
+      "post": {
+        "operationId": "AuthController_googleLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳 JWT token 和用戶資訊"
+          },
+          "401": {
+            "description": "Google 驗證失敗"
+          }
+        },
+        "summary": "Google OAuth 登入",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/line": {
+      "post": {
+        "operationId": "AuthController_lineLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LineAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳 JWT token 和用戶資訊"
+          },
+          "401": {
+            "description": "LINE 驗證失敗"
+          }
+        },
+        "summary": "LINE Login 登入",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/apple": {
+      "post": {
+        "operationId": "AuthController_appleLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "回傳 JWT token 和用戶資訊"
+          },
+          "401": {
+            "description": "Apple 驗證失敗"
+          }
+        },
+        "summary": "Apple Sign In 登入",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "回傳用戶資料"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得目前登入用戶資訊",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/auth/admin/login": {
+      "post": {
+        "operationId": "AuthController_adminLogin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "回傳 admin JWT token"
+          },
+          "401": {
+            "description": "帳號或密碼錯誤"
+          }
+        },
+        "summary": "管理員登入",
+        "tags": [
+          "Auth - 認證"
+        ]
+      }
+    },
+    "/api/providers": {
+      "get": {
+        "operationId": "ProvidersController_search",
+        "parameters": [
+          {
+            "name": "category",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "district",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "style",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "搜尋商家列表",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/providers/me": {
+      "get": {
+        "operationId": "ProvidersController_getMyProvider",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得目前用戶的商家資料",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/providers/popular-tags": {
+      "get": {
+        "operationId": "ProvidersController_getPopularTags",
+        "parameters": [
+          {
+            "name": "category",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得熱門風格標籤",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/providers/my-staff-role": {
+      "get": {
+        "operationId": "ProvidersController_getMyStaffRole",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "查詢目前用戶的員工角色",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/providers/{id}": {
+      "get": {
+        "operationId": "ProvidersController_getDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家詳情（含服務、員工、評價等）",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/providers/register": {
+      "post": {
+        "operationId": "ProvidersController_register",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家進駐申請",
+        "tags": [
+          "Providers - 商家"
+        ]
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "operationId": "BookingsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立預約",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/{id}/pay": {
+      "post": {
+        "operationId": "BookingsController_initiatePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "發起預約訂金付款",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/my": {
+      "get": {
+        "operationId": "BookingsController_getMyBookings",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "查詢我的預約",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/{id}/cancel": {
+      "patch": {
+        "operationId": "BookingsController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取消預約",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/{id}/dispute": {
+      "patch": {
+        "operationId": "BookingsController_dispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "申請平台介入（爭議）",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/provider/{providerId}": {
+      "get": {
+        "operationId": "BookingsController_getProviderOrders",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家查詢訂單",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/bookings/{id}/status": {
+      "patch": {
+        "operationId": "BookingsController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家更新訂單狀態",
+        "tags": [
+          "Bookings - 預約"
+        ]
+      }
+    },
+    "/api/users/search": {
+      "get": {
+        "operationId": "UsersController_searchByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "透過 email 搜尋用戶",
+        "tags": [
+          "Users - 用戶"
+        ]
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "operationId": "UsersController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得目前登入用戶資料",
+        "tags": [
+          "Users - 用戶"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新用戶資料",
+        "tags": [
+          "Users - 用戶"
+        ]
+      }
+    },
+    "/api/users/me/avatar": {
+      "post": {
+        "operationId": "UsersController_updateAvatar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新頭像",
+        "tags": [
+          "Users - 用戶"
+        ]
+      }
+    },
+    "/api/users/me/vouchers": {
+      "get": {
+        "operationId": "UsersController_getMyVouchers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的套券",
+        "tags": [
+          "Users - 用戶"
+        ]
+      }
+    },
+    "/api/users/me/favorites": {
+      "get": {
+        "operationId": "UsersController_getMyFavorites",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的收藏",
+        "tags": [
+          "Users - 用戶"
+        ]
+      }
+    },
+    "/api/services": {
+      "get": {
+        "operationId": "ServicesController_getServices",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家的服務列表",
+        "tags": [
+          "Services - 服務項目"
+        ]
+      },
+      "post": {
+        "operationId": "ServicesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立服務項目",
+        "tags": [
+          "Services - 服務項目"
+        ]
+      }
+    },
+    "/api/services/{id}": {
+      "patch": {
+        "operationId": "ServicesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新服務項目",
+        "tags": [
+          "Services - 服務項目"
+        ]
+      },
+      "delete": {
+        "operationId": "ServicesController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除服務項目",
+        "tags": [
+          "Services - 服務項目"
+        ]
+      }
+    },
+    "/api/staff": {
+      "get": {
+        "operationId": "StaffController_getStaff",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家的員工列表",
+        "tags": [
+          "Staff - 員工"
+        ]
+      },
+      "post": {
+        "operationId": "StaffController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStaffDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新增員工",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/invitations": {
+      "post": {
+        "operationId": "StaffController_sendInvitation",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "發送員工綁定邀請",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/invitations/my": {
+      "get": {
+        "operationId": "StaffController_getMyInvitations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的綁定邀請",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/invitations/staff/{staffId}": {
+      "get": {
+        "operationId": "StaffController_getStaffInvitation",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得員工的待處理邀請",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/invitations/batch": {
+      "post": {
+        "operationId": "StaffController_getStaffInvitationsBatch",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "批次取得多個員工的待處理邀請",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/invitations/{id}": {
+      "patch": {
+        "operationId": "StaffController_respondToInvitation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "回應綁定邀請（接受/拒絕）",
+        "tags": [
+          "Staff - 員工"
+        ]
+      },
+      "delete": {
+        "operationId": "StaffController_cancelInvitation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取消綁定邀請",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/schedules": {
+      "get": {
+        "operationId": "StaffController_getSchedules",
+        "parameters": [
+          {
+            "name": "staffIds",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得多個員工的週排班",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/{staffId}/schedules": {
+      "put": {
+        "operationId": "StaffController_upsertSchedules",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新員工週排班",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/exceptions": {
+      "get": {
+        "operationId": "StaffController_getExceptions",
+        "parameters": [
+          {
+            "name": "staffIds",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得多個員工的例外（休假/病假等）",
+        "tags": [
+          "Staff - 員工"
+        ]
+      },
+      "post": {
+        "operationId": "StaffController_createException",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新增員工例外",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/exceptions/{exceptionId}": {
+      "delete": {
+        "operationId": "StaffController_deleteException",
+        "parameters": [
+          {
+            "name": "exceptionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除員工例外",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/{staffId}/time-slots": {
+      "get": {
+        "operationId": "StaffController_getTimeSlots",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dates",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得員工手動封鎖的時段",
+        "tags": [
+          "Staff - 員工"
+        ]
+      },
+      "post": {
+        "operationId": "StaffController_createTimeSlot",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "封鎖員工時段",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/time-slots/{timeSlotId}": {
+      "delete": {
+        "operationId": "StaffController_deleteTimeSlot",
+        "parameters": [
+          {
+            "name": "timeSlotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除封鎖時段",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/staff/{id}": {
+      "patch": {
+        "operationId": "StaffController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStaffDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新員工資料",
+        "tags": [
+          "Staff - 員工"
+        ]
+      },
+      "delete": {
+        "operationId": "StaffController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除員工",
+        "tags": [
+          "Staff - 員工"
+        ]
+      }
+    },
+    "/api/reviews": {
+      "get": {
+        "operationId": "ReviewsController_getReviews",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家評價列表",
+        "tags": [
+          "Reviews - 評價"
+        ]
+      },
+      "post": {
+        "operationId": "ReviewsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立評價",
+        "tags": [
+          "Reviews - 評價"
+        ]
+      }
+    },
+    "/api/portfolio": {
+      "get": {
+        "operationId": "PortfolioController_getPortfolio",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家作品集",
+        "tags": [
+          "Portfolio - 作品集"
+        ]
+      },
+      "post": {
+        "operationId": "PortfolioController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePortfolioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新增作品",
+        "tags": [
+          "Portfolio - 作品集"
+        ]
+      }
+    },
+    "/api/portfolio/upload": {
+      "post": {
+        "operationId": "PortfolioController_uploadImage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadPortfolioImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "上傳作品集圖片",
+        "tags": [
+          "Portfolio - 作品集"
+        ]
+      }
+    },
+    "/api/portfolio/{id}": {
+      "patch": {
+        "operationId": "PortfolioController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePortfolioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新作品",
+        "tags": [
+          "Portfolio - 作品集"
+        ]
+      },
+      "delete": {
+        "operationId": "PortfolioController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除作品",
+        "tags": [
+          "Portfolio - 作品集"
+        ]
+      }
+    },
+    "/api/vouchers/plans": {
+      "get": {
+        "operationId": "VouchersController_getPlans",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家套券方案",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      },
+      "post": {
+        "operationId": "VouchersController_createPlan",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVoucherPlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立套券方案",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/plans/{id}": {
+      "patch": {
+        "operationId": "VouchersController_updatePlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVoucherPlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新套券方案",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      },
+      "delete": {
+        "operationId": "VouchersController_deletePlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除套券方案（軟刪除）",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/sold": {
+      "get": {
+        "operationId": "VouchersController_getSoldVouchers",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得商家已售出套券",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/liability": {
+      "get": {
+        "operationId": "VouchersController_getVoucherLiability",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得套券負債摘要",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/liability-by-customer": {
+      "get": {
+        "operationId": "VouchersController_getVoucherLiabilityByCustomer",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得按客戶分組的套券負債",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/purchase/{planId}": {
+      "post": {
+        "operationId": "VouchersController_purchase",
+        "parameters": [
+          {
+            "name": "planId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "購買套券",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/my": {
+      "get": {
+        "operationId": "VouchersController_getMyVouchers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的套券",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/transactions/batch": {
+      "get": {
+        "operationId": "VouchersController_getTransactionCountsBatch",
+        "parameters": [
+          {
+            "name": "voucherIds",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "批次取得多張套券的使用次數",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/{voucherId}/transactions": {
+      "get": {
+        "operationId": "VouchersController_getVoucherTransactions",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得套券交易紀錄",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/{id}/cancel": {
+      "post": {
+        "operationId": "VouchersController_cancelPendingVoucher",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取消未付款的 pending 票券",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/{id}/generate-token": {
+      "post": {
+        "operationId": "VouchersController_generateRedeemToken",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "客戶產生一次性核銷 token（5分鐘有效）",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/verify-token": {
+      "post": {
+        "operationId": "VouchersController_verifyRedeemToken",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家掃碼後驗證 token，回傳票券資訊",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/vouchers/redeem": {
+      "post": {
+        "operationId": "VouchersController_redeemVoucher",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家確認核銷（扣除次數，寫入交易紀錄）",
+        "tags": [
+          "Vouchers - 套券"
+        ]
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "NotificationsController_getNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的通知列表",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      },
+      "post": {
+        "operationId": "NotificationsController_createNotification",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立通知",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      }
+    },
+    "/api/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationsController_getUnreadCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得未讀通知數量",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      }
+    },
+    "/api/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationsController_markAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "標記通知為已讀",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      }
+    },
+    "/api/notifications/read-all": {
+      "post": {
+        "operationId": "NotificationsController_markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "標記所有通知為已讀",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      }
+    },
+    "/api/notifications/{id}": {
+      "delete": {
+        "operationId": "NotificationsController_deleteNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除通知",
+        "tags": [
+          "Notifications - 通知"
+        ]
+      }
+    },
+    "/api/favorites/toggle": {
+      "post": {
+        "operationId": "FavoritesController_toggle",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "切換收藏狀態",
+        "tags": [
+          "Favorites - 收藏"
+        ]
+      }
+    },
+    "/api/favorites": {
+      "get": {
+        "operationId": "FavoritesController_getUserFavorites",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得收藏列表",
+        "tags": [
+          "Favorites - 收藏"
+        ]
+      }
+    },
+    "/api/favorites/check": {
+      "get": {
+        "operationId": "FavoritesController_check",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "檢查是否已收藏",
+        "tags": [
+          "Favorites - 收藏"
+        ]
+      }
+    },
+    "/api/hours": {
+      "get": {
+        "operationId": "HoursController_getHours",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得商家營業時間",
+        "tags": [
+          "Hours - 營業時間"
+        ]
+      },
+      "put": {
+        "operationId": "HoursController_updateHours",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新營業時間",
+        "tags": [
+          "Hours - 營業時間"
+        ]
+      }
+    },
+    "/api/availability/staff": {
+      "get": {
+        "operationId": "AvailabilityController_getStaffAvailability",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "serviceDuration",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查詢員工某日可用時段",
+        "tags": [
+          "Availability - 時段可用性"
+        ]
+      }
+    },
+    "/api/availability/staff/find": {
+      "get": {
+        "operationId": "AvailabilityController_findAvailableStaff",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "preferredTime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查詢商家某日可用員工",
+        "tags": [
+          "Availability - 時段可用性"
+        ]
+      }
+    },
+    "/api/availability/date": {
+      "get": {
+        "operationId": "AvailabilityController_getDateAvailability",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查詢商家某日可用時段",
+        "tags": [
+          "Availability - 時段可用性"
+        ]
+      }
+    },
+    "/api/availability/date/batch": {
+      "get": {
+        "operationId": "AvailabilityController_getBatchDateAvailability",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dates",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "批次查詢多日可用性",
+        "tags": [
+          "Availability - 時段可用性"
+        ]
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "operationId": "OrdersController_getOrders",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得商家訂單列表",
+        "tags": [
+          "Orders - 商家訂單管理"
+        ]
+      }
+    },
+    "/api/orders/{id}/status": {
+      "patch": {
+        "operationId": "OrdersController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新訂單狀態（確認/完成/取消）",
+        "tags": [
+          "Orders - 商家訂單管理"
+        ]
+      }
+    },
+    "/api/orders/{id}/cancel": {
+      "patch": {
+        "operationId": "OrdersController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家取消訂單（附原因）",
+        "tags": [
+          "Orders - 商家訂單管理"
+        ]
+      }
+    },
+    "/api/customers": {
+      "get": {
+        "operationId": "CustomersController_getCustomers",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得商家的顧客列表",
+        "tags": [
+          "Customers - 顧客管理"
+        ]
+      }
+    },
+    "/api/customers/{id}": {
+      "get": {
+        "operationId": "CustomersController_getDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得顧客詳情（含備註）",
+        "tags": [
+          "Customers - 顧客管理"
+        ]
+      }
+    },
+    "/api/customers/{id}/notes": {
+      "post": {
+        "operationId": "CustomersController_addNote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新增顧客備註",
+        "tags": [
+          "Customers - 顧客管理"
+        ]
+      }
+    },
+    "/api/customers/notes/{noteId}": {
+      "delete": {
+        "operationId": "CustomersController_deleteNoteById",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除顧客備註（不需 customerId）",
+        "tags": [
+          "Customers - 顧客管理"
+        ]
+      }
+    },
+    "/api/customers/{id}/notes/{noteId}": {
+      "delete": {
+        "operationId": "CustomersController_deleteNote",
+        "parameters": [
+          {
+            "name": "noteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除顧客備註",
+        "tags": [
+          "Customers - 顧客管理"
+        ]
+      }
+    },
+    "/api/analytics/revenue": {
+      "get": {
+        "operationId": "AnalyticsController_getRevenue",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "months",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "月營收統計",
+        "tags": [
+          "Analytics - 分析報表"
+        ]
+      }
+    },
+    "/api/analytics/service-revenue": {
+      "get": {
+        "operationId": "AnalyticsController_getServiceRevenue",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "各服務營收統計",
+        "tags": [
+          "Analytics - 分析報表"
+        ]
+      }
+    },
+    "/api/analytics/return-rate": {
+      "get": {
+        "operationId": "AnalyticsController_getReturnRate",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "顧客回流率",
+        "tags": [
+          "Analytics - 分析報表"
+        ]
+      }
+    },
+    "/api/analytics/unit-price": {
+      "get": {
+        "operationId": "AnalyticsController_getUnitPriceTrend",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "客單價趨勢",
+        "tags": [
+          "Analytics - 分析報表"
+        ]
+      }
+    },
+    "/api/analytics/customer-mix": {
+      "get": {
+        "operationId": "AnalyticsController_getCustomerMix",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新客 vs 回頭客佔比",
+        "tags": [
+          "Analytics - 分析報表"
+        ]
+      }
+    },
+    "/api/stats/dashboard": {
+      "get": {
+        "operationId": "StatsController_getDashboardStats",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "儀表板統計數據",
+        "tags": [
+          "Stats - 儀表板統計"
+        ]
+      }
+    },
+    "/api/stats/staff-performance": {
+      "get": {
+        "operationId": "StatsController_getStaffPerformance",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "員工績效統計",
+        "tags": [
+          "Stats - 儀表板統計"
+        ]
+      }
+    },
+    "/api/marketing/templates": {
+      "get": {
+        "operationId": "MarketingController_getTemplates",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得行銷模板",
+        "tags": [
+          "Marketing - 行銷模板"
+        ]
+      },
+      "put": {
+        "operationId": "MarketingController_saveTemplates",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveTemplatesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "儲存/更新行銷模板",
+        "tags": [
+          "Marketing - 行銷模板"
+        ]
+      }
+    },
+    "/api/marketing/templates/{id}": {
+      "patch": {
+        "operationId": "MarketingController_updateTemplate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新單一行銷模板",
+        "tags": [
+          "Marketing - 行銷模板"
+        ]
+      }
+    },
+    "/api/payroll/commission": {
+      "get": {
+        "operationId": "PayrollController_getCommission",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得抽成設定",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      },
+      "put": {
+        "operationId": "PayrollController_updateCommission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新抽成設定",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/commission-tiers": {
+      "get": {
+        "operationId": "PayrollController_getCommissionTiers",
+        "parameters": [
+          {
+            "name": "settingId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得抽成階梯",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      },
+      "post": {
+        "operationId": "PayrollController_createCommissionTier",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommissionTierDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立抽成階梯",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/commission-tiers/{id}": {
+      "patch": {
+        "operationId": "PayrollController_updateCommissionTier",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新抽成階梯",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      },
+      "delete": {
+        "operationId": "PayrollController_deleteCommissionTier",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "刪除抽成階梯",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/salary-configs": {
+      "get": {
+        "operationId": "PayrollController_getSalaryConfigs",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得員工薪資設定",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/salary-configs/{staffId}": {
+      "put": {
+        "operationId": "PayrollController_upsertSalaryConfig",
+        "parameters": [
+          {
+            "name": "staffId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertSalaryConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新員工薪資設定",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/records": {
+      "get": {
+        "operationId": "PayrollController_getRecords",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得薪資記錄",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/generate": {
+      "post": {
+        "operationId": "PayrollController_generatePayroll",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneratePayrollDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "產生月薪資報表",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/payroll/status": {
+      "patch": {
+        "operationId": "PayrollController_updatePayrollStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePayrollStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "批次更新薪資記錄狀態",
+        "tags": [
+          "Payroll - 薪資管理"
+        ]
+      }
+    },
+    "/api/settings/provider": {
+      "patch": {
+        "operationId": "SettingsController_updateProvider",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProviderSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新商家資料",
+        "tags": [
+          "Settings - 商家設定"
+        ]
+      }
+    },
+    "/api/settings/provider/image": {
+      "post": {
+        "operationId": "SettingsController_uploadImage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadProviderImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "上傳商家封面圖片",
+        "tags": [
+          "Settings - 商家設定"
+        ]
+      }
+    },
+    "/api/survey": {
+      "post": {
+        "operationId": "SurveyController_saveSurvey",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveSurveyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "儲存問卷答案",
+        "tags": [
+          "Survey - 問卷調查"
+        ]
+      }
+    },
+    "/api/survey/preferences": {
+      "get": {
+        "operationId": "SurveyController_getPreferences",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得使用者偏好",
+        "tags": [
+          "Survey - 問卷調查"
+        ]
+      }
+    },
+    "/api/survey/browse-history": {
+      "post": {
+        "operationId": "SurveyController_trackBrowseHistory",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackBrowseHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "記錄瀏覽歷史",
+        "tags": [
+          "Survey - 問卷調查"
+        ]
+      }
+    },
+    "/api/survey/search-history": {
+      "post": {
+        "operationId": "SurveyController_trackSearchHistory",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackSearchHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "記錄搜尋歷史",
+        "tags": [
+          "Survey - 問卷調查"
+        ]
+      }
+    },
+    "/api/match/requests": {
+      "post": {
+        "operationId": "MatchController_createRequest",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMatchRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立媒合請求",
+        "tags": [
+          "Match - 即時媒合"
+        ]
+      }
+    },
+    "/api/match/requests/my": {
+      "get": {
+        "operationId": "MatchController_getMyRequests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得我的媒合請求",
+        "tags": [
+          "Match - 即時媒合"
+        ]
+      }
+    },
+    "/api/match/requests/{id}": {
+      "get": {
+        "operationId": "MatchController_getRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得單一媒合請求",
+        "tags": [
+          "Match - 即時媒合"
+        ]
+      }
+    },
+    "/api/match/requests/{id}/offers": {
+      "get": {
+        "operationId": "MatchController_getOffers",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "取得媒合請求的報價",
+        "tags": [
+          "Match - 即時媒合"
+        ]
+      }
+    },
+    "/api/announcements/published": {
+      "get": {
+        "operationId": "AnnouncementsController_getPublished",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "取得已發布公告",
+        "tags": [
+          "Announcements - 公告"
+        ]
+      }
+    },
+    "/api/admin/dashboard-stats": {
+      "get": {
+        "operationId": "AdminController_getDashboardStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "後台儀表板統計",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants": {
+      "get": {
+        "operationId": "AdminController_getMerchants",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants/{id}": {
+      "get": {
+        "operationId": "AdminController_getMerchantDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家詳情",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      },
+      "patch": {
+        "operationId": "AdminController_updateMerchant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新商家狀態（審核/停權）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "operationId": "AdminController_getUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "使用者列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users/{id}": {
+      "get": {
+        "operationId": "AdminController_getUserDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "使用者詳情",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/orders": {
+      "get": {
+        "operationId": "AdminController_getOrders",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "所有訂單列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/orders/{id}": {
+      "get": {
+        "operationId": "AdminController_getOrderDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "訂單詳情（含仲裁資訊）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/orders/{id}/arbitrate": {
+      "patch": {
+        "operationId": "AdminController_arbitrateOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArbitrateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "仲裁爭議訂單",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/payments": {
+      "get": {
+        "operationId": "AdminController_getPayments",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "付款紀錄列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/announcements": {
+      "get": {
+        "operationId": "AdminController_getAnnouncements",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "公告列表（管理端）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createAnnouncement",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnnouncementDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "建立公告",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/announcements/{id}": {
+      "patch": {
+        "operationId": "AdminController_updateAnnouncement",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAnnouncementDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新公告",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users/{id}/ban": {
+      "post": {
+        "operationId": "AdminController_banUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "封鎖使用者",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users/{id}/unban": {
+      "post": {
+        "operationId": "AdminController_unbanUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "解封使用者",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/payments/{id}/release": {
+      "post": {
+        "operationId": "AdminController_releasePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "撥付款項",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/payments/{id}/refund": {
+      "post": {
+        "operationId": "AdminController_refundPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "退款",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/vouchers": {
+      "get": {
+        "operationId": "AdminController_getVouchers",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "套券管理",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/vouchers/action": {
+      "post": {
+        "operationId": "AdminController_voucherAction",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "套券操作（凍結/解凍/退款審核）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/payroll": {
+      "get": {
+        "operationId": "AdminController_getPayroll",
+        "parameters": [
+          {
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "薪資管理",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/categories": {
+      "get": {
+        "operationId": "AdminController_getCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "服務分類列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createCategory",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "新增服務分類",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/categories/{id}/toggle": {
+      "post": {
+        "operationId": "AdminController_toggleCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "切換分類啟用狀態",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/complaints": {
+      "get": {
+        "operationId": "AdminController_getComplaints",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "投訴列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/complaints/{id}": {
+      "patch": {
+        "operationId": "AdminController_updateComplaint",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "更新投訴狀態",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/admin-users": {
+      "get": {
+        "operationId": "AdminController_getAdminUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "管理員列表",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/audit-logs": {
+      "get": {
+        "operationId": "AdminController_getAuditLogs",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "操作日誌",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants-enriched": {
+      "get": {
+        "operationId": "AdminController_getMerchantsEnriched",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家列表（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants/{id}/action": {
+      "post": {
+        "operationId": "AdminController_merchantAction",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家操作（審核/停權/啟用）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants-enriched/{id}": {
+      "get": {
+        "operationId": "AdminController_getMerchantDetailEnriched",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家詳情（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/merchants/{id}/activity-logs": {
+      "get": {
+        "operationId": "AdminController_getMerchantActivityLogs",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "商家人員異動紀錄",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users-enriched": {
+      "get": {
+        "operationId": "AdminController_getUsersEnriched",
+        "parameters": [
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "使用者列表（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/users-enriched/{id}": {
+      "get": {
+        "operationId": "AdminController_getUserDetailEnriched",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "使用者詳情（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/orders-enriched": {
+      "get": {
+        "operationId": "AdminController_getOrdersEnriched",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "訂單列表（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/orders-enriched/{id}": {
+      "get": {
+        "operationId": "AdminController_getOrderDetailEnriched",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "訂單詳情（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/payments-enriched": {
+      "get": {
+        "operationId": "AdminController_getPaymentsEnriched",
+        "parameters": [
+          {
+            "name": "filter",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "付款紀錄（enriched for platform admin）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    },
+    "/api/admin/dashboard-stats-enriched": {
+      "get": {
+        "operationId": "AdminController_getDashboardStatsEnriched",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "後台儀表板統計（enriched）",
+        "tags": [
+          "Admin - 後台管理"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "BeautyTime API",
+    "description": "BeautyTime 美時刻 - 美容服務預約平台 API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://api.btbeautytime.com",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3001",
+      "description": "Local Development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "SendOtpDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "login",
+              "signup"
+            ],
+            "default": "login"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "王小明"
+          }
+        },
+        "required": [
+          "email",
+          "type"
+        ]
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "email",
+          "code"
+        ]
+      },
+      "GoogleAuthDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "Google ID Token from frontend"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "LineAuthDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "LINE authorization code"
+          },
+          "redirectUri": {
+            "type": "string",
+            "description": "Redirect URI used in the authorization request"
+          }
+        },
+        "required": [
+          "code",
+          "redirectUri"
+        ]
+      },
+      "AppleAuthDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "Apple ID Token (JWT)"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Full name (only sent on first sign-in)"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "王小明"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0912345678"
+          },
+          "preferredLocale": {
+            "type": "string",
+            "enum": [
+              "zh-TW",
+              "en"
+            ],
+            "example": "zh-TW"
+          }
+        }
+      },
+      "CreateServiceDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "韓式剪髮"
+          },
+          "description": {
+            "type": "string",
+            "example": "包含洗髮、剪髮、造型"
+          },
+          "price": {
+            "type": "number",
+            "example": 800
+          },
+          "duration": {
+            "type": "number",
+            "example": 60,
+            "description": "服務時長（分鐘）"
+          },
+          "category": {
+            "type": "string",
+            "example": "剪髮"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "providerId",
+          "name",
+          "price",
+          "duration"
+        ]
+      },
+      "UpdateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "韓式剪髮"
+          },
+          "description": {
+            "type": "string",
+            "example": "包含洗髮、剪髮、造型"
+          },
+          "price": {
+            "type": "number",
+            "example": 800
+          },
+          "duration": {
+            "type": "number",
+            "example": 60
+          },
+          "category": {
+            "type": "string",
+            "example": "剪髮"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "CreateStaffDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Amy"
+          },
+          "title": {
+            "type": "string",
+            "example": "資深設計師"
+          },
+          "specialties": {
+            "example": [
+              "美甲",
+              "美睫"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "instagramUrl": {
+            "type": "object",
+            "example": "https://instagram.com/amy"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "manager",
+              "senior_designer",
+              "designer",
+              "assistant"
+            ],
+            "example": "designer"
+          },
+          "userId": {
+            "type": "object",
+            "example": "user-uuid"
+          }
+        },
+        "required": [
+          "providerId",
+          "name"
+        ]
+      },
+      "UpdateStaffDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Amy"
+          },
+          "title": {
+            "type": "string",
+            "example": "資深設計師"
+          },
+          "photoUrl": {
+            "type": "object",
+            "example": "https://example.com/photo.jpg"
+          },
+          "specialties": {
+            "example": [
+              "美甲",
+              "美睫"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "instagramUrl": {
+            "type": "object",
+            "example": "https://instagram.com/amy"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "manager",
+              "senior_designer",
+              "designer",
+              "assistant"
+            ],
+            "example": "designer"
+          },
+          "userId": {
+            "type": "object",
+            "example": "user-uuid"
+          }
+        }
+      },
+      "CreateReviewDto": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "example": "booking-uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "example": "customer-uuid"
+          },
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "staffId": {
+            "type": "object",
+            "example": "staff-uuid",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string",
+            "example": "服務很好，環境乾淨！"
+          },
+          "imageUrls": {
+            "example": [
+              "https://example.com/photo1.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "bookingId",
+          "customerId",
+          "providerId",
+          "rating"
+        ]
+      },
+      "UploadPortfolioImageDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "fileName": {
+            "type": "string",
+            "example": "photo.jpg"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/jpeg"
+          },
+          "fileData": {
+            "type": "string",
+            "description": "Base64 encoded file data"
+          }
+        },
+        "required": [
+          "providerId",
+          "fileName",
+          "contentType",
+          "fileData"
+        ]
+      },
+      "CreatePortfolioDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "afterPhotoUrl": {
+            "type": "string",
+            "example": "https://example.com/after.jpg"
+          },
+          "beforePhotoUrl": {
+            "type": "object",
+            "nullable": true,
+            "example": "https://example.com/before.jpg"
+          },
+          "description": {
+            "type": "string",
+            "example": "韓式燙髮作品"
+          },
+          "styleTags": {
+            "example": [
+              "燙髮",
+              "韓式"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "providerId",
+          "afterPhotoUrl"
+        ]
+      },
+      "UpdatePortfolioDto": {
+        "type": "object",
+        "properties": {
+          "afterPhotoUrl": {
+            "type": "string",
+            "example": "https://example.com/after.jpg"
+          },
+          "description": {
+            "type": "string",
+            "example": "韓式燙髮作品"
+          },
+          "styleTags": {
+            "example": [
+              "燙髮",
+              "韓式"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateVoucherPlanDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "type": {
+            "type": "string",
+            "example": "session",
+            "description": "方案類型: session / stored_value / package"
+          },
+          "name": {
+            "type": "string",
+            "example": "剪髮10次券"
+          },
+          "description": {
+            "type": "string",
+            "example": "購買10次剪髮享85折優惠"
+          },
+          "originalPrice": {
+            "type": "number",
+            "example": 8000,
+            "description": "原價"
+          },
+          "sellingPrice": {
+            "type": "number",
+            "example": 6800,
+            "description": "售價"
+          },
+          "sessionsTotal": {
+            "type": "number",
+            "example": 10,
+            "description": "總次數"
+          },
+          "bonusAmount": {
+            "type": "number",
+            "example": 0,
+            "description": "儲值贈送金額"
+          },
+          "validDays": {
+            "type": "number",
+            "example": 180,
+            "description": "有效天數"
+          },
+          "applicableServices": {
+            "type": "object",
+            "description": "適用服務"
+          },
+          "maxSales": {
+            "type": "number",
+            "description": "最大銷售數量"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "providerId",
+          "type",
+          "name",
+          "sellingPrice"
+        ]
+      },
+      "UpdateVoucherPlanDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "originalPrice": {
+            "type": "number"
+          },
+          "sellingPrice": {
+            "type": "number"
+          },
+          "sessionsTotal": {
+            "type": "number"
+          },
+          "bonusAmount": {
+            "type": "number"
+          },
+          "validDays": {
+            "type": "number"
+          },
+          "applicableServices": {
+            "type": "object"
+          },
+          "maxSales": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        }
+      },
+      "UpdateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "confirmed",
+            "enum": [
+              "confirmed",
+              "completed",
+              "cancelled"
+            ]
+          },
+          "cancellationReason": {
+            "type": "string",
+            "example": "客戶未到"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CancelOrderDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "商家臨時無法服務"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "CreateCustomerNoteDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "content": {
+            "type": "string",
+            "example": "客戶偏好自然風格，對染劑過敏"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "MarketingTemplateDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "template-uuid"
+          },
+          "provider_id": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "type": {
+            "type": "string",
+            "example": "birthday",
+            "description": "模板類型: birthday, revisit, promotion"
+          },
+          "message": {
+            "type": "string",
+            "example": "親愛的{name}，生日快樂！來店消費享專屬優惠！"
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "provider_id",
+          "type",
+          "message"
+        ]
+      },
+      "SaveTemplatesDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketingTemplateDto"
+            }
+          }
+        },
+        "required": [
+          "providerId",
+          "templates"
+        ]
+      },
+      "UpdateTemplateDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "新的訊息內容"
+          },
+          "enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "UpdateCommissionDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "salaryModel": {
+            "type": "string",
+            "example": "base_plus_commission"
+          },
+          "defaultCommissionRate": {
+            "type": "number",
+            "example": 50,
+            "description": "預設服務抽成比例 (%)"
+          },
+          "commissionType": {
+            "type": "string",
+            "example": "flat",
+            "enum": [
+              "flat",
+              "tiered"
+            ]
+          },
+          "productCommissionRate": {
+            "type": "number",
+            "example": 10,
+            "description": "產品抽成比例 (%)"
+          },
+          "settingId": {
+            "type": "string",
+            "description": "Setting ID for update (optional)"
+          }
+        },
+        "required": [
+          "providerId"
+        ]
+      },
+      "CreateCommissionTierDto": {
+        "type": "object",
+        "properties": {
+          "settingId": {
+            "type": "string",
+            "example": "setting-uuid",
+            "description": "所屬 commission_settings ID"
+          },
+          "minRevenue": {
+            "type": "number",
+            "example": 0,
+            "description": "營收下限"
+          },
+          "maxRevenue": {
+            "type": "object",
+            "example": 50000,
+            "description": "營收上限 (null = 無上限)"
+          },
+          "rate": {
+            "type": "number",
+            "example": 40,
+            "description": "此階段抽成比例 (%)"
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 1,
+            "description": "排序順序"
+          }
+        },
+        "required": [
+          "settingId",
+          "minRevenue",
+          "rate"
+        ]
+      },
+      "UpsertSalaryConfigDto": {
+        "type": "object",
+        "properties": {
+          "staffId": {
+            "type": "string",
+            "example": "staff-uuid"
+          },
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "baseSalary": {
+            "type": "number",
+            "example": 30000,
+            "description": "底薪"
+          },
+          "transportationAllowance": {
+            "type": "number",
+            "example": 2000,
+            "description": "交通津貼"
+          },
+          "mealAllowance": {
+            "type": "number",
+            "example": 1500,
+            "description": "伙食津貼"
+          },
+          "otherAllowance": {
+            "type": "number",
+            "example": 500,
+            "description": "其他津貼"
+          },
+          "useCustomCommission": {
+            "type": "boolean",
+            "example": false,
+            "description": "是否使用自訂抽成"
+          },
+          "customCommissionRate": {
+            "type": "object",
+            "example": 40,
+            "description": "自訂抽成比例 (%)"
+          },
+          "designationBonus": {
+            "type": "number",
+            "example": 1000,
+            "description": "職位加給"
+          }
+        },
+        "required": [
+          "staffId",
+          "providerId"
+        ]
+      },
+      "PayrollRecordItemDto": {
+        "type": "object",
+        "properties": {
+          "staffId": {
+            "type": "string",
+            "example": "staff-uuid"
+          },
+          "baseSalary": {
+            "type": "number",
+            "example": 30000
+          },
+          "totalAllowances": {
+            "type": "number",
+            "example": 4000
+          },
+          "serviceRevenue": {
+            "type": "number",
+            "example": 100000
+          },
+          "serviceCommission": {
+            "type": "number",
+            "example": 50000
+          },
+          "productRevenue": {
+            "type": "number",
+            "example": 20000
+          },
+          "productCommission": {
+            "type": "number",
+            "example": 2000
+          },
+          "designationBonus": {
+            "type": "number",
+            "example": 1000
+          },
+          "deductions": {
+            "type": "number",
+            "example": 500
+          },
+          "deductionNote": {
+            "type": "string",
+            "example": "遲到扣款"
+          },
+          "totalPay": {
+            "type": "number",
+            "example": 85000
+          }
+        },
+        "required": [
+          "staffId",
+          "baseSalary",
+          "totalAllowances",
+          "serviceRevenue",
+          "serviceCommission",
+          "designationBonus",
+          "totalPay"
+        ]
+      },
+      "GeneratePayrollDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "year": {
+            "type": "number",
+            "example": 2026
+          },
+          "month": {
+            "type": "number",
+            "example": 3
+          },
+          "records": {
+            "description": "各員工薪資明細",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayrollRecordItemDto"
+            }
+          }
+        },
+        "required": [
+          "providerId",
+          "year",
+          "month",
+          "records"
+        ]
+      },
+      "UpdatePayrollStatusDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "year": {
+            "type": "number",
+            "example": 2026
+          },
+          "month": {
+            "type": "number",
+            "example": 3
+          },
+          "fromStatus": {
+            "type": "string",
+            "example": "draft",
+            "description": "目前狀態"
+          },
+          "toStatus": {
+            "type": "string",
+            "example": "confirmed",
+            "description": "目標狀態"
+          }
+        },
+        "required": [
+          "providerId",
+          "year",
+          "month",
+          "fromStatus",
+          "toStatus"
+        ]
+      },
+      "UpdateProviderSettingsDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "美麗髮廊"
+          },
+          "category": {
+            "type": "string",
+            "example": "nail",
+            "enum": [
+              "nail",
+              "lash",
+              "nail_lash",
+              "hair",
+              "spa",
+              "beauty",
+              "tattoo"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "example": "0912345678"
+          },
+          "address": {
+            "type": "string",
+            "example": "台北市大安區忠孝東路四段1號"
+          },
+          "description": {
+            "type": "string",
+            "example": "專業美髮沙龍，提供剪染燙護全方位服務"
+          },
+          "city": {
+            "type": "string",
+            "example": "台北市"
+          },
+          "district": {
+            "type": "string",
+            "example": "大安區"
+          },
+          "depositRate": {
+            "type": "number",
+            "example": 0.3,
+            "description": "訂金比例 (0-1)"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true,
+            "description": "商家是否啟用"
+          },
+          "instagramUrl": {
+            "type": "string",
+            "example": "https://instagram.com/example"
+          }
+        }
+      },
+      "UploadProviderImageDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          },
+          "fileName": {
+            "type": "string",
+            "example": "cover.jpg"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/jpeg"
+          },
+          "fileData": {
+            "type": "string",
+            "example": "base64-encoded-data"
+          }
+        },
+        "required": [
+          "providerId",
+          "fileName",
+          "contentType",
+          "fileData"
+        ]
+      },
+      "SaveSurveyDto": {
+        "type": "object",
+        "properties": {
+          "answers": {
+            "type": "object",
+            "example": {
+              "preferredCategories": [
+                "hair",
+                "nail"
+              ],
+              "budget": "medium",
+              "preferredCity": "台北市"
+            }
+          }
+        },
+        "required": [
+          "answers"
+        ]
+      },
+      "TrackBrowseHistoryDto": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string",
+            "example": "provider-uuid"
+          }
+        },
+        "required": [
+          "providerId"
+        ]
+      },
+      "TrackSearchHistoryDto": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "example": "台北 剪髮"
+          },
+          "filters": {
+            "type": "object",
+            "example": {
+              "category": "hair",
+              "city": "台北市"
+            },
+            "description": "搜尋篩選條件"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "CreateMatchRequestDto": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "example": "hair",
+            "description": "服務類型"
+          },
+          "city": {
+            "type": "string",
+            "example": "台北市"
+          },
+          "district": {
+            "type": "string",
+            "example": "大安區"
+          },
+          "note": {
+            "type": "string",
+            "example": "想找會做韓式燙髮的設計師"
+          },
+          "budgetMin": {
+            "type": "number",
+            "example": 500,
+            "description": "最低預算"
+          },
+          "budgetMax": {
+            "type": "number",
+            "example": 1500,
+            "description": "最高預算"
+          },
+          "preferredDate": {
+            "type": "string",
+            "example": "2026-03-25"
+          },
+          "preferredTime": {
+            "type": "string",
+            "example": "14:00"
+          },
+          "photoUrl": {
+            "type": "string",
+            "example": "https://example.com/photo.jpg"
+          }
+        },
+        "required": [
+          "serviceType",
+          "city"
+        ]
+      },
+      "UpdateMerchantDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "approved",
+            "enum": [
+              "approved",
+              "rejected",
+              "suspended"
+            ],
+            "description": "直接指定狀態"
+          },
+          "action": {
+            "type": "string",
+            "example": "approve",
+            "enum": [
+              "approve",
+              "reject",
+              "suspend"
+            ],
+            "description": "操作動作（會自動對應狀態）"
+          },
+          "reason": {
+            "type": "string",
+            "example": "審核通過"
+          }
+        }
+      },
+      "ArbitrateOrderDto": {
+        "type": "object",
+        "properties": {
+          "resolution": {
+            "type": "string",
+            "example": "refunded",
+            "enum": [
+              "refunded",
+              "dismissed",
+              "partial_refund"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "example": "經查證商家未提供服務，予以全額退款"
+          },
+          "refundAmount": {
+            "type": "number",
+            "example": 500,
+            "description": "部分退款金額"
+          }
+        },
+        "required": [
+          "resolution",
+          "reason"
+        ]
+      },
+      "CreateAnnouncementDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "系統維護通知"
+          },
+          "content": {
+            "type": "string",
+            "example": "系統將於3/25進行維護，預計停機2小時"
+          },
+          "type": {
+            "type": "string",
+            "example": "system",
+            "enum": [
+              "system",
+              "promotion",
+              "update"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "example": "draft",
+            "enum": [
+              "draft",
+              "published"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      },
+      "UpdateAnnouncementDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "系統維護通知（更新）"
+          },
+          "content": {
+            "type": "string",
+            "example": "維護時間延後至3/26"
+          },
+          "status": {
+            "type": "string",
+            "example": "published",
+            "enum": [
+              "draft",
+              "published",
+              "archived"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "example": "system"
+          }
+        }
+      }
+    }
+  }
+}

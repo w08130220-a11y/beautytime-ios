@@ -98,6 +98,9 @@ private struct OrderRow: View {
     let order: Booking
     let store: ManageStore
 
+    @State private var showCancelAlert = false
+    @State private var cancelReason = ""
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -146,6 +149,17 @@ private struct OrderRow: View {
             if order.status == .pending || order.status == .confirmed {
                 HStack(spacing: 12) {
                     Spacer()
+
+                    Button {
+                        showCancelAlert = true
+                    } label: {
+                        Label("取消", systemImage: "xmark.circle")
+                            .font(.subheadline)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+                    .controlSize(.small)
+
                     if order.status == .pending {
                         Button {
                             Task { await store.confirmBooking(id: order.id) }
@@ -173,6 +187,21 @@ private struct OrderRow: View {
             }
         }
         .padding(.vertical, 4)
+        .alert("取消訂單", isPresented: $showCancelAlert) {
+            TextField("取消原因（必填）", text: $cancelReason)
+            Button("確認取消", role: .destructive) {
+                guard !cancelReason.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                Task {
+                    await store.cancelOrder(id: order.id, reason: cancelReason.trimmingCharacters(in: .whitespacesAndNewlines))
+                    cancelReason = ""
+                }
+            }
+            Button("返回", role: .cancel) {
+                cancelReason = ""
+            }
+        } message: {
+            Text("請輸入取消原因")
+        }
     }
 }
 

@@ -170,7 +170,7 @@ struct VerifyPhoneView: View {
         do {
             let fullPhone = "+886\(phoneNumber)"
             let _: OTPResponse = try await api.post(
-                path: "/api/auth/phone/send-otp",
+                path: APIEndpoints.Auth.phoneSendOTP,
                 body: JSONBody(["phone": fullPhone])
             )
             otpSent = true
@@ -189,7 +189,7 @@ struct VerifyPhoneView: View {
         do {
             let fullPhone = "+886\(phoneNumber)"
             let _: OTPResponse = try await api.post(
-                path: "/api/auth/phone/verify-otp",
+                path: APIEndpoints.Auth.phoneVerifyOTP,
                 body: JSONBody(["phone": fullPhone, "code": otpCode])
             )
             await authStore.fetchCurrentUser()

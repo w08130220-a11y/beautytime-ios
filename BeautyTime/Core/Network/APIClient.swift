@@ -180,6 +180,7 @@ private enum JSONValue: Encodable {
     case double(Double)
     case bool(Bool)
     case array([JSONValue])
+    case dictionary([String: JSONValue])
     case null
 
     init(_ value: Any) {
@@ -189,6 +190,7 @@ private enum JSONValue: Encodable {
         case let v as Double: self = .double(v)
         case let v as Bool: self = .bool(v)
         case let v as [Any]: self = .array(v.map { JSONValue($0) })
+        case let v as [String: Any]: self = .dictionary(v.mapValues { JSONValue($0) })
         default: self = .null
         }
     }
@@ -201,6 +203,7 @@ private enum JSONValue: Encodable {
         case .double(let v): try container.encode(v)
         case .bool(let v): try container.encode(v)
         case .array(let v): try container.encode(v)
+        case .dictionary(let v): try container.encode(v)
         case .null: try container.encodeNil()
         }
     }

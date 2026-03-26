@@ -46,8 +46,7 @@ class ManageStore {
                 ]
             )
             async let bookingsTask: [Booking] = api.get(
-                path: APIEndpoints.Bookings.provider,
-                queryItems: [URLQueryItem(name: "providerId", value: providerId)]
+                path: APIEndpoints.Bookings.provider(providerId)
             )
 
             revenueData = try await revenueTask
@@ -68,8 +67,7 @@ class ManageStore {
                 queryItems: [URLQueryItem(name: "providerId", value: providerId)]
             )
             async let bookingsTask: [Booking] = api.get(
-                path: APIEndpoints.Bookings.provider,
-                queryItems: [URLQueryItem(name: "providerId", value: providerId)]
+                path: APIEndpoints.Bookings.provider(providerId)
             )
 
             dashboardStats = try await statsTask
@@ -135,7 +133,7 @@ class ManageStore {
                 queryItems.append(URLQueryItem(name: "status", value: filter.rawValue))
             }
             orders = try await api.get(
-                path: APIEndpoints.Bookings.provider,
+                path: APIEndpoints.Orders.list,
                 queryItems: queryItems
             )
         } catch {
@@ -145,7 +143,10 @@ class ManageStore {
 
     func confirmBooking(id: String) async {
         do {
-            let updated: Booking = try await api.patch(path: APIEndpoints.Bookings.confirm(id), body: ["status": "confirmed"])
+            let updated: Booking = try await api.patch(
+                path: APIEndpoints.Orders.updateStatus(id),
+                body: ["status": "confirmed"]
+            )
             if let idx = orders.firstIndex(where: { $0.id == id }) {
                 orders[idx] = updated
             }
@@ -156,7 +157,24 @@ class ManageStore {
 
     func completeBooking(id: String) async {
         do {
-            let updated: Booking = try await api.patch(path: APIEndpoints.Bookings.complete(id), body: ["status": "completed"])
+            let updated: Booking = try await api.patch(
+                path: APIEndpoints.Orders.updateStatus(id),
+                body: ["status": "completed"]
+            )
+            if let idx = orders.firstIndex(where: { $0.id == id }) {
+                orders[idx] = updated
+            }
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    func cancelOrder(id: String, reason: String) async {
+        do {
+            let updated: Booking = try await api.patch(
+                path: APIEndpoints.Orders.cancel(id),
+                body: ["reason": reason]
+            )
             if let idx = orders.firstIndex(where: { $0.id == id }) {
                 orders[idx] = updated
             }
@@ -181,8 +199,8 @@ class ManageStore {
     func addCustomerNote(customerId: String, content: String) async {
         do {
             let _: CustomerNote = try await api.post(
-                path: APIEndpoints.Customers.addNote,
-                body: ["customerId": customerId, "providerId": providerId, "content": content]
+                path: APIEndpoints.Customers.addNote(customerId) + "?providerId=\(providerId)",
+                body: ["providerId": providerId, "content": content]
             )
             await loadCustomers()
         } catch {
@@ -274,10 +292,23 @@ class ManageStore {
     func updateBusinessHours(_ hours: [BusinessHour]) async {
         isLoading = true
         do {
-            businessHours = try await api.put(
+            let body = JSONBody([
+                "providerId": providerId,
+                "hours": hours.map { h -> [String: Any] in
+                    var dict: [String: Any] = [
+                        "dayOfWeek": h.dayOfWeek,
+                        "isOpen": h.isOpen ?? false
+                    ]
+                    if let openTime = h.openTime { dict["openTime"] = openTime }
+                    if let closeTime = h.closeTime { dict["closeTime"] = closeTime }
+                    return dict
+                }
+            ] as [String: Any])
+            let _: [BusinessHour] = try await api.put(
                 path: APIEndpoints.Hours.update,
-                body: hours
+                body: body
             )
+            await loadBusinessHours()
         } catch {
             self.error = error.localizedDescription
         }
@@ -295,6 +326,50 @@ class ManageStore {
         } catch {
             self.error = error.localizedDescription
         }
+    }
+
+    func saveMarketingTemplates() async {
+        isLoading = true
+        do {
+            marketingTemplates = try await api.put(
+                path: APIEndpoints.Marketing.save,
+                body: JSONBody([
+                    "providerId": providerId,
+                    "templates": marketingTemplates.map { template -> [String: Any] in
+                        var dict: [String: Any] = [
+                            "type": template.type ?? "",
+                            "message": template.displayMessage,
+                            "enabled": template.isEnabled
+                        ]
+                        dict["id"] = template.id
+                        dict["provider_id"] = providerId
+                        return dict
+                    }
+                ] as [String: Any])
+            )
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    func updateMarketingTemplate(id: String, message: String?, enabled: Bool?) async {
+        isLoading = true
+        do {
+            var body: [String: Any] = [:]
+            if let message { body["message"] = message }
+            if let enabled { body["enabled"] = enabled }
+            let updated: MarketingTemplate = try await api.patch(
+                path: APIEndpoints.Marketing.update(id),
+                body: JSONBody(body)
+            )
+            if let idx = marketingTemplates.firstIndex(where: { $0.id == id }) {
+                marketingTemplates[idx] = updated
+            }
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
     }
 
     // MARK: - Provider Image Upload
