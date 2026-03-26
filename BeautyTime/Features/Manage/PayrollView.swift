@@ -33,7 +33,7 @@ struct PayrollView: View {
             TabView(selection: $selectedTab) {
                 CommissionSettingsTab(store: store).tag(0)
                 StaffSalaryTab(store: store, staffStore: staffStore).tag(1)
-                MonthlySettlementTab(store: store).tag(2)
+                MonthlySettlementTab(store: store, staffStore: staffStore).tag(2)
                 ExportTab(store: store).tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -168,7 +168,7 @@ private struct AddCommissionTierSheet: View {
     let store: PayrollManageStore
     @Environment(\.dismiss) private var dismiss
     @State private var minRevenue: Double = 0
-    @State private var maxRevenue: Double = 0
+    @State private var maxRevenue: Double = 50000
     @State private var rate: Double = 25
     @State private var noUpperLimit = true
 
@@ -176,22 +176,21 @@ private struct AddCommissionTierSheet: View {
         NavigationStack {
             Form {
                 Section {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("最低營業額")
-                                .font(.caption)
-                            TextField("0", value: $minRevenue, format: .number)
+                    VStack(alignment: .leading) {
+                        Text("最低營業額").font(.caption)
+                        TextField("0", value: $minRevenue, format: .number)
+                            .keyboardType(.numberPad)
+                    }
+                    VStack(alignment: .leading) {
+                        Text("最高營業額").font(.caption)
+                        if noUpperLimit {
+                            Text("無上限")
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 4)
+                        } else {
+                            TextField("50000", value: $maxRevenue, format: .number)
                                 .keyboardType(.numberPad)
-                        }
-                        VStack(alignment: .leading) {
-                            Text("最高營業額")
-                                .font(.caption)
-                            if noUpperLimit {
-                                Text("無上限").foregroundStyle(.secondary)
-                            } else {
-                                TextField("0", value: $maxRevenue, format: .number)
-                                    .keyboardType(.numberPad)
-                            }
                         }
                     }
                     Toggle("無上限", isOn: $noUpperLimit)
@@ -507,6 +506,7 @@ private struct EditSalarySheet: View {
 
 private struct MonthlySettlementTab: View {
     let store: PayrollManageStore
+    let staffStore: StaffManageStore
 
     @State private var selectedMonth: Int = Calendar.current.component(.month, from: Date())
     @State private var selectedYear: Int = Calendar.current.component(.year, from: Date())
@@ -601,7 +601,10 @@ private struct MonthlySettlementTab: View {
 
                     // Per-staff breakdown
                     ForEach(store.payrollRecords) { record in
-                        PayrollRecordCard(record: record)
+                        let staffName = record.staff?.name
+                            ?? staffStore.staff.first(where: { $0.id == record.staffId })?.name
+                            ?? "未知員工"
+                        PayrollRecordCard(record: record, staffName: staffName)
                     }
                     .padding(.horizontal, BTSpacing.lg)
                 }
@@ -640,11 +643,12 @@ private struct SummaryCard: View {
 
 private struct PayrollRecordCard: View {
     let record: PayrollRecord
+    let staffName: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: BTSpacing.md) {
             HStack {
-                Text(record.staff?.name ?? "員工")
+                Text(staffName)
                     .font(.headline)
                 Spacer()
                 PayrollStatusBadge(status: record.status)
