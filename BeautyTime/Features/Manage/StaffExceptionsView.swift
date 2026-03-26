@@ -42,6 +42,14 @@ struct StaffExceptionsView: View {
             let staffIds = store.staff.map(\.id)
             await store.loadStaffExceptions(staffIds: staffIds)
         }
+        .alert("錯誤", isPresented: Binding(
+            get: { store.error != nil },
+            set: { if !$0 { store.error = nil } }
+        )) {
+            Button("確定") { store.error = nil }
+        } message: {
+            Text(store.error ?? "")
+        }
     }
 
     private func deleteExceptions(at offsets: IndexSet) {

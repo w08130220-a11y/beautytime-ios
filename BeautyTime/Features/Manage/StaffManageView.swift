@@ -37,6 +37,14 @@ struct StaffManageView: View {
         .task {
             await store.loadStaff()
         }
+        .alert("錯誤", isPresented: Binding(
+            get: { store.error != nil },
+            set: { if !$0 { store.error = nil } }
+        )) {
+            Button("確定") { store.error = nil }
+        } message: {
+            Text(store.error ?? "")
+        }
     }
 
     private func deleteStaff(at offsets: IndexSet) {

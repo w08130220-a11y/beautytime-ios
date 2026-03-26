@@ -154,7 +154,7 @@ class StaffManageStore {
         do {
             let slot: TimeSlot = try await api.post(
                 path: APIEndpoints.Staff.timeSlots(staffId),
-                body: ["date": date, "startTime": startTime, "endTime": endTime]
+                body: JSONBody(["date": date, "startTime": startTime, "endTime": endTime] as [String: Any])
             )
             timeSlots.append(slot)
         } catch {

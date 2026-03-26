@@ -138,6 +138,14 @@ struct PayrollView: View {
         .onChange(of: selectedYear) { _, _ in
             Task { await store.loadPayroll(month: selectedMonth, year: selectedYear) }
         }
+        .alert("錯誤", isPresented: Binding(
+            get: { store.error != nil },
+            set: { if !$0 { store.error = nil } }
+        )) {
+            Button("確定") { store.error = nil }
+        } message: {
+            Text(store.error ?? "")
+        }
     }
 }
 
@@ -245,7 +253,7 @@ private struct PayrollStatusButtons: View {
         VStack(spacing: 12) {
             if currentStatus == .draft {
                 Button {
-                    Task { await store.updatePayrollStatus(status: "confirmed") }
+                    Task { await store.updatePayrollStatus(status: "confirmed", month: month, year: year) }
                 } label: {
                     HStack {
                         Spacer()
@@ -261,7 +269,7 @@ private struct PayrollStatusButtons: View {
 
             if currentStatus == .confirmed {
                 Button {
-                    Task { await store.updatePayrollStatus(status: "paid") }
+                    Task { await store.updatePayrollStatus(status: "paid", month: month, year: year) }
                 } label: {
                     HStack {
                         Spacer()

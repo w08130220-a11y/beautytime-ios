@@ -71,16 +71,20 @@ class PayrollManageStore {
         isLoading = false
     }
 
-    func updatePayrollStatus(status: String) async {
+    func updatePayrollStatus(status: String, month: Int, year: Int) async {
         isLoading = true
         do {
+            let currentStatus = payrollRecords.first?.status?.rawValue ?? "draft"
             let _: [PayrollRecord] = try await api.patch(
                 path: APIEndpoints.Payroll.status,
-                body: JSONBody(["providerId": providerId, "status": status] as [String: Any])
+                body: JSONBody([
+                    "providerId": providerId,
+                    "year": year,
+                    "month": month,
+                    "fromStatus": currentStatus,
+                    "toStatus": status
+                ] as [String: Any])
             )
-            // Reload to get updated state
-            let month = Calendar.current.component(.month, from: Date())
-            let year = Calendar.current.component(.year, from: Date())
             await loadPayroll(month: month, year: year)
         } catch {
             self.error = error.localizedDescription

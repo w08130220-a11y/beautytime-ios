@@ -67,6 +67,14 @@ struct TimeSlotBlockView: View {
                 Task { await loadSlots(for: staff.id) }
             }
         }
+        .alert("錯誤", isPresented: Binding(
+            get: { store.error != nil },
+            set: { if !$0 { store.error = nil } }
+        )) {
+            Button("確定") { store.error = nil }
+        } message: {
+            Text(store.error ?? "")
+        }
     }
 
     private func loadSlots(for staffId: String) async {
