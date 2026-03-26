@@ -18,6 +18,7 @@ class PayrollManageStore {
     // MARK: - Commission Settings
 
     func loadCommissionSettings() async {
+        guard !providerId.isEmpty else { return }
         do {
             commissionSettings = try await api.get(
                 path: APIEndpoints.Payroll.commission,
@@ -44,6 +45,7 @@ class PayrollManageStore {
     // MARK: - Payroll Records
 
     func loadPayroll(month: Int, year: Int) async {
+        guard !providerId.isEmpty else { return }
         do {
             payrollRecords = try await api.get(
                 path: APIEndpoints.Payroll.records,
@@ -59,11 +61,20 @@ class PayrollManageStore {
     }
 
     func calculatePayroll(month: Int, year: Int) async {
+        guard !providerId.isEmpty else {
+            self.error = "尚未載入商家資料"
+            return
+        }
         isLoading = true
         do {
             payrollRecords = try await api.post(
                 path: APIEndpoints.Payroll.generate,
-                body: JSONBody(["providerId": providerId, "month": month, "year": year] as [String: Any])
+                body: JSONBody([
+                    "providerId": providerId,
+                    "month": month,
+                    "year": year,
+                    "records": [] as [[String: Any]]
+                ] as [String: Any])
             )
         } catch {
             self.error = error.localizedDescription
@@ -148,6 +159,7 @@ class PayrollManageStore {
     // MARK: - Salary Configs
 
     func loadSalaryConfigs() async {
+        guard !providerId.isEmpty else { return }
         do {
             salaryConfigs = try await api.get(
                 path: APIEndpoints.Payroll.salaryConfigs,

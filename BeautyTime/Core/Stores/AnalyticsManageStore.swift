@@ -19,6 +19,7 @@ class AnalyticsManageStore {
     // MARK: - Analytics
 
     func loadAnalytics() async {
+        guard !providerId.isEmpty else { return }
         isLoading = true
         do {
             async let revenueTask: RevenueData = api.get(
@@ -54,6 +55,7 @@ class AnalyticsManageStore {
     // MARK: - Unit Price Analytics
 
     func loadUnitPriceAnalytics() async {
+        guard !providerId.isEmpty else { return }
         do {
             unitPriceData = try await api.get(
                 path: APIEndpoints.Analytics.unitPrice,

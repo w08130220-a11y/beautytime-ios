@@ -36,6 +36,7 @@ class ManageStore {
     // MARK: - Dashboard
 
     func loadDashboard() async {
+        guard !providerId.isEmpty else { return }
         isLoading = true
         do {
             async let revenueTask: RevenueData = api.get(
@@ -60,6 +61,7 @@ class ManageStore {
     // MARK: - Dashboard Stats
 
     func loadDashboardStats() async {
+        guard !providerId.isEmpty else { return }
         isLoading = true
         do {
             async let statsTask: DashboardStats = api.get(
@@ -81,6 +83,7 @@ class ManageStore {
     // MARK: - Services CRUD
 
     func loadServices() async {
+        guard !providerId.isEmpty else { return }
         do {
             services = try await api.get(
                 path: APIEndpoints.Services.list,
@@ -127,6 +130,7 @@ class ManageStore {
     // MARK: - Orders
 
     func loadOrders() async {
+        guard !providerId.isEmpty else { return }
         do {
             var queryItems = [URLQueryItem(name: "providerId", value: providerId)]
             if let filter = orderFilter {
@@ -186,6 +190,7 @@ class ManageStore {
     // MARK: - Customers
 
     func loadCustomers() async {
+        guard !providerId.isEmpty else { return }
         do {
             customers = try await api.get(
                 path: APIEndpoints.Customers.list,
@@ -220,6 +225,7 @@ class ManageStore {
     // MARK: - Portfolio
 
     func loadPortfolio() async {
+        guard !providerId.isEmpty else { return }
         do {
             portfolio = try await api.get(
                 path: APIEndpoints.Portfolio.list,
@@ -279,6 +285,7 @@ class ManageStore {
     // MARK: - Business Hours
 
     func loadBusinessHours() async {
+        guard !providerId.isEmpty else { return }
         do {
             businessHours = try await api.get(
                 path: APIEndpoints.Hours.get,
@@ -318,6 +325,7 @@ class ManageStore {
     // MARK: - Marketing Templates
 
     func loadMarketingTemplates() async {
+        guard !providerId.isEmpty else { return }
         do {
             marketingTemplates = try await api.get(
                 path: APIEndpoints.Marketing.templates,

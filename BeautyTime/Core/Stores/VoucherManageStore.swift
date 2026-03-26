@@ -19,6 +19,7 @@ class VoucherManageStore {
     // MARK: - Voucher Plans
 
     func loadVoucherPlans() async {
+        guard !providerId.isEmpty else { return }
         do {
             voucherPlans = try await api.get(
                 path: APIEndpoints.Vouchers.plans,
@@ -52,6 +53,7 @@ class VoucherManageStore {
     // MARK: - Sold Vouchers
 
     func loadSoldVouchers() async {
+        guard !providerId.isEmpty else { return }
         do {
             soldVouchers = try await api.get(
                 path: APIEndpoints.Vouchers.sold,
@@ -65,6 +67,7 @@ class VoucherManageStore {
     // MARK: - Voucher Liability
 
     func loadVoucherLiability() async {
+        guard !providerId.isEmpty else { return }
         do {
             voucherLiability = try await api.get(
                 path: APIEndpoints.Vouchers.liability,
@@ -76,6 +79,7 @@ class VoucherManageStore {
     }
 
     func loadLiabilityByCustomer() async {
+        guard !providerId.isEmpty else { return }
         do {
             liabilityByCustomer = try await api.get(
                 path: APIEndpoints.Vouchers.liabilityByCustomer,

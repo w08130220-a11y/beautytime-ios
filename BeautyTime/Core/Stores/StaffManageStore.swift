@@ -20,6 +20,7 @@ class StaffManageStore {
     // MARK: - Staff CRUD
 
     func loadStaff() async {
+        guard !providerId.isEmpty else { return }
         do {
             staff = try await api.get(
                 path: APIEndpoints.Staff.list,
@@ -175,6 +176,7 @@ class StaffManageStore {
     // MARK: - Staff Invitations
 
     func loadStaffInvitations() async {
+        guard !providerId.isEmpty else { return }
         do {
             staffInvitations = try await api.get(
                 path: APIEndpoints.Staff.invitations,
@@ -206,6 +208,7 @@ class StaffManageStore {
     // MARK: - Staff Performance
 
     func loadStaffPerformance() async {
+        guard !providerId.isEmpty else { return }
         isLoading = true
         do {
             staffPerformance = try await api.get(
