@@ -679,7 +679,10 @@ struct StaffSchedule: Codable, Identifiable {
     let dayOfWeek: Int?
     let startTime: String?
     let endTime: String?
-    let isAvailable: Bool?
+    let isWorking: Bool?
+
+    // 相容舊欄位名
+    var isAvailable: Bool? { isWorking }
 }
 
 // MARK: - Staff Exception

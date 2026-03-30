@@ -105,7 +105,7 @@ struct StaffScheduleEditView: View {
             let apiDow = index == 6 ? 0 : index + 1
             return [
                 "dayOfWeek": apiDow,
-                "isAvailable": entry.isWorking,
+                "isWorking": entry.isWorking,
                 "startTime": Formatters.timeFormatter.string(from: entry.startTime),
                 "endTime": Formatters.timeFormatter.string(from: entry.endTime)
             ] as [String: Any]
