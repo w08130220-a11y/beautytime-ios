@@ -127,17 +127,17 @@ struct SelectDateTimeStep: View {
     }
 
     private func loadSlotsForDate(_ dateString: String) async {
-        // Find available slots from staff data or load separately
-        if let staffEntry = store.availableStaff.first(where: { $0.staff.id == store.selectedStaff?.id }) {
+        // 載入該日可用員工及時段
+        await store.loadAvailableStaff(date: dateString)
+
+        if let selectedStaff = store.selectedStaff,
+           let staffEntry = store.availableStaff.first(where: { $0.staff.id == selectedStaff.id }) {
+            // 已選設計師 → 顯示該設計師的時段
             store.availableSlots = staffEntry.availableSlots ?? []
         } else {
-            // Reload staff availability for the selected date to get slots
-            await store.loadAvailableStaff(date: dateString)
-            if let staffEntry = store.availableStaff.first(where: { $0.staff.id == store.selectedStaff?.id }) {
-                store.availableSlots = staffEntry.availableSlots ?? []
-            } else if let first = store.availableStaff.first {
-                store.availableSlots = first.availableSlots ?? []
-            }
+            // 未選設計師 → 合併所有員工的可用時段（去重排序）
+            let allSlots = store.availableStaff.flatMap { $0.availableSlots ?? [] }
+            store.availableSlots = Array(Set(allSlots)).sorted()
         }
     }
 }

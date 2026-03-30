@@ -4,7 +4,6 @@ struct PlansTab: View {
     let providerId: String
     @State private var plans: [VoucherPlan] = []
     @State private var isLoading = false
-    @State private var selectedPlan: VoucherPlan?
     @State private var showPurchase = false
 
     private let api = APIClient.shared
@@ -30,7 +29,6 @@ struct PlansTab: View {
                 LazyVStack(spacing: BTSpacing.md) {
                     ForEach(plans.filter { $0.isActive == true }) { plan in
                         PlanCard(plan: plan) {
-                            selectedPlan = plan
                             showPurchase = true
                         }
                     }
@@ -42,6 +40,7 @@ struct PlansTab: View {
             NavigationStack {
                 VoucherPurchaseView(providerId: providerId)
             }
+            .presentationDetents([.large])
         }
         .task {
             await loadPlans()

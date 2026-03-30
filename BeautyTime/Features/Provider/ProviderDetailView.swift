@@ -147,40 +147,67 @@ struct ProviderDetailView: View {
                 Spacer()
             }
 
-            // Location
-            if let address = provider?.address {
-                HStack(spacing: BTSpacing.sm) {
-                    Image(systemName: "mappin.and.ellipse")
-                        .font(.caption)
-                        .foregroundStyle(BTColor.primary)
-                    Text(address)
-                        .font(.subheadline)
-                        .foregroundStyle(BTColor.textSecondary)
+            // Location — 點擊開啟 Apple Maps
+            if let address = provider?.address, !address.isEmpty {
+                Button {
+                    let encoded = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? address
+                    if let url = URL(string: "maps://?q=\(encoded)") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack(spacing: BTSpacing.sm) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .font(.caption)
+                            .foregroundStyle(BTColor.primary)
+                        Text(address)
+                            .font(.subheadline)
+                            .foregroundStyle(BTColor.info)
+                    }
                 }
+                .buttonStyle(.plain)
             }
 
-            // Phone
-            if let phone = provider?.phone {
-                HStack(spacing: BTSpacing.sm) {
-                    Image(systemName: "phone")
-                        .font(.caption)
-                        .foregroundStyle(BTColor.primary)
-                    Link(phone, destination: URL(string: "tel:\(phone)") ?? URL(string: "about:blank")!)
-                        .font(.subheadline)
-                        .foregroundStyle(BTColor.textSecondary)
+            // Phone — 點擊撥打電話
+            if let phone = provider?.phone, !phone.isEmpty {
+                Button {
+                    let cleaned = phone.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
+                    if let url = URL(string: "tel://\(cleaned)") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack(spacing: BTSpacing.sm) {
+                        Image(systemName: "phone")
+                            .font(.caption)
+                            .foregroundStyle(BTColor.primary)
+                        Text(phone)
+                            .font(.subheadline)
+                            .foregroundStyle(BTColor.info)
+                    }
                 }
+                .buttonStyle(.plain)
             }
 
-            // Instagram
-            if let instagram = provider?.instagramUrl {
-                HStack(spacing: BTSpacing.sm) {
-                    Image(systemName: "camera")
-                        .font(.caption)
-                        .foregroundStyle(BTColor.primary)
-                    Link("查看 Instagram", destination: URL(string: instagram) ?? URL(string: "about:blank")!)
-                        .font(.subheadline)
-                        .foregroundStyle(BTColor.info)
+            // Instagram — 點擊開啟瀏覽器
+            if let instagram = provider?.instagramUrl, !instagram.isEmpty {
+                Button {
+                    var urlString = instagram
+                    if !urlString.hasPrefix("http://") && !urlString.hasPrefix("https://") {
+                        urlString = "https://\(urlString)"
+                    }
+                    if let url = URL(string: urlString) {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    HStack(spacing: BTSpacing.sm) {
+                        Image(systemName: "camera")
+                            .font(.caption)
+                            .foregroundStyle(BTColor.primary)
+                        Text("查看 Instagram")
+                            .font(.subheadline)
+                            .foregroundStyle(BTColor.info)
+                    }
                 }
+                .buttonStyle(.plain)
             }
 
             // Description

@@ -149,9 +149,9 @@ struct BookingFlowView: View {
         case .selectService:
             return store.selectedService != nil
         case .selectDateTime:
-            return store.selectedDate != nil
+            return store.selectedDate != nil && store.selectedTime != nil
         case .selectStaff:
-            return store.selectedTime != nil // must pick a time slot
+            return store.selectedStaff != nil || true // 設計師為可選
         case .confirm:
             return !store.isLoading
         case .payment:

@@ -140,16 +140,22 @@ class BookingFlowStore {
     }
 
     private func generateDatesForMonth(_ month: String) -> [String] {
-        guard let startDate = Formatters.monthFormatter.date(from: month) else { return [] }
+        let parseFormatter = DateFormatter()
+        parseFormatter.dateFormat = "yyyy-MM"
+        parseFormatter.locale = Locale(identifier: "en_US_POSIX")
+        guard let startDate = parseFormatter.date(from: month) else { return [] }
 
         let calendar = Calendar.current
         guard let range = calendar.range(of: .day, in: .month, for: startDate) else { return [] }
 
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd"
+        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
         return range.compactMap { day -> String? in
             guard let date = calendar.date(bySetting: .day, value: day, of: startDate) else { return nil }
-            // Skip past dates
             if date < calendar.startOfDay(for: Date()) { return nil }
-            return Formatters.dateFormatter.string(from: date)
+            return outputFormatter.string(from: date)
         }
     }
 
