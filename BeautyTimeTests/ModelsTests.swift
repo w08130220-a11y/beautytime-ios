@@ -74,7 +74,7 @@ final class ModelsTests: XCTestCase {
         let provider = try decoder.decode(Provider.self, from: json)
         XCTAssertEqual(provider.id, "prov-1")
         XCTAssertEqual(provider.name, "快剪100")
-        XCTAssertEqual(provider.category, "hair")
+        XCTAssertEqual(provider.category, .hair)
         XCTAssertEqual(provider.rating, 4.5)
         XCTAssertEqual(provider.isVerified, true)
     }
@@ -395,16 +395,16 @@ final class ModelsTests: XCTestCase {
             "today_revenue": 5000,
             "today_bookings": 3,
             "pending_bookings": 1,
-            "today_customers": 3,
-            "month_revenue": 150000,
-            "month_bookings": 45
+            "total_customers": 3,
+            "monthly_revenue": 150000,
+            "monthly_bookings": 45
         }
         """.data(using: .utf8)!
 
         let stats = try decoder.decode(DashboardStats.self, from: json)
         XCTAssertEqual(stats.todayRevenue, 5000)
         XCTAssertEqual(stats.todayBookings, 3)
-        XCTAssertEqual(stats.monthRevenue, 150000)
+        XCTAssertEqual(stats.monthlyRevenue, 150000)
     }
 
     // MARK: - AppNotification
