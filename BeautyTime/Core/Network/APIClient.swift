@@ -18,16 +18,14 @@ actor APIClient {
         self.decoder = JSONDecoder()
         self.decoder.keyDecodingStrategy = .convertFromSnakeCase
 
-        // Cache formatters outside closure to avoid per-date allocation
-        let isoWithFrac = ISO8601DateFormatter()
-        isoWithFrac.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let isoWithout = ISO8601DateFormatter()
-        isoWithout.formatOptions = [.withInternetDateTime]
-
         self.decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
+            let isoWithFrac = ISO8601DateFormatter()
+            isoWithFrac.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let date = isoWithFrac.date(from: dateString) { return date }
+            let isoWithout = ISO8601DateFormatter()
+            isoWithout.formatOptions = [.withInternetDateTime]
             if let date = isoWithout.date(from: dateString) { return date }
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date: \(dateString)")
         }

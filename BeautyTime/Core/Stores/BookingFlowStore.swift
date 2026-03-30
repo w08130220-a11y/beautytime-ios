@@ -114,7 +114,7 @@ class BookingFlowStore {
     }
 
     func loadAvailableDates(month: String) async {
-        guard let service = selectedService else { return }
+        guard selectedService != nil else { return }
         isLoading = true
         do {
             // Generate all dates for the month

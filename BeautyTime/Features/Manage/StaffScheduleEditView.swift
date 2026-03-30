@@ -148,7 +148,7 @@ struct DayEntry: Identifiable {
     var endTime: Date
 }
 
-extension StaffMember: @retroactive Hashable {
+extension StaffMember: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

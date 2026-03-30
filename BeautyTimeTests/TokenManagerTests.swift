@@ -3,12 +3,10 @@ import XCTest
 
 final class TokenManagerTests: XCTestCase {
 
-    private var tokenManager: TokenManager!
+    private let tokenManager = TokenManager.shared
 
     override func setUp() {
         super.setUp()
-        tokenManager = TokenManager()
-        // Clean up any existing token
         tokenManager.deleteToken()
     }
 
