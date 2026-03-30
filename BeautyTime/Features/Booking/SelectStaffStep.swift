@@ -1,155 +1,129 @@
 import SwiftUI
 import Kingfisher
 
-struct SelectStaffStep: View {
+struct SelectStaffTimeStep: View {
     var store: BookingFlowStore
 
     var body: some View {
-        LazyVStack(spacing: 12) {
-            // "不指定" option
-            anyStaffRow
+        VStack(alignment: .leading, spacing: 20) {
+            // MARK: - 設計師選擇
+            VStack(alignment: .leading, spacing: 12) {
+                Text("選擇設計師")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
 
-            if store.isLoading && store.availableStaff.isEmpty {
-                ProgressView()
-                    .frame(maxWidth: .infinity, minHeight: 100)
-            } else {
-                ForEach(store.availableStaff, id: \.staff.id) { available in
-                    staffRow(available.staff)
+                if store.isLoading && store.staffFindResult == nil {
+                    ProgressView("載入可用設計師...")
+                        .frame(maxWidth: .infinity, minHeight: 80)
+                } else if let result = store.staffFindResult, !result.staff.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            // 不指定
+                            staffChip(name: "不指定", icon: "person.fill.questionmark", isSelected: store.selectedStaff == nil) {
+                                store.selectedStaff = nil
+                                store.selectedTime = nil
+                            }
+
+                            // 設計師列表
+                            ForEach(result.staff, id: \.id) { member in
+                                let hasSlots = !(result.availableSlots[member.id]?.filter(\.available).isEmpty ?? true)
+                                staffChip(
+                                    name: member.name,
+                                    photoUrl: member.photoUrl,
+                                    isSelected: store.selectedStaff?.id == member.id,
+                                    disabled: !hasSlots
+                                ) {
+                                    store.selectedStaff = member
+                                    store.selectedTime = nil
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 4)
+                    }
+                } else {
+                    Text("此日期無可用設計師")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, minHeight: 60)
+                }
+            }
+
+            Divider()
+
+            // MARK: - 時段選擇
+            VStack(alignment: .leading, spacing: 12) {
+                Text("選擇時段")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+                let slots = store.currentAvailableSlots
+                if slots.isEmpty && !store.isLoading {
+                    Text("無可用時段")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, minHeight: 60)
+                } else {
+                    timeSlotGrid(slots: slots)
                 }
             }
         }
         .task {
-            if let date = store.selectedDate {
-                await store.loadAvailableStaff(date: date)
-            }
+            await store.loadAvailableStaffForDate()
         }
     }
 
-    // MARK: - Any Staff Row
+    // MARK: - Staff Chip
 
-    private var anyStaffRow: some View {
-        let isSelected = store.selectedStaff == nil
-
-        return Button {
-            store.selectedStaff = nil
+    private func staffChip(
+        name: String,
+        icon: String? = nil,
+        photoUrl: String? = nil,
+        isSelected: Bool,
+        disabled: Bool = false,
+        onTap: @escaping () -> Void
+    ) -> some View {
+        Button {
+            onTap()
         } label: {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(Color(.systemGray5))
-                        .frame(width: 52, height: 52)
-                    Image(systemName: "person.fill.questionmark")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("不指定")
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.primary)
-                    Text("由系統安排可用設計師")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isSelected ? Color.accentColor : Color(.systemGray3))
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.accentColor.opacity(0.08) : Color(.secondarySystemGroupedBackground))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 1.5)
-            )
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: - Staff Row
-
-    private func staffRow(_ staff: StaffMember) -> some View {
-        let isSelected = store.selectedStaff?.id == staff.id
-
-        return Button {
-            store.selectedStaff = staff
-        } label: {
-            HStack(spacing: 12) {
-                // Photo
-                if let photoUrl = staff.photoUrl, let url = URL(string: photoUrl) {
+            VStack(spacing: 6) {
+                if let photoUrl, let url = URL(string: photoUrl) {
                     KFImage(url)
                         .resizable()
                         .placeholder {
-                            staffPlaceholder
+                            Circle().fill(Color(.systemGray5))
+                                .frame(width: 48, height: 48)
+                                .overlay {
+                                    Image(systemName: "person.fill")
+                                        .foregroundStyle(.secondary)
+                                }
                         }
                         .scaledToFill()
-                        .frame(width: 52, height: 52)
+                        .frame(width: 48, height: 48)
                         .clipShape(Circle())
                 } else {
-                    staffPlaceholder
+                    Circle()
+                        .fill(isSelected ? Color.accentColor.opacity(0.15) : Color(.systemGray5))
+                        .frame(width: 48, height: 48)
+                        .overlay {
+                            Image(systemName: icon ?? "person.fill")
+                                .font(.title3)
+                                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                        }
                 }
 
-                // Info
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text(staff.name)
-                            .font(.body)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.primary)
-
-                        if let title = staff.title {
-                            Text(title)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(
-                                    Capsule()
-                                        .fill(Color(.systemGray5))
-                                )
-                        }
-                    }
-
-                    if let specialties = staff.specialties, !specialties.isEmpty {
-                        Text(specialties.joined(separator: " / "))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-
-                    if let rating = staff.rating {
-                        HStack(spacing: 4) {
-                            Image(systemName: "star.fill")
-                                .font(.caption2)
-                                .foregroundStyle(.orange)
-                            Text(String(format: "%.1f", rating))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            if let count = staff.reviewCount {
-                                Text("(\(count))")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                }
-
-                Spacer()
-
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isSelected ? Color.accentColor : Color(.systemGray3))
+                Text(name)
+                    .font(.caption)
+                    .fontWeight(isSelected ? .semibold : .regular)
+                    .foregroundStyle(disabled ? .tertiary : .primary)
+                    .lineLimit(1)
             }
-            .padding()
+            .frame(width: 70)
+            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.accentColor.opacity(0.08) : Color(.secondarySystemGroupedBackground))
+                    .fill(isSelected ? Color.accentColor.opacity(0.08) : Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
@@ -157,16 +131,38 @@ struct SelectStaffStep: View {
             )
         }
         .buttonStyle(.plain)
+        .disabled(disabled)
+        .opacity(disabled ? 0.4 : 1)
     }
 
-    private var staffPlaceholder: some View {
-        ZStack {
-            Circle()
-                .fill(Color(.systemGray5))
-                .frame(width: 52, height: 52)
-            Image(systemName: "person.fill")
-                .font(.title3)
-                .foregroundStyle(.secondary)
+    // MARK: - Time Slot Grid
+
+    private func timeSlotGrid(slots: [String]) -> some View {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 4)
+
+        return LazyVGrid(columns: columns, spacing: 10) {
+            ForEach(slots, id: \.self) { slot in
+                let isSelected = store.selectedTime == slot
+                Button {
+                    store.selectedTime = slot
+                } label: {
+                    Text(slot)
+                        .font(.subheadline)
+                        .fontWeight(isSelected ? .semibold : .regular)
+                        .foregroundStyle(isSelected ? .white : .primary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(isSelected ? Color.accentColor : Color(.secondarySystemGroupedBackground))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(isSelected ? Color.accentColor : Color(.systemGray4), lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 }
@@ -174,7 +170,7 @@ struct SelectStaffStep: View {
 #Preview {
     let store = BookingFlowStore()
     ScrollView {
-        SelectStaffStep(store: store)
+        SelectStaffTimeStep(store: store)
             .padding()
     }
 }

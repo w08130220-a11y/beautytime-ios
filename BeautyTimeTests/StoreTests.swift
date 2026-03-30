@@ -95,27 +95,25 @@ final class BookingFlowStoreTests: XCTestCase {
         let store = BookingFlowStore()
         XCTAssertEqual(store.currentStep, .selectService)
         store.nextStep()
-        XCTAssertEqual(store.currentStep, .selectDateTime)
+        XCTAssertEqual(store.currentStep, .selectDate)
         store.nextStep()
-        XCTAssertEqual(store.currentStep, .selectStaff)
+        XCTAssertEqual(store.currentStep, .selectStaffTime)
         store.nextStep()
         XCTAssertEqual(store.currentStep, .confirm)
-        store.nextStep()
-        XCTAssertEqual(store.currentStep, .payment)
     }
 
     func testPreviousStep() {
         let store = BookingFlowStore()
         store.currentStep = .confirm
         store.previousStep()
-        XCTAssertEqual(store.currentStep, .selectStaff)
+        XCTAssertEqual(store.currentStep, .selectStaffTime)
         store.previousStep()
-        XCTAssertEqual(store.currentStep, .selectDateTime)
+        XCTAssertEqual(store.currentStep, .selectDate)
     }
 
     func testReset() {
         let store = BookingFlowStore()
-        store.currentStep = .payment
+        store.currentStep = .confirm
         store.providerId = "test"
         store.note = "some note"
         store.reset()

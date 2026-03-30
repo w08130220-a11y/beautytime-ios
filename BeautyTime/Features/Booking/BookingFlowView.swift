@@ -89,14 +89,12 @@ struct BookingFlowView: View {
         switch store.currentStep {
         case .selectService:
             SelectServiceStep(store: store)
-        case .selectDateTime:
-            SelectDateTimeStep(store: store)
-        case .selectStaff:
-            SelectStaffStep(store: store)
+        case .selectDate:
+            SelectDateStep(store: store)
+        case .selectStaffTime:
+            SelectStaffTimeStep(store: store)
         case .confirm:
             ConfirmStep(store: store)
-        case .payment:
-            PaymentStep(store: store)
         }
     }
 
@@ -118,21 +116,34 @@ struct BookingFlowView: View {
                 .buttonStyle(.bordered)
             }
 
-            if store.currentStep != .payment {
+            if store.currentStep == .confirm {
                 Button {
-                    if store.currentStep == .confirm {
-                        Task {
-                            await store.createBooking()
-                            if store.createdBooking != nil {
-                                store.nextStep()
-                            }
+                    Task {
+                        await store.createBooking()
+                        if store.createdBooking != nil {
+                            dismiss()
                         }
-                    } else {
-                        store.nextStep()
                     }
                 } label: {
                     HStack {
-                        Text(store.currentStep == .confirm ? "確認預約" : "下一步")
+                        if store.isLoading {
+                            ProgressView()
+                                .tint(.white)
+                        }
+                        Text("確認預約")
+                        Image(systemName: "checkmark.circle")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!canProceed)
+            } else {
+                Button {
+                    store.nextStep()
+                } label: {
+                    HStack {
+                        Text("下一步")
                         Image(systemName: "chevron.right")
                     }
                     .frame(maxWidth: .infinity)
@@ -148,14 +159,12 @@ struct BookingFlowView: View {
         switch store.currentStep {
         case .selectService:
             return store.selectedService != nil
-        case .selectDateTime:
-            return store.selectedDate != nil && store.selectedTime != nil
-        case .selectStaff:
-            return store.selectedStaff != nil || true // 設計師為可選
+        case .selectDate:
+            return store.selectedDate != nil
+        case .selectStaffTime:
+            return store.selectedTime != nil
         case .confirm:
             return !store.isLoading
-        case .payment:
-            return false
         }
     }
 }

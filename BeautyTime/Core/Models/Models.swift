@@ -496,6 +496,17 @@ struct AvailableDate: Codable {
     let available: Bool
 }
 
+// GET /api/availability/staff/find 回傳格式
+struct StaffFindResponse: Codable {
+    let staff: [StaffMember]
+    let availableSlots: [String: [StaffTimeSlot]]  // keyed by staffId
+}
+
+struct StaffTimeSlot: Codable {
+    let time: String
+    let available: Bool
+}
+
 // MARK: - Auth Responses
 
 struct AuthResponse: Codable {

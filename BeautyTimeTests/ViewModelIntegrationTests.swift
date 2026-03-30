@@ -39,9 +39,9 @@ final class ViewModelIntegrationTests: XCTestCase {
 
     func testBookingStepCannotGoAboveLast() {
         let store = BookingFlowStore()
-        store.currentStep = .payment
+        store.currentStep = .confirm
         store.nextStep()
-        XCTAssertEqual(store.currentStep, .payment, "Should not go above last step")
+        XCTAssertEqual(store.currentStep, .confirm, "Should not go above last step")
     }
 
     // MARK: - Provider Search Filters

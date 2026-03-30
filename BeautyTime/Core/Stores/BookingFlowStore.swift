@@ -3,18 +3,16 @@ import SwiftUI
 
 enum BookingStep: Int, CaseIterable {
     case selectService = 1
-    case selectDateTime = 2
-    case selectStaff = 3
+    case selectDate = 2
+    case selectStaffTime = 3
     case confirm = 4
-    case payment = 5
 
     var title: String {
         switch self {
         case .selectService: return "選擇服務"
-        case .selectDateTime: return "選擇日期"
-        case .selectStaff: return "選擇時段與設計師"
-        case .confirm: return "確認資訊"
-        case .payment: return "付款"
+        case .selectDate: return "選擇日期"
+        case .selectStaffTime: return "選擇設計師與時段"
+        case .confirm: return "確認預約"
         }
     }
 }
@@ -25,21 +23,20 @@ class BookingFlowStore {
     var providerId: String = ""
     var provider: Provider?
 
-    // Step 1
+    // Step 1: 選擇服務
     var services: [Service] = []
     var selectedService: Service?
 
-    // Step 2
-    var availableStaff: [AvailableStaff] = []
-    var selectedStaff: StaffMember?
-
-    // Step 3
+    // Step 2: 選擇日期
     var availableDates: [AvailableDate] = []
     var selectedDate: String?
-    var selectedTime: String?
-    var availableSlots: [String] = []
 
-    // Step 4
+    // Step 3: 選設計師+時段
+    var staffFindResult: StaffFindResponse?
+    var selectedStaff: StaffMember?
+    var selectedTime: String?
+
+    // Step 4: 確認
     var note: String = ""
     var couponCode: String?
     var verifiedCoupon: Coupon?
@@ -54,6 +51,8 @@ class BookingFlowStore {
     var createdBooking: Booking?
 
     private let api = APIClient.shared
+
+    // MARK: - Computed
 
     var totalPrice: Double {
         selectedService?.price ?? 0
@@ -80,9 +79,24 @@ class BookingFlowStore {
         max(0, totalPrice - discountAmount)
     }
 
-    // MARK: - Actions
+    /// 取得目前選擇的設計師可用時段
+    var currentAvailableSlots: [String] {
+        guard let result = staffFindResult else { return [] }
+        if let staff = selectedStaff,
+           let slots = result.availableSlots[staff.id] {
+            return slots.filter(\.available).map(\.time).sorted()
+        } else {
+            // 不指定 → 合併所有員工可用時段
+            let allSlots = result.availableSlots.values
+                .flatMap { $0.filter(\.available).map(\.time) }
+            return Array(Set(allSlots)).sorted()
+        }
+    }
+
+    // MARK: - Step 1: 載入服務
 
     func loadServices() async {
+        guard !providerId.isEmpty else { return }
         isLoading = true
         do {
             services = try await api.get(
@@ -95,15 +109,43 @@ class BookingFlowStore {
         isLoading = false
     }
 
-    func loadAvailableStaff(date: String) async {
-        guard let service = selectedService else { return }
+    // MARK: - Step 2: 載入可用日期
+
+    func loadAvailableDates(month: String) async {
+        guard selectedService != nil, !providerId.isEmpty else { return }
         isLoading = true
         do {
-            availableStaff = try await api.get(
-                path: APIEndpoints.Availability.staff,
+            let dates = generateDatesForMonth(month)
+            let datesString = dates.joined(separator: ",")
+
+            let queryItems = [
+                URLQueryItem(name: "providerId", value: providerId),
+                URLQueryItem(name: "dates", value: datesString)
+            ]
+
+            // 後端回傳 { "2026-03-30": true, "2026-03-31": false }
+            let dateDict: [String: Bool] = try await api.get(
+                path: APIEndpoints.Availability.dateBatch,
+                queryItems: queryItems
+            )
+            availableDates = dateDict.map { AvailableDate(date: $0.key, available: $0.value) }
+        } catch {
+            self.error = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    // MARK: - Step 3: 載入可用設計師+時段
+
+    func loadAvailableStaffForDate() async {
+        guard let date = selectedDate, !providerId.isEmpty else { return }
+        isLoading = true
+        do {
+            // GET /api/availability/staff/find?providerId=&date=
+            staffFindResult = try await api.get(
+                path: APIEndpoints.Availability.staffFind,
                 queryItems: [
                     URLQueryItem(name: "providerId", value: providerId),
-                    URLQueryItem(name: "serviceId", value: service.id),
                     URLQueryItem(name: "date", value: date)
                 ]
             )
@@ -113,51 +155,7 @@ class BookingFlowStore {
         isLoading = false
     }
 
-    func loadAvailableDates(month: String) async {
-        guard selectedService != nil else { return }
-        isLoading = true
-        do {
-            // Generate all dates for the month
-            let dates = generateDatesForMonth(month)
-            let datesString = dates.joined(separator: ",")
-
-            var queryItems = [
-                URLQueryItem(name: "providerId", value: providerId),
-                URLQueryItem(name: "dates", value: datesString)
-            ]
-            if let staffId = selectedStaff?.id {
-                queryItems.append(URLQueryItem(name: "staffId", value: staffId))
-            }
-
-            availableDates = try await api.get(
-                path: APIEndpoints.Availability.dateBatch,
-                queryItems: queryItems
-            )
-        } catch {
-            self.error = error.localizedDescription
-        }
-        isLoading = false
-    }
-
-    private func generateDatesForMonth(_ month: String) -> [String] {
-        let parseFormatter = DateFormatter()
-        parseFormatter.dateFormat = "yyyy-MM"
-        parseFormatter.locale = Locale(identifier: "en_US_POSIX")
-        guard let startDate = parseFormatter.date(from: month) else { return [] }
-
-        let calendar = Calendar.current
-        guard let range = calendar.range(of: .day, in: .month, for: startDate) else { return [] }
-
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy-MM-dd"
-        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
-
-        return range.compactMap { day -> String? in
-            guard let date = calendar.date(bySetting: .day, value: day, of: startDate) else { return nil }
-            if date < calendar.startOfDay(for: Date()) { return nil }
-            return outputFormatter.string(from: date)
-        }
-    }
+    // MARK: - Step 4: 驗證優惠碼
 
     func verifyCoupon() async {
         guard let code = couponCode, !code.isEmpty else { return }
@@ -177,6 +175,8 @@ class BookingFlowStore {
         }
         isLoading = false
     }
+
+    // MARK: - 建立預約
 
     func createBooking() async {
         guard let service = selectedService,
@@ -206,11 +206,12 @@ class BookingFlowStore {
         isLoading = false
     }
 
+    // MARK: - 付款
+
     func createPayment() async {
         guard let booking = createdBooking else { return }
         isLoading = true
         do {
-            // POST /api/bookings/{id}/pay returns { payment: { merchantTradeNo, ... } }
             let response: BookingPayResponse = try await api.post(
                 path: APIEndpoints.Bookings.pay(booking.id)
             )
@@ -224,15 +225,16 @@ class BookingFlowStore {
     func checkPaymentResult() async -> PaymentResult? {
         guard let tradeNo = merchantTradeNo else { return nil }
         do {
-            let result: PaymentResult = try await api.get(
+            return try await api.get(
                 path: APIEndpoints.Payments.result,
                 queryItems: [URLQueryItem(name: "merchantTradeNo", value: tradeNo)]
             )
-            return result
         } catch {
             return nil
         }
     }
+
+    // MARK: - Navigation
 
     func nextStep() {
         guard let next = BookingStep(rawValue: currentStep.rawValue + 1) else { return }
@@ -250,6 +252,7 @@ class BookingFlowStore {
         selectedStaff = nil
         selectedDate = nil
         selectedTime = nil
+        staffFindResult = nil
         note = ""
         couponCode = nil
         verifiedCoupon = nil
@@ -257,5 +260,27 @@ class BookingFlowStore {
         merchantTradeNo = nil
         createdBooking = nil
         error = nil
+    }
+
+    // MARK: - Helpers
+
+    private func generateDatesForMonth(_ month: String) -> [String] {
+        let parseFormatter = DateFormatter()
+        parseFormatter.dateFormat = "yyyy-MM"
+        parseFormatter.locale = Locale(identifier: "en_US_POSIX")
+        guard let startDate = parseFormatter.date(from: month) else { return [] }
+
+        let calendar = Calendar.current
+        guard let range = calendar.range(of: .day, in: .month, for: startDate) else { return [] }
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd"
+        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        return range.compactMap { day -> String? in
+            guard let date = calendar.date(bySetting: .day, value: day, of: startDate) else { return nil }
+            if date < calendar.startOfDay(for: Date()) { return nil }
+            return outputFormatter.string(from: date)
+        }
     }
 }

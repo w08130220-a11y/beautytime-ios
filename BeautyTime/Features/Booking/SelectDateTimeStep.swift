@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SelectDateTimeStep: View {
+struct SelectDateStep: View {
     var store: BookingFlowStore
 
     @State private var displayedMonth = Date()
@@ -14,71 +14,68 @@ struct SelectDateTimeStep: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // MARK: - Date Picker
-            VStack(alignment: .leading, spacing: 8) {
-                Text("選擇日期")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+            Text("選擇預約日期")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
 
-                DatePicker(
-                    "日期",
-                    selection: $pickerDate,
-                    in: Date()...,
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(.graphical)
-                .onChange(of: pickerDate) { _, newDate in
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
-                    let dateString = formatter.string(from: newDate)
+            DatePicker(
+                "日期",
+                selection: $pickerDate,
+                in: Date()...,
+                displayedComponents: [.date]
+            )
+            .datePickerStyle(.graphical)
+            .onChange(of: pickerDate) { _, newDate in
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                let dateString = formatter.string(from: newDate)
 
-                    if availableDateSet.contains(dateString) {
-                        store.selectedDate = dateString
-                        store.selectedTime = nil
-                        store.availableSlots = []
-                        Task {
-                            await loadSlotsForDate(dateString)
-                        }
-                    }
+                if availableDateSet.contains(dateString) {
+                    store.selectedDate = dateString
+                    // 清除前一次選擇的設計師和時段
+                    store.selectedStaff = nil
+                    store.selectedTime = nil
+                    store.staffFindResult = nil
+                } else {
+                    store.selectedDate = nil
+                }
 
-                    // Detect month change
-                    let newMonth = calendar.component(.month, from: newDate)
-                    let oldMonth = calendar.component(.month, from: displayedMonth)
-                    if newMonth != oldMonth {
-                        displayedMonth = newDate
-                        Task {
-                            await loadDatesForMonth(newDate)
-                        }
+                // 偵測月份變更
+                let newMonth = calendar.component(.month, from: newDate)
+                let oldMonth = calendar.component(.month, from: displayedMonth)
+                if newMonth != oldMonth {
+                    displayedMonth = newDate
+                    Task {
+                        await loadDatesForMonth(newDate)
                     }
                 }
             }
 
-            Divider()
-
-            // MARK: - Time Slots
-            VStack(alignment: .leading, spacing: 12) {
-                Text("選擇時間")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-
-                if store.selectedDate == nil {
-                    Text("請先選擇日期")
+            // 選擇狀態
+            if let date = store.selectedDate {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                    Text("已選擇：\(date)")
                         .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity, minHeight: 60)
-                } else if store.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, minHeight: 60)
-                } else if store.availableSlots.isEmpty {
-                    Text("此日期無可用時段")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity, minHeight: 60)
-                } else {
-                    timeSlotGrid
                 }
+                .padding(.horizontal)
+            } else if !store.isLoading && !store.availableDates.isEmpty {
+                HStack {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(.orange)
+                    Text("請點選綠色標示的可用日期")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal)
+            }
+
+            if store.isLoading {
+                ProgressView("載入可用日期...")
+                    .frame(maxWidth: .infinity)
             }
         }
         .task {
@@ -86,66 +83,19 @@ struct SelectDateTimeStep: View {
         }
     }
 
-    // MARK: - Time Slot Grid
-
-    private var timeSlotGrid: some View {
-        let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 4)
-
-        return LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(store.availableSlots, id: \.self) { slot in
-                let isSelected = store.selectedTime == slot
-                Button {
-                    store.selectedTime = slot
-                } label: {
-                    Text(slot)
-                        .font(.subheadline)
-                        .fontWeight(isSelected ? .semibold : .regular)
-                        .foregroundStyle(isSelected ? .white : .primary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(isSelected ? Color.accentColor : Color(.secondarySystemGroupedBackground))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(isSelected ? Color.accentColor : Color(.systemGray4), lineWidth: 1)
-                        )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    // MARK: - Data Loading
-
     private func loadDatesForMonth(_ date: Date) async {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         let month = formatter.string(from: date)
         await store.loadAvailableDates(month: month)
-    }
-
-    private func loadSlotsForDate(_ dateString: String) async {
-        // 載入該日可用員工及時段
-        await store.loadAvailableStaff(date: dateString)
-
-        if let selectedStaff = store.selectedStaff,
-           let staffEntry = store.availableStaff.first(where: { $0.staff.id == selectedStaff.id }) {
-            // 已選設計師 → 顯示該設計師的時段
-            store.availableSlots = staffEntry.availableSlots ?? []
-        } else {
-            // 未選設計師 → 合併所有員工的可用時段（去重排序）
-            let allSlots = store.availableStaff.flatMap { $0.availableSlots ?? [] }
-            store.availableSlots = Array(Set(allSlots)).sorted()
-        }
     }
 }
 
 #Preview {
     let store = BookingFlowStore()
     ScrollView {
-        SelectDateTimeStep(store: store)
+        SelectDateStep(store: store)
             .padding()
     }
 }
