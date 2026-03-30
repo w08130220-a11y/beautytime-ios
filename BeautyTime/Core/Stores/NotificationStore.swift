@@ -39,7 +39,7 @@ class NotificationStore {
             let _: AppNotification = try await api.patch(
                 path: APIEndpoints.Notifications.markRead(notification.id)
             )
-            if let idx = notifications.firstIndex(where: { $0.id == notification.id }) {
+            if notifications.contains(where: { $0.id == notification.id }) {
                 await loadNotifications()
             }
         } catch {}

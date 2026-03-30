@@ -13,9 +13,11 @@ struct ExploreView: View {
         GridItem(.flexible(), spacing: BTSpacing.lg)
     ]
 
-    var body: some View {
-        @Bindable var store = store
+    private var bindableStore: Bindable<ProviderStore> {
+        Bindable(store)
+    }
 
+    var body: some View {
         ScrollView {
             VStack(spacing: BTSpacing.xl) {
                 // Announcements banner
@@ -52,7 +54,7 @@ struct ExploreView: View {
 
                 // Search bar + filter button
                 HStack(spacing: BTSpacing.sm) {
-                    SearchBar(text: $store.searchQuery, placeholder: "搜尋美容師、店家...") {
+                    SearchBar(text: bindableStore.searchQuery, placeholder: "搜尋美容師、店家...") {
                         Task { await store.searchProviders(reset: true) }
                         // Record search history (fire-and-forget)
                         if !store.searchQuery.isEmpty {
@@ -180,8 +182,8 @@ struct ExploreView: View {
         .navigationTitle("探索")
         .sheet(isPresented: $showFilter) {
             FilterSheet(
-                selectedCategory: $store.selectedCategory,
-                selectedCity: $store.selectedCity,
+                selectedCategory: bindableStore.selectedCategory,
+                selectedCity: bindableStore.selectedCity,
                 selectedTags: $selectedTags
             ) {
                 Task { await store.searchProviders(reset: true) }
