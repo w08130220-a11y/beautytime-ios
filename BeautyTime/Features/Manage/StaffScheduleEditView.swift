@@ -6,6 +6,8 @@ struct StaffScheduleEditView: View {
     @State private var selectedStaff: StaffMember?
     @State private var dayEntries: [DayEntry] = Self.defaultEntries()
     @State private var isSaving = false
+    @State private var showSuccess = false
+    @State private var saveError: String?
 
     var body: some View {
         Form {
@@ -44,13 +46,14 @@ struct StaffScheduleEditView: View {
                     Button {
                         Task { await saveSchedule() }
                     } label: {
-                        if isSaving {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                        } else {
-                            Text("儲存排班")
-                                .btPrimaryButton()
+                        HStack {
+                            if isSaving {
+                                ProgressView()
+                                    .tint(.white)
+                            }
+                            Text(isSaving ? "儲存中..." : "儲存排班")
                         }
+                        .btPrimaryButton()
                     }
                     .disabled(isSaving)
                     .listRowInsets(EdgeInsets())
@@ -67,13 +70,18 @@ struct StaffScheduleEditView: View {
                 Task { await loadScheduleForStaff(staff.id) }
             }
         }
-        .alert("錯誤", isPresented: Binding(
-            get: { store.error != nil },
-            set: { if !$0 { store.error = nil } }
-        )) {
-            Button("確定") { store.error = nil }
+        .alert("儲存成功", isPresented: $showSuccess) {
+            Button("確定") {}
         } message: {
-            Text(store.error ?? "")
+            Text("\(selectedStaff?.name ?? "員工")的排班已更新")
+        }
+        .alert("儲存失敗", isPresented: Binding(
+            get: { saveError != nil },
+            set: { if !$0 { saveError = nil } }
+        )) {
+            Button("確定") { saveError = nil }
+        } message: {
+            Text(saveError ?? "未知錯誤")
         }
     }
 
@@ -83,7 +91,6 @@ struct StaffScheduleEditView: View {
         var entries = Self.defaultEntries()
         for schedule in schedules {
             guard let dow = schedule.dayOfWeek, dow >= 0, dow < 7 else { continue }
-            // Map: API uses 0=Sunday..6=Saturday, entries use 0=Monday..6=Sunday
             let entryIndex = dow == 0 ? 6 : dow - 1
             entries[entryIndex].isWorking = schedule.isAvailable ?? false
             if let start = schedule.startTime {
@@ -99,9 +106,9 @@ struct StaffScheduleEditView: View {
     private func saveSchedule() async {
         guard let staff = selectedStaff else { return }
         isSaving = true
+        store.error = nil
 
         let schedules: [[String: Any]] = dayEntries.enumerated().map { index, entry in
-            // Convert entry index (0=Mon..6=Sun) to API dayOfWeek (0=Sun..6=Sat)
             let apiDow = index == 6 ? 0 : index + 1
             return [
                 "dayOfWeek": apiDow,
@@ -113,6 +120,13 @@ struct StaffScheduleEditView: View {
 
         await store.updateStaffSchedule(staffId: staff.id, schedules: schedules)
         isSaving = false
+
+        if let error = store.error {
+            saveError = error
+            store.error = nil
+        } else {
+            showSuccess = true
+        }
     }
 
     // MARK: - Helpers
