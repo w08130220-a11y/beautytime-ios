@@ -187,15 +187,27 @@ class StaffManageStore {
         }
     }
 
-    func createStaffInvitation(email: String, role: StaffRole) async {
+    func createStaffInvitation(email: String, staffId: String) async {
         isLoading = true
         do {
+            // 1. 用 email 搜尋用戶取得 userId
+            let users: [User] = try await api.get(
+                path: APIEndpoints.Users.search,
+                queryItems: [URLQueryItem(name: "email", value: email)]
+            )
+            guard let invitee = users.first else {
+                self.error = "找不到此信箱的用戶"
+                isLoading = false
+                return
+            }
+
+            // 2. 發送綁定邀請
             let invitation: StaffInvitation = try await api.post(
                 path: APIEndpoints.Staff.invitations,
                 body: JSONBody([
                     "providerId": providerId,
-                    "email": email,
-                    "role": role.rawValue
+                    "staffId": staffId,
+                    "inviteeId": invitee.id
                 ] as [String: Any])
             )
             staffInvitations.append(invitation)

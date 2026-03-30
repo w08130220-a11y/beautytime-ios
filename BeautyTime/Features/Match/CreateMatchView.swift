@@ -151,8 +151,8 @@ struct CreateMatchView: View {
             serviceType: serviceType.rawValue,
             preferredDate: Formatters.dateFormatter.string(from: preferredDate),
             preferredTime: Formatters.timeFormatter.string(from: preferredTime),
-            locationCity: city.rawValue,
-            locationDistrict: district.isEmpty ? nil : district,
+            city: city.displayName,
+            district: district.isEmpty ? nil : district,
             budgetMin: Double(budgetMinText),
             budgetMax: Double(budgetMaxText),
             note: note.isEmpty ? nil : note
@@ -180,8 +180,8 @@ private struct CreateMatchRequestBody: Encodable {
     let serviceType: String
     let preferredDate: String
     let preferredTime: String
-    let locationCity: String
-    let locationDistrict: String?
+    let city: String
+    let district: String?
     let budgetMin: Double?
     let budgetMax: Double?
     let note: String?

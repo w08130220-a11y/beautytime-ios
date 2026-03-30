@@ -335,6 +335,7 @@ struct WriteReviewSheet: View {
 
             var dict: [String: Any] = [
                 "bookingId": booking.id,
+                "customerId": booking.customerId ?? "",
                 "providerId": booking.providerId ?? "",
                 "rating": rating
             ]

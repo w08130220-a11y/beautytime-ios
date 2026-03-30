@@ -350,7 +350,7 @@ class ManageStore {
                             "enabled": template.isEnabled
                         ]
                         dict["id"] = template.id
-                        dict["provider_id"] = providerId
+                        dict["providerId"] = providerId
                         return dict
                     }
                 ] as [String: Any])

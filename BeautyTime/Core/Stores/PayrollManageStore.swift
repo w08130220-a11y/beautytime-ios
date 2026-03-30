@@ -65,15 +65,45 @@ class PayrollManageStore {
             self.error = "尚未載入商家資料"
             return
         }
+
+        // 確保已載入薪資設定
+        if salaryConfigs.isEmpty {
+            await loadSalaryConfigs()
+        }
+
         isLoading = true
         do {
+            // 用每位員工的薪資設定組裝 records
+            let records: [[String: Any]] = salaryConfigs.map { config in
+                let totalAllowances = (config.transportationAllowance ?? 0)
+                    + (config.mealAllowance ?? 0)
+                    + (config.otherAllowance ?? 0)
+                let baseSalary = config.baseSalary ?? 0
+                let designationBonus = config.designationBonus ?? 0
+                let totalPay = baseSalary + totalAllowances + designationBonus
+
+                return [
+                    "staffId": config.staffId ?? "",
+                    "baseSalary": baseSalary,
+                    "totalAllowances": totalAllowances,
+                    "serviceRevenue": 0,
+                    "serviceCommission": 0,
+                    "productRevenue": 0,
+                    "productCommission": 0,
+                    "designationBonus": designationBonus,
+                    "deductions": 0,
+                    "deductionNote": "",
+                    "totalPay": totalPay
+                ] as [String: Any]
+            }
+
             payrollRecords = try await api.post(
                 path: APIEndpoints.Payroll.generate,
                 body: JSONBody([
                     "providerId": providerId,
                     "month": month,
                     "year": year,
-                    "records": [] as [[String: Any]]
+                    "records": records
                 ] as [String: Any])
             )
         } catch {
