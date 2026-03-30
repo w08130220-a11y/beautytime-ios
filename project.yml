@@ -41,3 +41,14 @@ targets:
       - package: Kingfisher
       - package: GoogleSignIn
         product: GoogleSignIn
+
+  BeautyTimeTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - BeautyTimeTests
+    dependencies:
+      - target: BeautyTime
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
