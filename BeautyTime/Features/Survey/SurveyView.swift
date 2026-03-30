@@ -371,15 +371,18 @@ struct SurveyView: View {
     private func submitSurvey() async {
         isSubmitting = true
         do {
-            let body = JSONBody([
-                "preferredServices": selectedCategories.map(\.rawValue) as Any,
-                "preferredCity": selectedCity?.rawValue as Any,
-                "preferredStyles": styleTags as Any,
-                "budgetMin": Int(budgetMin) as Any,
-                "budgetMax": Int(budgetMax) as Any
-            ])
+            var answers: [String: Any] = [
+                "preferredCategories": selectedCategories.map(\.rawValue),
+                "preferredStyles": styleTags,
+                "budgetMin": Int(budgetMin),
+                "budgetMax": Int(budgetMax)
+            ]
+            if let city = selectedCity {
+                answers["preferredCity"] = city.displayName
+            }
+            let body = JSONBody(["answers": answers] as [String: Any])
             let _: UserPreference = try await api.post(
-                path: APIEndpoints.Survey.preferences,
+                path: APIEndpoints.Survey.save,
                 body: body
             )
             await MainActor.run {
