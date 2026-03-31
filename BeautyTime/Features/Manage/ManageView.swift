@@ -51,13 +51,7 @@ struct ManageView: View {
                         StaffScheduleEditView()
                             .environment(staffStore)
                     } label: {
-                        Label("員工排班", systemImage: "calendar.badge.clock")
-                    }
-                    NavigationLink {
-                        StaffExceptionsView()
-                            .environment(staffStore)
-                    } label: {
-                        Label("休假管理", systemImage: "calendar.badge.minus")
+                        Label("排班與請假", systemImage: "calendar.badge.clock")
                     }
                     NavigationLink {
                         TimeSlotBlockView()

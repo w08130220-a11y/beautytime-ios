@@ -51,7 +51,9 @@ struct ScheduleView: View {
             }
             await staffStore.loadStaff()
             if !staffStore.staff.isEmpty {
-                await staffStore.loadStaffSchedules(staffIds: staffStore.staff.map(\.id))
+                let staffIds = staffStore.staff.map(\.id)
+                await staffStore.loadStaffSchedules(staffIds: staffIds)
+                await staffStore.loadStaffExceptions(staffIds: staffIds)
             }
             await store.loadOrders()
         }
@@ -101,6 +103,7 @@ struct ScheduleView: View {
                                 date: date,
                                 staff: staffStore.staff,
                                 staffSchedules: staffStore.staffSchedules,
+                                staffExceptions: staffStore.staffExceptions,
                                 isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                                 isToday: calendar.isDateInToday(date)
                             )
@@ -253,11 +256,16 @@ private struct CalendarDayCell: View {
     let date: Date
     let staff: [StaffMember]
     let staffSchedules: [String: [StaffSchedule]]
+    let staffExceptions: [StaffException]
     let isSelected: Bool
     let isToday: Bool
 
     private let calendar = Calendar.current
     private let colors: [Color] = [.blue, .red, .green, .orange, .purple, .cyan, .pink, .mint]
+
+    private var dateString: String {
+        Formatters.dateFormatter.string(from: date)
+    }
 
     var body: some View {
         VStack(spacing: 2) {
@@ -266,12 +274,20 @@ private struct CalendarDayCell: View {
                 .fontWeight(isToday ? .bold : .regular)
                 .foregroundStyle(isSelected ? .white : (isToday ? BTColor.primary : .primary))
 
-            // Staff working dots
+            // Staff working dots + leave markers
             HStack(spacing: 2) {
-                ForEach(Array(workingStaff.prefix(3).enumerated()), id: \.offset) { index, member in
-                    Circle()
-                        .fill(colorForStaff(member))
-                        .frame(width: 5, height: 5)
+                ForEach(Array(workingStaff.prefix(3).enumerated()), id: \.offset) { _, member in
+                    let onLeave = staffExceptions.contains { $0.staffId == member.id && $0.date == dateString }
+                    if onLeave {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 5, weight: .bold))
+                            .foregroundStyle(.red)
+                            .frame(width: 5, height: 5)
+                    } else {
+                        Circle()
+                            .fill(colorForStaff(member))
+                            .frame(width: 5, height: 5)
+                    }
                 }
             }
         }
@@ -284,8 +300,9 @@ private struct CalendarDayCell: View {
     private var workingStaff: [StaffMember] {
         let dayOfWeek = calendar.component(.weekday, from: date) - 1 // 0=Sun
         return staff.filter { member in
+            // 有請假 → 仍然顯示（用 x 標記），讓管理者看到
             guard let schedules = staffSchedules[member.id] else {
-                return true // 沒有排班設定 → 預設上班
+                return true
             }
             return schedules.contains { schedule in
                 schedule.dayOfWeek == dayOfWeek && (schedule.isAvailable == true)
