@@ -222,9 +222,9 @@ struct BookingDetailView: View {
     private func cancelBooking() async {
         isLoading = true
         do {
-            let _: Booking = try await api.patch(
+            let _: SuccessResponse = try await api.patch(
                 path: APIEndpoints.Bookings.cancel(booking.id),
-                body: ["cancellationReason": "顧客取消"]
+                body: ["reason": "顧客取消"]
             )
             dismiss()
         } catch {
@@ -236,7 +236,7 @@ struct BookingDetailView: View {
     private func submitDispute() async {
         isLoading = true
         do {
-            let _: Booking = try await api.patch(
+            let _: SuccessResponse = try await api.patch(
                 path: APIEndpoints.Bookings.dispute(booking.id),
                 body: ["reason": disputeReason]
             )

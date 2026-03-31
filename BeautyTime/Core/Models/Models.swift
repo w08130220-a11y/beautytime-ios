@@ -151,12 +151,24 @@ extension Booking: Codable {
         note = try c.decodeIfPresent(String.self, forKey: .note)
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt)
         customer = try c.decodeIfPresent(User.self, forKey: .customer)
-        service = try c.decodeIfPresent(Service.self, forKey: .service)
-            ?? c.decodeIfPresent(Service.self, forKey: .services)
-        provider = try c.decodeIfPresent(Provider.self, forKey: .provider)
-            ?? c.decodeIfPresent(Provider.self, forKey: .providers)
-        staff = try c.decodeIfPresent(StaffMember.self, forKey: .staff)
-            ?? c.decodeIfPresent(StaffMember.self, forKey: .staffMembers)
+        // 容錯：後端 join 可能回傳不完整的物件（缺 id 等必填欄位）
+        service = (try? c.decodeIfPresent(Service.self, forKey: .service))
+            ?? (try? c.decodeIfPresent(Service.self, forKey: .services))
+        provider = (try? c.decodeIfPresent(Provider.self, forKey: .provider))
+            ?? (try? c.decodeIfPresent(Provider.self, forKey: .providers))
+        staff = (try? c.decodeIfPresent(StaffMember.self, forKey: .staff))
+            ?? (try? c.decodeIfPresent(StaffMember.self, forKey: .staffMembers))
+    }
+
+    func withStatus(_ newStatus: BookingStatus) -> Booking {
+        Booking(
+            id: id, customerId: customerId, providerId: providerId,
+            serviceId: serviceId, staffId: staffId, date: date, time: time,
+            duration: duration, totalPrice: totalPrice, depositAmount: depositAmount,
+            depositPaid: depositPaid, status: newStatus, cancellationReason: cancellationReason,
+            note: note, createdAt: createdAt, service: service, provider: provider,
+            staff: staff, customer: customer
+        )
     }
 
     func encode(to encoder: Encoder) throws {
@@ -185,6 +197,11 @@ extension Booking: Codable {
 
 enum BookingStatus: String, Codable {
     case pending, confirmed, completed, cancelled, disputed
+    case noShow = "no_show"
+}
+
+struct SuccessResponse: Codable {
+    let success: Bool
 }
 
 // MARK: - Review

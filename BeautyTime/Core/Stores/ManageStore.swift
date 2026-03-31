@@ -147,12 +147,12 @@ class ManageStore {
 
     func confirmBooking(id: String) async {
         do {
-            let updated: Booking = try await api.patch(
+            let _: SuccessResponse = try await api.patch(
                 path: APIEndpoints.Orders.updateStatus(id),
                 body: ["status": "confirmed"]
             )
             if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = updated
+                orders[idx] = orders[idx].withStatus(.confirmed)
             }
         } catch {
             self.error = error.localizedDescription
@@ -161,12 +161,12 @@ class ManageStore {
 
     func completeBooking(id: String) async {
         do {
-            let updated: Booking = try await api.patch(
+            let _: SuccessResponse = try await api.patch(
                 path: APIEndpoints.Orders.updateStatus(id),
                 body: ["status": "completed"]
             )
             if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = updated
+                orders[idx] = orders[idx].withStatus(.completed)
             }
         } catch {
             self.error = error.localizedDescription
@@ -175,12 +175,12 @@ class ManageStore {
 
     func cancelOrder(id: String, reason: String) async {
         do {
-            let updated: Booking = try await api.patch(
+            let _: SuccessResponse = try await api.patch(
                 path: APIEndpoints.Orders.cancel(id),
                 body: ["reason": reason]
             )
             if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = updated
+                orders[idx] = orders[idx].withStatus(.cancelled)
             }
         } catch {
             self.error = error.localizedDescription

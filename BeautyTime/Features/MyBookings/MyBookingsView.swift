@@ -150,6 +150,6 @@ struct FilterChip: View {
 
 extension BookingStatus: CaseIterable {
     static var allCases: [BookingStatus] {
-        [.pending, .confirmed, .completed, .cancelled, .disputed]
+        [.pending, .confirmed, .completed, .cancelled, .disputed, .noShow]
     }
 }

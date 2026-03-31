@@ -101,6 +101,7 @@ extension BookingStatus {
         case .completed: return .green
         case .cancelled: return .gray
         case .disputed: return .red
+        case .noShow: return .purple
         }
     }
 
@@ -111,6 +112,7 @@ extension BookingStatus {
         case .completed: return "已完成"
         case .cancelled: return "已取消"
         case .disputed: return "爭議中"
+        case .noShow: return "未出席"
         }
     }
 }
