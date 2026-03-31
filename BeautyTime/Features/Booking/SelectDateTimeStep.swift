@@ -32,24 +32,18 @@ struct SelectDateStep: View {
                 formatter.locale = Locale(identifier: "en_US_POSIX")
                 let dateString = formatter.string(from: newDate)
 
-                if availableDateSet.contains(dateString) {
-                    store.selectedDate = dateString
-                    // 清除前一次選擇的設計師和時段
-                    store.selectedStaff = nil
-                    store.selectedTime = nil
-                    store.staffFindResult = nil
-                } else {
-                    store.selectedDate = nil
-                }
-
-                // 偵測月份變更
+                // 偵測月份變更 — 需先載入新月份資料再判斷可用性
                 let newMonth = calendar.component(.month, from: newDate)
                 let oldMonth = calendar.component(.month, from: displayedMonth)
                 if newMonth != oldMonth {
                     displayedMonth = newDate
                     Task {
                         await loadDatesForMonth(newDate)
+                        // 載入完成後再檢查選取的日期是否可用
+                        selectDateIfAvailable(dateString)
                     }
+                } else {
+                    selectDateIfAvailable(dateString)
                 }
             }
 
@@ -80,6 +74,17 @@ struct SelectDateStep: View {
         }
         .task {
             await loadDatesForMonth(Date())
+        }
+    }
+
+    private func selectDateIfAvailable(_ dateString: String) {
+        if availableDateSet.contains(dateString) {
+            store.selectedDate = dateString
+            store.selectedStaff = nil
+            store.selectedTime = nil
+            store.staffFindResult = nil
+        } else {
+            store.selectedDate = nil
         }
     }
 
