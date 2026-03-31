@@ -151,8 +151,8 @@ struct SelectStaffTimeStep: View {
                         .font(.subheadline)
                         .fontWeight(isSelected ? .semibold : .regular)
                         .foregroundStyle(
-                            isSelected ? .white :
-                            isAvailable ? .primary : .tertiary
+                            isSelected ? Color.white :
+                            isAvailable ? Color.primary : Color.gray
                         )
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
