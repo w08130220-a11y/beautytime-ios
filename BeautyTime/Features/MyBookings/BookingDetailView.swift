@@ -41,6 +41,14 @@ struct BookingDetailView: View {
         .sheet(isPresented: $showReviewSheet) {
             WriteReviewSheet(booking: booking)
         }
+        .alert("錯誤", isPresented: .init(
+            get: { error != nil },
+            set: { if !$0 { error = nil } }
+        )) {
+            Button("確定") { error = nil }
+        } message: {
+            Text(error ?? "")
+        }
         .alert("提出爭議", isPresented: $showDisputeSheet) {
             TextField("請說明爭議原因", text: $disputeReason)
             Button("送出", role: .destructive) {
