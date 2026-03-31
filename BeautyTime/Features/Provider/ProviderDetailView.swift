@@ -147,12 +147,17 @@ struct ProviderDetailView: View {
                 Spacer()
             }
 
-            // Location — 點擊開啟 Apple Maps
+            // Location — 點擊開啟 Google Maps
             if let address = provider?.address, !address.isEmpty {
                 Button {
                     let encoded = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? address
-                    if let url = URL(string: "maps://?q=\(encoded)") {
-                        UIApplication.shared.open(url)
+                    // 優先開啟 Google Maps app，沒裝則用瀏覽器
+                    let gmapsUrl = URL(string: "comgooglemaps://?q=\(encoded)")
+                    let webUrl = URL(string: "https://www.google.com/maps/search/?api=1&query=\(encoded)")
+                    if let gmapsUrl, UIApplication.shared.canOpenURL(gmapsUrl) {
+                        UIApplication.shared.open(gmapsUrl)
+                    } else if let webUrl {
+                        UIApplication.shared.open(webUrl)
                     }
                 } label: {
                     HStack(spacing: BTSpacing.sm) {
@@ -171,7 +176,7 @@ struct ProviderDetailView: View {
             if let phone = provider?.phone, !phone.isEmpty {
                 Button {
                     let cleaned = phone.replacingOccurrences(of: "[^0-9+]", with: "", options: .regularExpression)
-                    if let url = URL(string: "tel://\(cleaned)") {
+                    if let url = URL(string: "tel:\(cleaned)") {
                         UIApplication.shared.open(url)
                     }
                 } label: {
@@ -187,15 +192,24 @@ struct ProviderDetailView: View {
                 .buttonStyle(.plain)
             }
 
-            // Instagram — 點擊開啟瀏覽器
+            // Instagram — 優先開啟 Instagram app
             if let instagram = provider?.instagramUrl, !instagram.isEmpty {
                 Button {
-                    var urlString = instagram
-                    if !urlString.hasPrefix("http://") && !urlString.hasPrefix("https://") {
-                        urlString = "https://\(urlString)"
-                    }
-                    if let url = URL(string: urlString) {
-                        UIApplication.shared.open(url)
+                    // 從 URL 或使用者名稱中取得 username
+                    let username = instagram
+                        .replacingOccurrences(of: "https://www.instagram.com/", with: "")
+                        .replacingOccurrences(of: "https://instagram.com/", with: "")
+                        .replacingOccurrences(of: "http://www.instagram.com/", with: "")
+                        .replacingOccurrences(of: "http://instagram.com/", with: "")
+                        .trimmingCharacters(in: CharacterSet(charactersIn: "/@"))
+
+                    let appUrl = URL(string: "instagram://user?username=\(username)")
+                    let webUrl = URL(string: "https://www.instagram.com/\(username)/")
+
+                    if let appUrl, UIApplication.shared.canOpenURL(appUrl) {
+                        UIApplication.shared.open(appUrl)
+                    } else if let webUrl {
+                        UIApplication.shared.open(webUrl)
                     }
                 } label: {
                     HStack(spacing: BTSpacing.sm) {

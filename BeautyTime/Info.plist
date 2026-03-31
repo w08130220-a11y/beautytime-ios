@@ -13,6 +13,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>comgooglemaps</string>
+		<string>instagram</string>
+	</array>
 	<key>GIDClientID</key>
 	<string>296778270177-56q56kf6u96jqtb4cv4vvb68vbm3rn8e.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>
