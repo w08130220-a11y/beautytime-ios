@@ -150,13 +150,17 @@ class BookingFlowStore {
         guard let date = selectedDate, !providerId.isEmpty else { return }
         isLoading = true
         do {
-            // GET /api/availability/staff/find?providerId=&date=
+            // GET /api/availability/staff/find?providerId=&date=&serviceId=
+            var queryItems = [
+                URLQueryItem(name: "providerId", value: providerId),
+                URLQueryItem(name: "date", value: date)
+            ]
+            if let serviceId = selectedService?.id {
+                queryItems.append(URLQueryItem(name: "serviceId", value: serviceId))
+            }
             staffFindResult = try await api.get(
                 path: APIEndpoints.Availability.staffFind,
-                queryItems: [
-                    URLQueryItem(name: "providerId", value: providerId),
-                    URLQueryItem(name: "date", value: date)
-                ]
+                queryItems: queryItems
             )
         } catch {
             self.error = error.localizedDescription

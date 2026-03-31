@@ -216,13 +216,14 @@ struct ScheduleView: View {
         guard let monthInterval = calendar.dateInterval(of: .month, for: displayedMonth),
               let range = calendar.range(of: .day, in: .month, for: displayedMonth) else { return [] }
 
-        let firstWeekday = calendar.component(.weekday, from: monthInterval.start)
+        let firstDay = monthInterval.start
+        let firstWeekday = calendar.component(.weekday, from: firstDay)
         let leadingEmpty = firstWeekday - 1
 
         var days: [Date?] = Array(repeating: nil, count: leadingEmpty)
 
-        for day in range {
-            if let date = calendar.date(bySetting: .day, value: day, of: displayedMonth) {
+        for dayOffset in range {
+            if let date = calendar.date(byAdding: .day, value: dayOffset - 1, to: firstDay) {
                 days.append(date)
             }
         }

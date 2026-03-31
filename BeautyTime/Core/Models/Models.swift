@@ -62,6 +62,22 @@ struct StaffMember: Codable, Identifiable {
     let rating: Double?
     let reviewCount: Int?
     let isActive: Bool?
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        providerId = try c.decode(String.self, forKey: .providerId)
+        userId = try c.decodeIfPresent(String.self, forKey: .userId)
+        // 容錯：後端回傳未知 role 時不讓整個解碼失敗
+        role = try? c.decodeIfPresent(StaffRole.self, forKey: .role)
+        name = try c.decode(String.self, forKey: .name)
+        title = try c.decodeIfPresent(String.self, forKey: .title)
+        photoUrl = try c.decodeIfPresent(String.self, forKey: .photoUrl)
+        specialties = try c.decodeIfPresent([String].self, forKey: .specialties)
+        rating = try c.decodeIfPresent(Double.self, forKey: .rating)
+        reviewCount = try c.decodeIfPresent(Int.self, forKey: .reviewCount)
+        isActive = try c.decodeIfPresent(Bool.self, forKey: .isActive)
+    }
 }
 
 enum StaffRole: String, Codable {
