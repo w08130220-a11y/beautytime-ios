@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let switchToMyBookings = Notification.Name("switchToMyBookings")
+}
+
 struct MainTabView: View {
     @Environment(AuthStore.self) private var authStore
     @Environment(UserStore.self) private var userStore
@@ -14,7 +18,7 @@ struct MainTabView: View {
     }
 
     @Environment(\.scenePhase) private var scenePhase
-    @State private var selectedTab: Tab = .explore
+    @State var selectedTab: Tab = .explore
 
     private var showManageTab: Bool {
         let user = userStore.currentUser ?? authStore.currentUser
@@ -73,6 +77,9 @@ struct MainTabView: View {
                 }
                 try? await Task.sleep(for: .seconds(30))
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .switchToMyBookings)) { _ in
+            selectedTab = .myBookings
         }
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {

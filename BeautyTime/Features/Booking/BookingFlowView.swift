@@ -57,6 +57,7 @@ struct BookingFlowView: View {
         }
         .alert("預約成功", isPresented: $showSuccess) {
             Button("查看我的預約") {
+                NotificationCenter.default.post(name: .switchToMyBookings, object: nil)
                 dismiss()
             }
         } message: {

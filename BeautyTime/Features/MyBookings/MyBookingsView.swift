@@ -14,14 +14,15 @@ struct MyBookingsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                statusFilter
-                bookingList
-            }
-            .navigationTitle("我的預約")
-            .task { await loadBookings() }
-            .refreshable { await loadBookings() }
+        VStack(spacing: 0) {
+            statusFilter
+            bookingList
+        }
+        .navigationTitle("我的預約")
+        .task { await loadBookings() }
+        .refreshable { await loadBookings() }
+        .onReceive(NotificationCenter.default.publisher(for: .switchToMyBookings)) { _ in
+            Task { await loadBookings() }
         }
     }
 
