@@ -45,8 +45,14 @@ struct ScheduleView: View {
         }
         .navigationTitle("排班管理")
         .task {
+            // 確保 providerId 已設定（ManageView 的 task 可能還沒完成）
+            if staffStore.providerId.isEmpty, !store.providerId.isEmpty {
+                staffStore.providerId = store.providerId
+            }
             await staffStore.loadStaff()
-            await staffStore.loadStaffSchedules(staffIds: staffStore.staff.map(\.id))
+            if !staffStore.staff.isEmpty {
+                await staffStore.loadStaffSchedules(staffIds: staffStore.staff.map(\.id))
+            }
             await store.loadOrders()
         }
     }
