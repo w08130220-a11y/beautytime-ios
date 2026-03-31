@@ -14,6 +14,10 @@ struct StaffScheduleEditView: View {
     @State private var displayedMonth = Date()
     // Feedback
     @State private var saveError: String?
+    @State private var showError = false
+    // Local copies to avoid recursive @Observable reads
+    @State private var localSchedules: [String: [StaffSchedule]] = [:]
+    @State private var localExceptions: [StaffException] = []
 
     private let calendar = Calendar.current
 
@@ -56,11 +60,7 @@ struct StaffScheduleEditView: View {
         .task { await store.loadStaff() }
         .onChange(of: selectedStaff) { _, newValue in
             if let staff = newValue {
-                Task {
-                    await store.loadStaffSchedules(staffIds: [staff.id])
-                    await store.loadStaffExceptions(staffIds: [staff.id])
-                    loadScheduleForStaff(staff.id)
-                }
+                Task { await reloadStaffData(staffId: staff.id) }
             }
         }
         .alert("儲存成功", isPresented: $showSuccess) {
@@ -68,16 +68,17 @@ struct StaffScheduleEditView: View {
         } message: {
             Text("\(selectedStaff?.name ?? "員工")的排班已更新")
         }
-        .alert("錯誤", isPresented: Binding(
-            get: { saveError != nil || store.error != nil },
-            set: { if !$0 { saveError = nil; store.error = nil } }
-        )) {
-            Button("確定") { saveError = nil; store.error = nil }
+        .alert("錯誤", isPresented: $showError) {
+            Button("確定") { saveError = nil }
         } message: {
-            Text(saveError ?? store.error ?? "未知錯誤")
+            Text(saveError ?? "未知錯誤")
         }
         .sheet(isPresented: $showAddLeave) {
-            AddLeaveSheet(store: store, selectedStaff: selectedStaff)
+            AddLeaveSheet(store: store, selectedStaff: selectedStaff, onSaved: {
+                if let staffId = selectedStaff?.id {
+                    Task { await reloadStaffData(staffId: staffId) }
+                }
+            })
         }
     }
 
@@ -272,9 +273,17 @@ struct StaffScheduleEditView: View {
 
     // MARK: - Helpers
 
+    private func reloadStaffData(staffId: String) async {
+        await store.loadStaffSchedules(staffIds: [staffId])
+        await store.loadStaffExceptions(staffIds: [staffId])
+        localSchedules = store.staffSchedules
+        localExceptions = store.staffExceptions
+        loadScheduleForStaff(staffId)
+    }
+
     private var filteredExceptions: [StaffException] {
         guard let staffId = selectedStaff?.id else { return [] }
-        return store.staffExceptions
+        return localExceptions
             .filter { $0.staffId == staffId }
             .sorted { ($0.date ?? "") > ($1.date ?? "") }
     }
@@ -295,18 +304,18 @@ struct StaffScheduleEditView: View {
     private func dayStatus(for date: Date) -> DayStatus {
         let dateString = Formatters.dateFormatter.string(from: date)
 
-        // Check exceptions first
+        // Check exceptions first (local copy)
         if let staffId = selectedStaff?.id {
-            let hasLeave = store.staffExceptions.contains {
+            let hasLeave = localExceptions.contains {
                 $0.staffId == staffId && $0.date == dateString
             }
             if hasLeave { return .leave }
         }
 
-        // Check weekly schedule
+        // Check weekly schedule (local copy)
         let dayOfWeek = calendar.component(.weekday, from: date) - 1 // 0=Sun
         if let staffId = selectedStaff?.id,
-           let schedules = store.staffSchedules[staffId] {
+           let schedules = localSchedules[staffId] {
             let isWorking = schedules.contains {
                 $0.dayOfWeek == dayOfWeek && $0.isAvailable == true
             }
@@ -377,16 +386,22 @@ struct StaffScheduleEditView: View {
 
         if let error = store.error {
             saveError = error
+            showError = true
             store.error = nil
         } else {
             showSuccess = true
+            // Reload local copies
+            localSchedules = store.staffSchedules
         }
     }
 
     private func deleteExceptions(_ offsets: IndexSet, from list: [StaffException]) {
         for index in offsets {
             let exception = list[index]
-            Task { await store.deleteStaffException(id: exception.id) }
+            Task {
+                await store.deleteStaffException(id: exception.id)
+                localExceptions = store.staffExceptions
+            }
         }
     }
 
@@ -474,6 +489,7 @@ private struct LeaveRow: View {
 private struct AddLeaveSheet: View {
     let store: StaffManageStore
     let selectedStaff: StaffMember?
+    var onSaved: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -539,6 +555,7 @@ private struct AddLeaveSheet: View {
                     Button("新增") {
                         Task {
                             await save()
+                            onSaved?()
                             dismiss()
                         }
                     }
