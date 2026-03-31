@@ -83,7 +83,7 @@ class PayrollManageStore {
                 let totalPay = baseSalary + totalAllowances + designationBonus
 
                 return [
-                    "staffId": config.staffId ?? "",
+                    "staffId": config.staffId,
                     "baseSalary": baseSalary,
                     "totalAllowances": totalAllowances,
                     "serviceRevenue": 0,

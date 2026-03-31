@@ -127,28 +127,27 @@ private struct AddInvitationSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var email = ""
-    @State private var selectedRole: StaffRole = .designer
+    @State private var selectedStaff: StaffMember?
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("邀請資訊") {
-                    TextField("電子信箱", text: $email)
+                    TextField("對方的電子信箱", text: $email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
 
-                    Picker("職位", selection: $selectedRole) {
-                        Text("負責人").tag(StaffRole.owner)
-                        Text("店長").tag(StaffRole.manager)
-                        Text("資深設計師").tag(StaffRole.seniorDesigner)
-                        Text("設計師").tag(StaffRole.designer)
-                        Text("助理").tag(StaffRole.assistant)
+                    Picker("綁定員工", selection: $selectedStaff) {
+                        Text("請選擇").tag(nil as StaffMember?)
+                        ForEach(store.staff) { member in
+                            Text("\(member.name) (\(member.role?.displayName ?? ""))").tag(member as StaffMember?)
+                        }
                     }
                 }
 
                 Section {
-                    Text("邀請將發送至指定信箱，對方接受後即可加入您的團隊。")
+                    Text("邀請將發送至指定信箱，對方接受後帳號將綁定至選擇的員工。")
                         .font(.caption)
                         .foregroundStyle(BTColor.textTertiary)
                 }
@@ -162,13 +161,17 @@ private struct AddInvitationSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("送出") {
                         Task {
-                            await store.createStaffInvitation(email: email, role: selectedRole)
+                            guard let staff = selectedStaff else { return }
+                            await store.createStaffInvitation(email: email, staffId: staff.id)
                             dismiss()
                         }
                     }
-                    .disabled(email.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(email.trimmingCharacters(in: .whitespaces).isEmpty || selectedStaff == nil)
                     .tint(BTColor.primary)
                 }
+            }
+            .task {
+                await store.loadStaff()
             }
         }
     }
