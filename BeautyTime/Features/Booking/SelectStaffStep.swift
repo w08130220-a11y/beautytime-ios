@@ -58,7 +58,7 @@ struct SelectStaffTimeStep: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
 
-                let slots = store.currentAvailableSlots
+                let slots = store.currentAllSlots
                 if slots.isEmpty && !store.isLoading {
                     Text("無可用時段")
                         .font(.subheadline)
@@ -137,31 +137,45 @@ struct SelectStaffTimeStep: View {
 
     // MARK: - Time Slot Grid
 
-    private func timeSlotGrid(slots: [String]) -> some View {
+    private func timeSlotGrid(slots: [StaffTimeSlot]) -> some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 4)
 
         return LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(slots, id: \.self) { slot in
-                let isSelected = store.selectedTime == slot
+            ForEach(slots, id: \.time) { slot in
+                let isSelected = store.selectedTime == slot.time
+                let isAvailable = slot.available
                 Button {
-                    store.selectedTime = slot
+                    store.selectedTime = slot.time
                 } label: {
-                    Text(slot)
+                    Text(slot.time)
                         .font(.subheadline)
                         .fontWeight(isSelected ? .semibold : .regular)
-                        .foregroundStyle(isSelected ? .white : .primary)
+                        .foregroundStyle(
+                            isSelected ? .white :
+                            isAvailable ? .primary : .tertiary
+                        )
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(isSelected ? Color.accentColor : Color(.secondarySystemGroupedBackground))
+                                .fill(
+                                    isSelected ? Color.accentColor :
+                                    isAvailable ? Color(.secondarySystemGroupedBackground) :
+                                    Color(.systemGray6)
+                                )
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(isSelected ? Color.accentColor : Color(.systemGray4), lineWidth: 1)
+                                .stroke(
+                                    isSelected ? Color.accentColor :
+                                    isAvailable ? Color(.systemGray4) :
+                                    Color(.systemGray5),
+                                    lineWidth: 1
+                                )
                         )
                 }
                 .buttonStyle(.plain)
+                .disabled(!isAvailable)
             }
         }
     }

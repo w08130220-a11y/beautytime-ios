@@ -79,17 +79,26 @@ class BookingFlowStore {
         max(0, totalPrice - discountAmount)
     }
 
-    /// 取得目前選擇的設計師可用時段
-    var currentAvailableSlots: [String] {
+    /// 取得目前選擇的設計師全部時段（含不可用）
+    var currentAllSlots: [StaffTimeSlot] {
         guard let result = staffFindResult else { return [] }
         if let staff = selectedStaff,
            let slots = result.availableSlots[staff.id] {
-            return slots.filter(\.available).map(\.time).sorted()
+            return slots.sorted { $0.time < $1.time }
         } else {
-            // 不指定 → 合併所有員工可用時段
-            let allSlots = result.availableSlots.values
-                .flatMap { $0.filter(\.available).map(\.time) }
-            return Array(Set(allSlots)).sorted()
+            // 不指定 → 合併所有員工時段，只要有一位可用就算可用
+            var slotMap: [String: Bool] = [:]
+            for slots in result.availableSlots.values {
+                for slot in slots {
+                    if slot.available {
+                        slotMap[slot.time] = true
+                    } else if slotMap[slot.time] == nil {
+                        slotMap[slot.time] = false
+                    }
+                }
+            }
+            return slotMap.map { StaffTimeSlot(time: $0.key, available: $0.value) }
+                .sorted { $0.time < $1.time }
         }
     }
 
