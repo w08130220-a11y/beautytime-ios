@@ -3,6 +3,7 @@ import SwiftUI
 struct BookingFlowView: View {
     let providerId: String
     @State private var store = BookingFlowStore()
+    @State private var showSuccess = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -53,6 +54,13 @@ struct BookingFlowView: View {
         }
         .task {
             await store.loadServices()
+        }
+        .alert("預約成功", isPresented: $showSuccess) {
+            Button("查看我的預約") {
+                dismiss()
+            }
+        } message: {
+            Text("您的預約已建立，可在「我的預約」中查看。")
         }
     }
 
@@ -121,7 +129,7 @@ struct BookingFlowView: View {
                     Task {
                         await store.createBooking()
                         if store.createdBooking != nil {
-                            dismiss()
+                            showSuccess = true
                         }
                     }
                 } label: {

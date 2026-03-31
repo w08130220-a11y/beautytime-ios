@@ -3,21 +3,22 @@ import Kingfisher
 
 struct ScheduleView: View {
     @Environment(ManageStore.self) private var store
+    @Environment(StaffManageStore.self) private var staffStore
 
     @State private var selectedDate = Date()
+    @State private var displayedMonth = Date()
     @State private var expandedBookingId: String?
+    @State private var viewMode: ViewMode = .month
 
     private let calendar = Calendar.current
 
-    private var weekDates: [Date] {
-        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: selectedDate)?.start ?? selectedDate
-        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
+    private enum ViewMode: String, CaseIterable {
+        case month = "月曆"
+        case day = "日檢視"
     }
 
     private var selectedDateString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: selectedDate)
+        Formatters.dateFormatter.string(from: selectedDate)
     }
 
     private var filteredBookings: [Booking] {
@@ -26,107 +27,308 @@ struct ScheduleView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            calendarStrip
-            Divider()
-            bookingsList
-        }
-        .navigationTitle("排班表")
-        .task {
-            await store.loadDashboard()
-        }
-    }
-
-    // MARK: - Calendar Strip
-
-    private var calendarStrip: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(weekDates, id: \.self) { date in
-                    DateCell(
-                        date: date,
-                        isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
-                        isToday: calendar.isDateInToday(date)
-                    )
-                    .onTapGesture {
-                        selectedDate = date
-                    }
+            Picker("檢視模式", selection: $viewMode) {
+                ForEach(ViewMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue).tag(mode)
                 }
             }
+            .pickerStyle(.segmented)
             .padding(.horizontal)
+            .padding(.vertical, 8)
+
+            switch viewMode {
+            case .month:
+                monthCalendarView
+            case .day:
+                dayDetailView
+            }
         }
-        .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .navigationTitle("排班管理")
+        .task {
+            await staffStore.loadStaff()
+            await staffStore.loadStaffSchedules(staffIds: staffStore.staff.map(\.id))
+            await store.loadOrders()
+        }
     }
 
-    // MARK: - Bookings List
+    // MARK: - Month Calendar
 
-    private var bookingsList: some View {
+    private var monthCalendarView: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
-                if filteredBookings.isEmpty {
-                    ContentUnavailableView(
-                        "無預約",
-                        systemImage: "calendar.badge.exclamationmark",
-                        description: Text("這天沒有預約")
-                    )
-                    .padding(.top, 40)
-                } else {
-                    ForEach(filteredBookings) { booking in
-                        ScheduleBookingCard(
-                            booking: booking,
-                            isExpanded: expandedBookingId == booking.id,
-                            onToggle: {
-                                withAnimation {
-                                    expandedBookingId = expandedBookingId == booking.id ? nil : booking.id
-                                }
-                            },
-                            onConfirm: {
-                                Task { await store.confirmBooking(id: booking.id) }
-                            },
-                            onComplete: {
-                                Task { await store.completeBooking(id: booking.id) }
-                            }
-                        )
+            VStack(spacing: BTSpacing.lg) {
+                // Month navigation
+                HStack {
+                    Button {
+                        displayedMonth = calendar.date(byAdding: .month, value: -1, to: displayedMonth) ?? displayedMonth
+                    } label: {
+                        Image(systemName: "chevron.left")
                     }
+
+                    Spacer()
+
+                    Text(monthYearString(displayedMonth))
+                        .font(.headline)
+
+                    Spacer()
+
+                    Button {
+                        displayedMonth = calendar.date(byAdding: .month, value: 1, to: displayedMonth) ?? displayedMonth
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                }
+                .padding(.horizontal)
+
+                // Day of week headers
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 4) {
+                    ForEach(["日", "一", "二", "三", "四", "五", "六"], id: \.self) { day in
+                        Text(day)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                    }
+
+                    // Calendar days
+                    ForEach(daysInMonth(), id: \.self) { date in
+                        if let date {
+                            CalendarDayCell(
+                                date: date,
+                                staff: staffStore.staff,
+                                staffSchedules: staffStore.staffSchedules,
+                                isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
+                                isToday: calendar.isDateInToday(date)
+                            )
+                            .onTapGesture {
+                                selectedDate = date
+                                viewMode = .day
+                            }
+                        } else {
+                            Color.clear.frame(height: 60)
+                        }
+                    }
+                }
+                .padding(.horizontal, 4)
+
+                // Staff legend
+                staffLegend
+                    .padding(.horizontal)
+            }
+            .padding(.vertical)
+        }
+    }
+
+    // MARK: - Day Detail
+
+    private var dayDetailView: some View {
+        VStack(spacing: 0) {
+            // Date navigation
+            HStack {
+                Button {
+                    selectedDate = calendar.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.left")
+                }
+
+                Spacer()
+
+                Text(Formatters.displayDate(selectedDate))
+                    .font(.headline)
+
+                Spacer()
+
+                Button {
+                    selectedDate = calendar.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.right")
                 }
             }
             .padding()
+
+            Divider()
+
+            // Bookings for selected day
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    if filteredBookings.isEmpty {
+                        ContentUnavailableView(
+                            "無預約",
+                            systemImage: "calendar.badge.exclamationmark",
+                            description: Text("這天沒有預約")
+                        )
+                        .padding(.top, 40)
+                    } else {
+                        ForEach(filteredBookings) { booking in
+                            ScheduleBookingCard(
+                                booking: booking,
+                                isExpanded: expandedBookingId == booking.id,
+                                onToggle: {
+                                    withAnimation {
+                                        expandedBookingId = expandedBookingId == booking.id ? nil : booking.id
+                                    }
+                                },
+                                onConfirm: {
+                                    Task { await store.confirmBooking(id: booking.id) }
+                                },
+                                onComplete: {
+                                    Task { await store.completeBooking(id: booking.id) }
+                                }
+                            )
+                        }
+                    }
+                }
+                .padding()
+            }
         }
+    }
+
+    // MARK: - Staff Legend
+
+    private var staffLegend: some View {
+        VStack(alignment: .leading, spacing: BTSpacing.sm) {
+            Text("員工圖示")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            FlowLayout(spacing: 12) {
+                ForEach(staffStore.staff) { member in
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(staffColor(for: member))
+                            .frame(width: 8, height: 8)
+                        Text(member.name)
+                            .font(.caption)
+                    }
+                }
+            }
+        }
+        .padding(BTSpacing.lg)
+        .btCard()
+    }
+
+    // MARK: - Helpers
+
+    private func daysInMonth() -> [Date?] {
+        guard let monthInterval = calendar.dateInterval(of: .month, for: displayedMonth),
+              let range = calendar.range(of: .day, in: .month, for: displayedMonth) else { return [] }
+
+        let firstWeekday = calendar.component(.weekday, from: monthInterval.start)
+        let leadingEmpty = firstWeekday - 1
+
+        var days: [Date?] = Array(repeating: nil, count: leadingEmpty)
+
+        for day in range {
+            if let date = calendar.date(bySetting: .day, value: day, of: displayedMonth) {
+                days.append(date)
+            }
+        }
+
+        return days
+    }
+
+    private func monthYearString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh-TW")
+        formatter.dateFormat = "yyyy年M月"
+        return formatter.string(from: date)
+    }
+
+    private func staffColor(for member: StaffMember) -> Color {
+        let colors: [Color] = [.blue, .red, .green, .orange, .purple, .cyan, .pink, .mint]
+        guard let index = staffStore.staff.firstIndex(where: { $0.id == member.id }) else {
+            return .gray
+        }
+        return colors[index % colors.count]
     }
 }
 
-// MARK: - Date Cell
+// MARK: - Calendar Day Cell
 
-private struct DateCell: View {
+private struct CalendarDayCell: View {
     let date: Date
+    let staff: [StaffMember]
+    let staffSchedules: [String: [StaffSchedule]]
     let isSelected: Bool
     let isToday: Bool
 
     private let calendar = Calendar.current
-
-    private var dayName: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "zh-TW")
-        formatter.dateFormat = "EEE"
-        return formatter.string(from: date)
-    }
-
-    private var dayNumber: String {
-        "\(calendar.component(.day, from: date))"
-    }
+    private let colors: [Color] = [.blue, .red, .green, .orange, .purple, .cyan, .pink, .mint]
 
     var body: some View {
-        VStack(spacing: 6) {
-            Text(dayName)
+        VStack(spacing: 2) {
+            Text("\(calendar.component(.day, from: date))")
                 .font(.caption)
-                .foregroundStyle(isSelected ? .white : .secondary)
-            Text(dayNumber)
-                .font(.headline)
-                .foregroundStyle(isSelected ? .white : .primary)
+                .fontWeight(isToday ? .bold : .regular)
+                .foregroundStyle(isSelected ? .white : (isToday ? BTColor.primary : .primary))
+
+            // Staff working dots
+            HStack(spacing: 2) {
+                ForEach(Array(workingStaff.prefix(3).enumerated()), id: \.offset) { index, member in
+                    Circle()
+                        .fill(colorForStaff(member))
+                        .frame(width: 5, height: 5)
+                }
+            }
         }
-        .frame(width: 48, height: 64)
-        .background(isSelected ? Color.accentColor : (isToday ? Color.accentColor.opacity(0.15) : Color(.systemGray6)))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .frame(maxWidth: .infinity)
+        .frame(height: 52)
+        .background(isSelected ? BTColor.primary : (isToday ? BTColor.primary.opacity(0.1) : Color.clear))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    private var workingStaff: [StaffMember] {
+        let dayOfWeek = calendar.component(.weekday, from: date) - 1 // 0=Sun
+        return staff.filter { member in
+            guard let schedules = staffSchedules[member.id] else {
+                return true // 沒有排班設定 → 預設上班
+            }
+            return schedules.contains { schedule in
+                schedule.dayOfWeek == dayOfWeek && (schedule.isAvailable == true)
+            }
+        }
+    }
+
+    private func colorForStaff(_ member: StaffMember) -> Color {
+        guard let index = staff.firstIndex(where: { $0.id == member.id }) else { return .gray }
+        return colors[index % colors.count]
+    }
+}
+
+// MARK: - Flow Layout (for staff legend)
+
+private struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y), proposal: .unspecified)
+        }
+    }
+
+    private func arrange(proposal: ProposedViewSize, subviews: Subviews) -> (positions: [CGPoint], size: CGSize) {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > maxWidth && x > 0 {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            positions.append(CGPoint(x: x, y: y))
+            rowHeight = max(rowHeight, size.height)
+            x += size.width + spacing
+        }
+
+        return (positions, CGSize(width: maxWidth, height: y + rowHeight))
     }
 }
 
@@ -154,8 +356,7 @@ private struct ScheduleBookingCard: View {
                         }
                     }
 
-                    Divider()
-                        .frame(height: 36)
+                    Divider().frame(height: 36)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(booking.service?.name ?? "未知服務")
@@ -199,7 +400,6 @@ private struct ScheduleBookingCard: View {
                         .buttonStyle(.borderedProminent)
                         .tint(.blue)
                     }
-
                     if booking.status == .confirmed {
                         Button(action: onComplete) {
                             Label("完成", systemImage: "checkmark.seal.fill")
@@ -222,5 +422,6 @@ private struct ScheduleBookingCard: View {
     NavigationStack {
         ScheduleView()
             .environment(ManageStore())
+            .environment(StaffManageStore())
     }
 }
