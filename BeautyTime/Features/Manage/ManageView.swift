@@ -15,12 +15,14 @@ struct ManageView: View {
                     NavigationLink {
                         DashboardView()
                             .environment(manageStore)
+                            .environment(staffStore)
                     } label: {
                         Label("儀表板", systemImage: "chart.bar.fill")
                     }
                     NavigationLink {
                         ScheduleView()
                             .environment(manageStore)
+                            .environment(staffStore)
                     } label: {
                         Label("排班管理", systemImage: "calendar")
                     }
