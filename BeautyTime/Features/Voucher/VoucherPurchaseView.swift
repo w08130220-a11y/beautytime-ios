@@ -116,27 +116,12 @@ struct VoucherPurchaseView: View {
         isPurchasing = true
 
         do {
-            // Purchase returns { voucher: {...}, payment: {...} }
-            let response: VoucherPurchaseResponse = try await api.post(
+            // 後端 POST /api/vouchers/purchase/{planId} 會建立 voucher + payment 紀錄
+            // 回傳 { voucher: {...}, payment: { transactionId, amount, planName } }
+            let _: VoucherPurchaseResponse = try await api.post(
                 path: APIEndpoints.Vouchers.purchase(plan.id)
             )
-
-            if let voucherId = response.voucher?.id, response.payment != nil {
-                // 有付款資訊 → 呼叫付款 API 取得 ECPay HTML
-                let payResult: PaymentResponse = try await api.post(
-                    path: APIEndpoints.Payments.create,
-                    body: JSONBody(["voucherId": voucherId, "type": "voucher"] as [String: Any])
-                )
-                if let html = payResult.html {
-                    paymentHTML = html
-                    showPaymentSheet = true
-                } else {
-                    showSuccess = true
-                }
-            } else {
-                // 免費方案或已完成付款
-                showSuccess = true
-            }
+            showSuccess = true
         } catch {
             self.error = "購買失敗：\(error.localizedDescription)"
         }
