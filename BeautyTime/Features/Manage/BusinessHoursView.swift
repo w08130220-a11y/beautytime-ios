@@ -87,7 +87,8 @@ struct BusinessHoursView: View {
     private func dateFrom(timeString: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        return formatter.date(from: timeString) ?? Date()
+        // Fallback to 09:00 instead of Date() to prevent current-time being saved as business hours
+        return formatter.date(from: timeString) ?? formatter.date(from: "09:00")!
     }
 }
 
