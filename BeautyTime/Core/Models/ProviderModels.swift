@@ -87,6 +87,14 @@ struct Review: Codable, Identifiable {
     let imageUrls: [String]?
     let createdAt: Date?
     let customer: User?
+    let reply: ReviewReply?
+}
+
+struct ReviewReply: Codable {
+    let id: String?
+    let reviewId: String?
+    let content: String
+    let createdAt: Date?
 }
 
 // MARK: - Portfolio

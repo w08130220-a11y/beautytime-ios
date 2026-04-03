@@ -1,0 +1,29 @@
+{
+  "date": "2026-04-03",
+  "window": "7d",
+  "metrics": {
+    "commits": 3,
+    "contributors": 1,
+    "prs_merged": 0,
+    "insertions": 31734,
+    "deletions": 1100,
+    "net_loc": 30634,
+    "test_loc": 280,
+    "test_ratio": 0.08,
+    "active_days": 1,
+    "sessions": 1,
+    "deep_sessions": 1,
+    "avg_session_minutes": 43,
+    "loc_per_session_hour": 44200,
+    "feat_pct": 0.33,
+    "fix_pct": 0.33,
+    "peak_hour": 16,
+    "ai_assisted_commits": 3
+  },
+  "authors": {
+    "DICK": {"commits": 3, "insertions": 31734, "deletions": 1100, "test_ratio": 0.08, "top_area": "BeautyTime/Core/"}
+  },
+  "version_range": ["0.0.0", "0.0.0"],
+  "streak_days": 1,
+  "tweetable": "Week of Mar 27: 3 commits, 31.7k LOC, 107 Swift files, 9 test files, 22 new tests | 5 gstack skills used | Streak: 1d"
+}
