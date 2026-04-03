@@ -60,6 +60,8 @@
 		8C72756672960A5C5C1A50CE /* FilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35DF4D93DE3EAEE639402EE /* FilterSheet.swift */; };
 		92A173DD95707792B45BBE10 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA1E711F0A3AD89509A6FC /* ScheduleView.swift */; };
 		95D049363764D0FF6D5BBD22 /* TokenManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D208C10EFEBDBE6C9B90223E /* TokenManagerTests.swift */; };
+		C2A8C7A2834B4CAB8DFC077A /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA296F5A08840BBA628ADA0 /* APIClientTests.swift */; };
+		41CCCBD57107451590D6710B /* AuthStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E1FFAC884B4694B3D07EB6 /* AuthStoreTests.swift */; };
 		984AB1DF06504380AF9ACD1E /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DAF79DFDE8869B4520C3FD /* UserStore.swift */; };
 		985502E0F6311683244FA61D /* MarketingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EF2563AF359C9FE5A4A718 /* MarketingView.swift */; };
 		98FFC32FED7024D2776541E7 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46B3CAAE27FDE36911BF9D5 /* SignUpView.swift */; };
@@ -101,6 +103,17 @@
 		F2B9676AD53EC87D1D77911E /* OrdersManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A513DB2A117D067158C31C35 /* OrdersManageView.swift */; };
 		F892E710A929BCBF82C2636C /* ViewModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562551BDF7C56C351E7048B6 /* ViewModelIntegrationTests.swift */; };
 		FA0C59B2451C46DCF08E9164 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E54A336004BFF85D0786C41 /* Models.swift */; };
+		31E6E54B5C2A4E22B353A923 /* ProviderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15497D77C0641828E69D70B /* ProviderModels.swift */; };
+		5E3F621C39C645CC9A31E94D /* BookingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9614955F5BED4D969AAA5C27 /* BookingModels.swift */; };
+		739DDAEEE7CF404A9150B5A4 /* ManageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB792EFAD9A44E49F7015A6 /* ManageModels.swift */; };
+		71D20DBE8E7C482EAF62A805 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006CF799C4B8415E81117B00 /* AuthModels.swift */; };
+		C09BB9B6B62043038FFFA0AA /* DashboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D82A4AB7575483D811EE202 /* DashboardStore.swift */; };
+		D4729250FEE8467DA6697593 /* CustomerManageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001C113292544C0A88531DE1 /* CustomerManageStore.swift */; };
+		F02082244F6648F38265263B /* OrderManageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03894A88E8B342FB89820BEB /* OrderManageStore.swift */; };
+		AE311551F2E1468E9341FF8A /* BookingAlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBB74275F8548F8A93908D7 /* BookingAlertService.swift */; };
+		F7C5A84FE71840869B16CE7C /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9AE9604C1744E9BECB30F3 /* DeepLinkRouter.swift */; };
+		396EC14931294E889A9A8291 /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C5C0CE3DB2473A8C7CFEF0 /* ShareCardView.swift */; };
+		6E61BA91A776403A87D8DF15 /* TodayDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA9B32C15DA4E6685DFD838 /* TodayDashboardCard.swift */; };
 		FA2F175480D7CD6365F75793 /* PaymentMethodsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F69D0D080A72054CD402638 /* PaymentMethodsView.swift */; };
 		FB01A1A5C7A5C0F3B662466B /* InvitationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CFD88BAC44182A22E1C87C /* InvitationsView.swift */; };
 		FD131CE18B88DE8063D40B42 /* MatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4AE200E1EC11861F457E35 /* MatchView.swift */; };
@@ -149,6 +162,19 @@
 		4C40E586F8D9DE4503CC2355 /* CustomersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersView.swift; sourceTree = "<group>"; };
 		4DD49929B95062D6C14B1AAA /* MatchListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchListView.swift; sourceTree = "<group>"; };
 		4E54A336004BFF85D0786C41 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		E15497D77C0641828E69D70B /* ProviderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderModels.swift; sourceTree = "<group>"; };
+		9614955F5BED4D969AAA5C27 /* BookingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingModels.swift; sourceTree = "<group>"; };
+		5EB792EFAD9A44E49F7015A6 /* ManageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageModels.swift; sourceTree = "<group>"; };
+		006CF799C4B8415E81117B00 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		8D82A4AB7575483D811EE202 /* DashboardStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStore.swift; sourceTree = "<group>"; };
+		001C113292544C0A88531DE1 /* CustomerManageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerManageStore.swift; sourceTree = "<group>"; };
+		03894A88E8B342FB89820BEB /* OrderManageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderManageStore.swift; sourceTree = "<group>"; };
+		FCBB74275F8548F8A93908D7 /* BookingAlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingAlertService.swift; sourceTree = "<group>"; };
+		CC9AE9604C1744E9BECB30F3 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
+		53C5C0CE3DB2473A8C7CFEF0 /* ShareCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
+		DEA9B32C15DA4E6685DFD838 /* TodayDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDashboardCard.swift; sourceTree = "<group>"; };
+		BFA296F5A08840BBA628ADA0 /* APIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientTests.swift; sourceTree = "<group>"; };
+		81E1FFAC884B4694B3D07EB6 /* AuthStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStoreTests.swift; sourceTree = "<group>"; };
 		4EB3DBBB748D2E5BDBA6C593 /* UnpaidOrdersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpaidOrdersView.swift; sourceTree = "<group>"; };
 		50311427D176B0DE9A349EFC /* StaffExceptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffExceptionsView.swift; sourceTree = "<group>"; };
 		50D6321A2EC3BE6AF59ED435 /* ManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageView.swift; sourceTree = "<group>"; };
@@ -241,6 +267,8 @@
 				CC6602FE71956943A6ACD0E0 /* ModelsTests.swift */,
 				7624D32F8F147C73659D9824 /* StoreTests.swift */,
 				D208C10EFEBDBE6C9B90223E /* TokenManagerTests.swift */,
+				BFA296F5A08840BBA628ADA0 /* APIClientTests.swift */,
+				81E1FFAC884B4694B3D07EB6 /* AuthStoreTests.swift */,
 				562551BDF7C56C351E7048B6 /* ViewModelIntegrationTests.swift */,
 			);
 			path = BeautyTimeTests;
@@ -352,6 +380,7 @@
 			isa = PBXGroup;
 			children = (
 				30AE117C44ECEAC5DCEDF49F /* BeautyTimeApp.swift */,
+				CC9AE9604C1744E9BECB30F3 /* DeepLinkRouter.swift */,
 				4BFBF584303124451F21B926 /* ContentView.swift */,
 				B62507B1B8DD4C62DD905A10 /* MainTabView.swift */,
 			);
@@ -396,6 +425,9 @@
 				EE5CA8C66C37279AA941AA10 /* APIError.swift */,
 				D7EBB2023D701AFAF189340A /* HTTPMethod.swift */,
 				4B0DBE22E261E9144D343FED /* TokenManager.swift */,
+				8D82A4AB7575483D811EE202 /* DashboardStore.swift */,
+				001C113292544C0A88531DE1 /* CustomerManageStore.swift */,
+				03894A88E8B342FB89820BEB /* OrderManageStore.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -492,6 +524,10 @@
 			isa = PBXGroup;
 			children = (
 				4E54A336004BFF85D0786C41 /* Models.swift */,
+				E15497D77C0641828E69D70B /* ProviderModels.swift */,
+				9614955F5BED4D969AAA5C27 /* BookingModels.swift */,
+				5EB792EFAD9A44E49F7015A6 /* ManageModels.swift */,
+				006CF799C4B8415E81117B00 /* AuthModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -620,6 +656,8 @@
 				DA980622AC02A02FD89DF90B /* ModelsTests.swift in Sources */,
 				B6C9EDBC22B2CE5259784391 /* StoreTests.swift in Sources */,
 				95D049363764D0FF6D5BBD22 /* TokenManagerTests.swift in Sources */,
+					C2A8C7A2834B4CAB8DFC077A /* APIClientTests.swift in Sources */,
+					41CCCBD57107451590D6710B /* AuthStoreTests.swift in Sources */,
 				F892E710A929BCBF82C2636C /* ViewModelIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -666,6 +704,17 @@
 				DFC0AB846A6A58595F405273 /* MatchOffersView.swift in Sources */,
 				FD131CE18B88DE8063D40B42 /* MatchView.swift in Sources */,
 				FA0C59B2451C46DCF08E9164 /* Models.swift in Sources */,
+					31E6E54B5C2A4E22B353A923 /* ProviderModels.swift in Sources */,
+					5E3F621C39C645CC9A31E94D /* BookingModels.swift in Sources */,
+					739DDAEEE7CF404A9150B5A4 /* ManageModels.swift in Sources */,
+					71D20DBE8E7C482EAF62A805 /* AuthModels.swift in Sources */,
+					C09BB9B6B62043038FFFA0AA /* DashboardStore.swift in Sources */,
+					D4729250FEE8467DA6697593 /* CustomerManageStore.swift in Sources */,
+					F02082244F6648F38265263B /* OrderManageStore.swift in Sources */,
+					AE311551F2E1468E9341FF8A /* BookingAlertService.swift in Sources */,
+					F7C5A84FE71840869B16CE7C /* DeepLinkRouter.swift in Sources */,
+					396EC14931294E889A9A8291 /* ShareCardView.swift in Sources */,
+					6E61BA91A776403A87D8DF15 /* TodayDashboardCard.swift in Sources */,
 				E8FBF549860AC10EE69DBF07 /* MyBookingsView.swift in Sources */,
 				C0D2278C0FA1B88B811E1F94 /* MyCouponsView.swift in Sources */,
 				6F893F73CD6914031FCBD53F /* MyVouchersView.swift in Sources */,
