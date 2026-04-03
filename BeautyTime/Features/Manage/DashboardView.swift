@@ -3,6 +3,9 @@ import Kingfisher
 
 struct DashboardView: View {
     @Environment(DashboardStore.self) private var store
+    @Environment(ManageStore.self) private var manageStore
+    @Environment(OrderManageStore.self) private var orderStore
+    @Environment(StaffManageStore.self) private var staffStore
     @State private var showAddService = false
     @State private var showSchedule = false
     @State private var showOrders = false
@@ -22,12 +25,17 @@ struct DashboardView: View {
         .navigationTitle("管理面板")
         .navigationDestination(isPresented: $showAddService) {
             ServicesManageView()
+                .environment(manageStore)
         }
         .navigationDestination(isPresented: $showSchedule) {
             ScheduleView()
+                .environment(store)
+                .environment(orderStore)
+                .environment(staffStore)
         }
         .navigationDestination(isPresented: $showOrders) {
             OrdersManageView()
+                .environment(orderStore)
         }
         .task {
             await store.loadDashboardStats()
@@ -251,6 +259,9 @@ private struct BookingMiniCard: View {
 #Preview {
     NavigationStack {
         DashboardView()
+            .environment(DashboardStore())
             .environment(ManageStore())
+            .environment(OrderManageStore())
+            .environment(StaffManageStore())
     }
 }

@@ -130,12 +130,12 @@ private struct ReviewCard: View {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "arrowshape.turn.up.left.fill")
                         .font(.caption)
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(Color.accentColor)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("商家回覆")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(Color.accentColor)
                         Text(reply.content)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -190,7 +190,7 @@ private struct ReviewCard: View {
                     } label: {
                         Label("回覆", systemImage: "arrowshape.turn.up.left")
                             .font(.caption)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(Color.accentColor)
                     }
                 }
             }

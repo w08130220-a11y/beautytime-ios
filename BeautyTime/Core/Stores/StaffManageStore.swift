@@ -191,7 +191,8 @@ class StaffManageStore {
         isLoading = true
         do {
             // 1. 用 email 搜尋用戶取得 userId
-            let users: [User] = try await api.get(
+            struct UserSearchResult: Codable { let id: String; let email: String? }
+            let users: [UserSearchResult] = try await api.get(
                 path: APIEndpoints.Users.search,
                 queryItems: [URLQueryItem(name: "email", value: email)]
             )

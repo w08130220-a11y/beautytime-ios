@@ -50,7 +50,7 @@ private struct CustomerRow: View {
     let customerWithNotes: CustomerWithNotes
     let isExpanded: Bool
     let onToggle: () -> Void
-    let store: ManageStore
+    let store: CustomerManageStore
 
     @State private var newNoteText = ""
 
@@ -154,6 +154,6 @@ private struct CustomerRow: View {
 #Preview {
     NavigationStack {
         CustomersView()
-            .environment(ManageStore())
+            .environment(CustomerManageStore())
     }
 }

@@ -96,7 +96,7 @@ struct OrdersManageView: View {
 
 private struct OrderRow: View {
     let order: Booking
-    let store: ManageStore
+    let store: OrderManageStore
 
     @State private var showCancelAlert = false
     @State private var cancelReason = ""
@@ -208,6 +208,6 @@ private struct OrderRow: View {
 #Preview {
     NavigationStack {
         OrdersManageView()
-            .environment(ManageStore())
+            .environment(OrderManageStore())
     }
 }

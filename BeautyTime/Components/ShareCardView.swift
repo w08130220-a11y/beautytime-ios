@@ -48,7 +48,7 @@ struct ShareCardView: View {
             }
 
             // QR Code
-            QRCodeView(content: bookingURL)
+            QRCodeView(data: bookingURL)
                 .frame(width: 120, height: 120)
 
             // CTA

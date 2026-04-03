@@ -20,6 +20,8 @@ struct ManageView: View {
                         DashboardView()
                             .environment(dashboardStore)
                             .environment(staffStore)
+                            .environment(orderStore)
+                            .environment(manageStore)
                     } label: {
                         Label("儀表板", systemImage: "chart.bar.fill")
                     }

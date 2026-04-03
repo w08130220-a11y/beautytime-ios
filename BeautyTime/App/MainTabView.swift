@@ -1,9 +1,5 @@
 import SwiftUI
 
-extension Notification.Name {
-    static let switchToMyBookings = Notification.Name("switchToMyBookings")
-}
-
 struct MainTabView: View {
     @Environment(AuthStore.self) private var authStore
     @Environment(UserStore.self) private var userStore

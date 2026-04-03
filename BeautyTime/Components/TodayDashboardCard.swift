@@ -47,7 +47,7 @@ struct TodayDashboardCard: View {
                 Divider()
                 HStack(spacing: 12) {
                     Image(systemName: "arrow.right.circle.fill")
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(Color.accentColor)
                         .font(.title3)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("下一個預約")
@@ -86,7 +86,7 @@ struct TodayDashboardCard: View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(.accent)
+                .foregroundStyle(Color.accentColor)
             Text(value)
                 .font(.headline)
                 .fontWeight(.bold)
