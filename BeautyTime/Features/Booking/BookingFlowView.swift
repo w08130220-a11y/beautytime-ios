@@ -4,6 +4,7 @@ struct BookingFlowView: View {
     let providerId: String
     @State private var store = BookingFlowStore()
     @State private var showSuccess = false
+    @State private var isSubmitting = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -127,15 +128,18 @@ struct BookingFlowView: View {
 
             if store.currentStep == .confirm {
                 Button {
+                    guard !isSubmitting else { return }
+                    isSubmitting = true
                     Task {
                         await store.createBooking()
                         if store.createdBooking != nil {
                             showSuccess = true
                         }
+                        isSubmitting = false
                     }
                 } label: {
                     HStack {
-                        if store.isLoading {
+                        if isSubmitting {
                             ProgressView()
                                 .tint(.white)
                         }
@@ -146,7 +150,7 @@ struct BookingFlowView: View {
                     .padding(.vertical, 12)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!canProceed)
+                .disabled(!canProceed || isSubmitting)
             } else {
                 Button {
                     store.nextStep()

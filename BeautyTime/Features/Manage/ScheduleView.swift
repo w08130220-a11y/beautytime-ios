@@ -2,7 +2,8 @@ import SwiftUI
 import Kingfisher
 
 struct ScheduleView: View {
-    @Environment(ManageStore.self) private var store
+    @Environment(DashboardStore.self) private var dashboardStore
+    @Environment(OrderManageStore.self) private var orderStore
     @Environment(StaffManageStore.self) private var staffStore
 
     @State private var selectedDate = Date()
@@ -22,7 +23,7 @@ struct ScheduleView: View {
     }
 
     private var filteredBookings: [Booking] {
-        store.todayBookings.filter { $0.date == selectedDateString }
+        dashboardStore.todayBookings.filter { $0.date == selectedDateString }
     }
 
     var body: some View {
@@ -46,8 +47,8 @@ struct ScheduleView: View {
         .navigationTitle("排班管理")
         .task {
             // 確保 providerId 已設定（ManageView 的 task 可能還沒完成）
-            if staffStore.providerId.isEmpty, !store.providerId.isEmpty {
-                staffStore.providerId = store.providerId
+            if staffStore.providerId.isEmpty, !dashboardStore.providerId.isEmpty {
+                staffStore.providerId = dashboardStore.providerId
             }
             await staffStore.loadStaff()
             if !staffStore.staff.isEmpty {
@@ -55,7 +56,7 @@ struct ScheduleView: View {
                 await staffStore.loadStaffSchedules(staffIds: staffIds)
                 await staffStore.loadStaffExceptions(staffIds: staffIds)
             }
-            await store.loadOrders()
+            await dashboardStore.loadDashboard()
         }
     }
 
@@ -176,10 +177,10 @@ struct ScheduleView: View {
                                     }
                                 },
                                 onConfirm: {
-                                    Task { await store.confirmBooking(id: booking.id) }
+                                    Task { await orderStore.confirmBooking(id: booking.id) }
                                 },
                                 onComplete: {
-                                    Task { await store.completeBooking(id: booking.id) }
+                                    Task { await orderStore.completeBooking(id: booking.id) }
                                 }
                             )
                         }

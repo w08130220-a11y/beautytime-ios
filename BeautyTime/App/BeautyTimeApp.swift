@@ -22,7 +22,17 @@ struct BeautyTimeApp: App {
                     }
                 }
                 .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+                    // Google Sign-In callback
+                    if GIDSignIn.sharedInstance.handle(url) { return }
+
+                    // Deep link routing
+                    let destination = DeepLinkRouter.resolve(url: url)
+                    if destination != .unknown {
+                        NotificationCenter.default.post(
+                            name: .deepLinkReceived,
+                            object: destination
+                        )
+                    }
                 }
         }
     }

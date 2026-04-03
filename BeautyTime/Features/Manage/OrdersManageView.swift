@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct OrdersManageView: View {
-    @Environment(ManageStore.self) private var store
+    @Environment(OrderManageStore.self) private var store
 
     @State private var selectedFilter: OrderFilter = .all
 

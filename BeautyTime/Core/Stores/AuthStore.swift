@@ -15,8 +15,28 @@ class AuthStore {
     private let api = APIClient.shared
     private let tokenManager = TokenManager.shared
 
+    /// State parameter for LINE OAuth CSRF protection
+    var pendingOAuthState: String?
+
+    private var tokenExpiryObserver: Any?
+
     init() {
         isAuthenticated = tokenManager.hasToken
+
+        // Listen for token expiry from APIClient
+        tokenExpiryObserver = NotificationCenter.default.addObserver(
+            forName: .authTokenExpired,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.signOut()
+        }
+    }
+
+    deinit {
+        if let observer = tokenExpiryObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     // MARK: - Email OTP
@@ -93,9 +113,28 @@ class AuthStore {
         isLoading = false
     }
 
-    func signInWithLINE(code: String, redirectUri: String) async {
+    /// Generate a state parameter for LINE OAuth. Call before opening the OAuth URL.
+    func generateOAuthState() -> String {
+        let state = UUID().uuidString
+        pendingOAuthState = state
+        return state
+    }
+
+    func signInWithLINE(code: String, redirectUri: String, state: String? = nil) async {
         isLoading = true
         error = nil
+
+        // Validate OAuth state to prevent CSRF
+        if let expectedState = pendingOAuthState {
+            guard let receivedState = state, receivedState == expectedState else {
+                self.error = "登入驗證失敗，請重新嘗試"
+                isLoading = false
+                pendingOAuthState = nil
+                return
+            }
+            pendingOAuthState = nil
+        }
+
         do {
             let response: AuthResponse = try await api.post(
                 path: APIEndpoints.Auth.line,

@@ -234,7 +234,7 @@ struct SignInView: View {
         print("[LINE] Login tapped")
         let channelID = AppConfig.lineChannelID
         let redirectURI = "\(AppConfig.apiBaseURL)/api/auth/line/callback"
-        let state = UUID().uuidString
+        let state = authStore.generateOAuthState()
 
         let urlString = "https://access.line.me/oauth2/v2.1/authorize"
             + "?response_type=code"

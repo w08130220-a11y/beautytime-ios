@@ -71,6 +71,8 @@ actor APIClient {
 
     // MARK: - Private
 
+    private let maxRetries = 3
+
     private func performRequest(
         path: String,
         method: HTTPMethod,
@@ -88,6 +90,13 @@ actor APIClient {
         urlRequest.httpMethod = method.rawValue
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+        // Check token expiry before making request
+        if TokenManager.shared.isTokenExpired() {
+            TokenManager.shared.deleteToken()
+            NotificationCenter.default.post(name: .authTokenExpired, object: nil)
+            throw APIError.tokenExpired
+        }
+
         if let token = TokenManager.shared.getToken() {
             urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
@@ -101,36 +110,65 @@ actor APIClient {
             #endif
         }
 
-        let data: Data
-        let response: URLResponse
+        // Retry logic: only for GET requests (idempotent)
+        let isRetryable = method == .GET
+        var lastError: Error = APIError.invalidResponse
 
-        do {
-            (data, response) = try await session.data(for: urlRequest)
-        } catch {
-            throw APIError.networkError(error)
-        }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
-        }
-
-        #if DEBUG
-        print("[API] \(method.rawValue) \(path) → \(httpResponse.statusCode) \(String(data: data.prefix(500), encoding: .utf8) ?? "")")
-        #endif
-
-        switch httpResponse.statusCode {
-        case 200...299:
-            return data
-        case 401:
-            // Check if the API returned a message (e.g., verify-otp error)
-            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-               json["message"] != nil {
-                throw APIError.httpError(statusCode: 401, data: data)
+        for attempt in 0..<(isRetryable ? maxRetries : 1) {
+            if attempt > 0 {
+                let delay = UInt64(pow(2.0, Double(attempt - 1))) * 1_000_000_000
+                try await Task.sleep(nanoseconds: delay)
+                #if DEBUG
+                print("[API] Retry \(attempt)/\(maxRetries) for \(path)")
+                #endif
             }
-            throw APIError.unauthorized
-        default:
-            throw APIError.httpError(statusCode: httpResponse.statusCode, data: data)
+
+            let data: Data
+            let response: URLResponse
+
+            do {
+                (data, response) = try await session.data(for: urlRequest)
+            } catch {
+                lastError = APIError.networkError(error)
+                if isRetryable { continue }
+                throw lastError
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+
+            #if DEBUG
+            print("[API] \(method.rawValue) \(path) → \(httpResponse.statusCode) \(String(data: data.prefix(500), encoding: .utf8) ?? "")")
+            #endif
+
+            switch httpResponse.statusCode {
+            case 200...299:
+                return data
+            case 401:
+                if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   json["message"] != nil {
+                    throw APIError.httpError(statusCode: 401, data: data)
+                }
+                TokenManager.shared.deleteToken()
+                NotificationCenter.default.post(name: .authTokenExpired, object: nil)
+                throw APIError.unauthorized
+            case 409:
+                throw APIError.conflict
+            case 429:
+                let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After")
+                    .flatMap { Int($0) }
+                throw APIError.rateLimited(retryAfter: retryAfter)
+            case 500...599:
+                lastError = APIError.httpError(statusCode: httpResponse.statusCode, data: data)
+                if isRetryable { continue }
+                throw lastError
+            default:
+                throw APIError.httpError(statusCode: httpResponse.statusCode, data: data)
+            }
         }
+
+        throw lastError
     }
 }
 

@@ -1,23 +1,16 @@
 import Foundation
 
+// ManageStore now handles provider-level settings only.
+// Dashboard data → DashboardStore
+// Orders → OrderManageStore
+// Customers → CustomerManageStore
+
 @Observable
 class ManageStore {
     var providerId: String = ""
 
-    // Dashboard
-    var revenueData: RevenueData?
-    var todayBookings: [Booking] = []
-    var dashboardStats: DashboardStats?
-
     // Services
     var services: [Service] = []
-
-    // Orders
-    var orders: [Booking] = []
-    var orderFilter: BookingStatus?
-
-    // Customers
-    var customers: [CustomerWithNotes] = []
 
     // Portfolio
     var portfolio: [PortfolioItem] = []
@@ -32,53 +25,6 @@ class ManageStore {
     var error: String?
 
     private let api = APIClient.shared
-
-    // MARK: - Dashboard
-
-    func loadDashboard() async {
-        guard !providerId.isEmpty else { return }
-        isLoading = true
-        do {
-            async let revenueTask: RevenueData = api.get(
-                path: APIEndpoints.Analytics.revenue,
-                queryItems: [
-                    URLQueryItem(name: "providerId", value: providerId),
-                    URLQueryItem(name: "period", value: "month")
-                ]
-            )
-            async let bookingsTask: [Booking] = api.get(
-                path: APIEndpoints.Bookings.provider(providerId)
-            )
-
-            revenueData = try await revenueTask
-            todayBookings = try await bookingsTask
-        } catch {
-            self.error = error.localizedDescription
-        }
-        isLoading = false
-    }
-
-    // MARK: - Dashboard Stats
-
-    func loadDashboardStats() async {
-        guard !providerId.isEmpty else { return }
-        isLoading = true
-        do {
-            async let statsTask: DashboardStats = api.get(
-                path: APIEndpoints.Stats.dashboard,
-                queryItems: [URLQueryItem(name: "providerId", value: providerId)]
-            )
-            async let bookingsTask: [Booking] = api.get(
-                path: APIEndpoints.Bookings.provider(providerId)
-            )
-
-            dashboardStats = try await statsTask
-            todayBookings = try await bookingsTask
-        } catch {
-            self.error = error.localizedDescription
-        }
-        isLoading = false
-    }
 
     // MARK: - Services CRUD
 
@@ -122,101 +68,6 @@ class ManageStore {
         do {
             try await api.delete(path: APIEndpoints.Services.delete(id))
             services.removeAll { $0.id == id }
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    // MARK: - Orders
-
-    func loadOrders() async {
-        guard !providerId.isEmpty else { return }
-        do {
-            var queryItems = [URLQueryItem(name: "providerId", value: providerId)]
-            if let filter = orderFilter {
-                queryItems.append(URLQueryItem(name: "status", value: filter.rawValue))
-            }
-            orders = try await api.get(
-                path: APIEndpoints.Orders.list,
-                queryItems: queryItems
-            )
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func confirmBooking(id: String) async {
-        do {
-            let _: SuccessResponse = try await api.patch(
-                path: APIEndpoints.Orders.updateStatus(id),
-                body: ["status": "confirmed"]
-            )
-            if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = orders[idx].withStatus(.confirmed)
-            }
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func completeBooking(id: String) async {
-        do {
-            let _: SuccessResponse = try await api.patch(
-                path: APIEndpoints.Orders.updateStatus(id),
-                body: ["status": "completed"]
-            )
-            if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = orders[idx].withStatus(.completed)
-            }
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func cancelOrder(id: String, reason: String) async {
-        do {
-            let _: SuccessResponse = try await api.patch(
-                path: APIEndpoints.Orders.cancel(id),
-                body: ["reason": reason]
-            )
-            if let idx = orders.firstIndex(where: { $0.id == id }) {
-                orders[idx] = orders[idx].withStatus(.cancelled)
-            }
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    // MARK: - Customers
-
-    func loadCustomers() async {
-        guard !providerId.isEmpty else { return }
-        do {
-            customers = try await api.get(
-                path: APIEndpoints.Customers.list,
-                queryItems: [URLQueryItem(name: "providerId", value: providerId)]
-            )
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func addCustomerNote(customerId: String, content: String) async {
-        do {
-            let _: CustomerNote = try await api.post(
-                path: APIEndpoints.Customers.addNote(customerId) + "?providerId=\(providerId)",
-                body: ["providerId": providerId, "content": content]
-            )
-            await loadCustomers()
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
-    func deleteCustomerNote(noteId: String) async {
-        do {
-            try await api.delete(path: APIEndpoints.Customers.deleteNote(noteId))
-            await loadCustomers()
         } catch {
             self.error = error.localizedDescription
         }

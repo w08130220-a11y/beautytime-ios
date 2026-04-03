@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ManageView: View {
     @State private var manageStore = ManageStore()
+    @State private var dashboardStore = DashboardStore()
+    @State private var orderStore = OrderManageStore()
+    @State private var customerStore = CustomerManageStore()
     @State private var staffStore = StaffManageStore()
     @State private var analyticsStore = AnalyticsManageStore()
     @State private var payrollStore = PayrollManageStore()
@@ -14,14 +17,15 @@ struct ManageView: View {
                 Section("總覽") {
                     NavigationLink {
                         DashboardView()
-                            .environment(manageStore)
+                            .environment(dashboardStore)
                             .environment(staffStore)
                     } label: {
                         Label("儀表板", systemImage: "chart.bar.fill")
                     }
                     NavigationLink {
                         ScheduleView()
-                            .environment(manageStore)
+                            .environment(dashboardStore)
+                            .environment(orderStore)
                             .environment(staffStore)
                     } label: {
                         Label("排班管理", systemImage: "calendar")
@@ -61,13 +65,13 @@ struct ManageView: View {
                     }
                     NavigationLink {
                         OrdersManageView()
-                            .environment(manageStore)
+                            .environment(orderStore)
                     } label: {
                         Label("訂單管理", systemImage: "list.clipboard.fill")
                     }
                     NavigationLink {
                         CustomersView()
-                            .environment(manageStore)
+                            .environment(customerStore)
                     } label: {
                         Label("顧客管理", systemImage: "person.crop.rectangle.stack.fill")
                     }
@@ -156,11 +160,7 @@ struct ManageView: View {
             let provider: Provider = try await APIClient.shared.get(
                 path: APIEndpoints.Providers.me
             )
-            manageStore.providerId = provider.id
-            staffStore.providerId = provider.id
-            analyticsStore.providerId = provider.id
-            payrollStore.providerId = provider.id
-            voucherStore.providerId = provider.id
+            setProviderId(provider.id)
         } catch {
             // Fallback: check staff role
             do {
@@ -173,15 +173,22 @@ struct ManageView: View {
                     path: APIEndpoints.Providers.myStaffRole
                 )
                 if let pid = roleInfo.providerId {
-                    manageStore.providerId = pid
-                    staffStore.providerId = pid
-                    analyticsStore.providerId = pid
-                    payrollStore.providerId = pid
-                    voucherStore.providerId = pid
+                    setProviderId(pid)
                 }
             } catch {
                 print("[ManageView] Failed to load provider: \(error)")
             }
         }
+    }
+
+    private func setProviderId(_ id: String) {
+        manageStore.providerId = id
+        dashboardStore.providerId = id
+        orderStore.providerId = id
+        customerStore.providerId = id
+        staffStore.providerId = id
+        analyticsStore.providerId = id
+        payrollStore.providerId = id
+        voucherStore.providerId = id
     }
 }

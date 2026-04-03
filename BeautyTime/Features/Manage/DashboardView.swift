@@ -2,7 +2,7 @@ import SwiftUI
 import Kingfisher
 
 struct DashboardView: View {
-    @Environment(ManageStore.self) private var store
+    @Environment(DashboardStore.self) private var store
     @State private var showAddService = false
     @State private var showSchedule = false
     @State private var showOrders = false
@@ -21,13 +21,13 @@ struct DashboardView: View {
         .btPageBackground()
         .navigationTitle("管理面板")
         .navigationDestination(isPresented: $showAddService) {
-            ServicesManageView().environment(store)
+            ServicesManageView()
         }
         .navigationDestination(isPresented: $showSchedule) {
-            ScheduleView().environment(store)
+            ScheduleView()
         }
         .navigationDestination(isPresented: $showOrders) {
-            OrdersManageView().environment(store)
+            OrdersManageView()
         }
         .task {
             await store.loadDashboardStats()

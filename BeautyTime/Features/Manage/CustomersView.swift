@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomersView: View {
-    @Environment(ManageStore.self) private var store
+    @Environment(CustomerManageStore.self) private var store
 
     @State private var searchText = ""
     @State private var expandedCustomerId: String?
