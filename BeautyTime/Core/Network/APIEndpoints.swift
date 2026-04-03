@@ -68,6 +68,11 @@ enum APIEndpoints {
         static func status(_ id: String) -> String { "/api/bookings/\(id)/status" }
         static func dispute(_ id: String) -> String { "/api/bookings/\(id)/dispute" }
         static func pay(_ id: String) -> String { "/api/bookings/\(id)/pay" }
+        static func checkinToken(_ id: String) -> String { "/api/bookings/\(id)/checkin-token" }
+        static func checkin(_ id: String) -> String { "/api/bookings/\(id)/checkin" }
+        static func balanceQR(_ id: String) -> String { "/api/bookings/\(id)/balance-qr" }
+        static func balancePay(_ id: String) -> String { "/api/bookings/\(id)/balance-pay" }
+        static func balanceCash(_ id: String) -> String { "/api/bookings/\(id)/balance-cash" }
     }
 
     // MARK: - Availability

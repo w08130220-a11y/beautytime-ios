@@ -72,6 +72,8 @@ struct Service: Codable, Identifiable {
     let price: Double?
     let isAvailable: Bool?
     let sortOrder: Int?
+    let requireDeposit: Bool?
+    let depositRate: Double?    // 0.0-1.0, nil = use provider default
 }
 
 // MARK: - Review

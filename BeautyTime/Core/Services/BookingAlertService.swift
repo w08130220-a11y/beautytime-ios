@@ -99,8 +99,8 @@ class BookingAlertService {
 
     // MARK: - Sound & Haptics
 
-    /// Play a "cha-ching" style feedback when a booking comes in.
-    private func playBookingSound() {
+    /// Play a "cha-ching" style feedback when a booking comes in or check-in succeeds.
+    func playBookingSound() {
         // System sound + haptic
         AudioServicesPlaySystemSound(1394) // payment success sound
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)

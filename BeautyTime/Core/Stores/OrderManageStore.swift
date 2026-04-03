@@ -94,4 +94,33 @@ class OrderManageStore {
             self.error = error.localizedDescription
         }
     }
+
+    // MARK: - Check-in
+
+    func checkinBooking(id: String, token: String) async {
+        do {
+            let _: SuccessResponse = try await api.post(
+                path: APIEndpoints.Bookings.checkin(id),
+                body: ["token": token]
+            )
+            // Reload to get updated checkinAt
+            await loadOrders()
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
+    // MARK: - Balance Payment
+
+    func markBalancePaid(bookingId: String, method: String) async {
+        do {
+            let _: SuccessResponse = try await api.patch(
+                path: APIEndpoints.Bookings.balanceCash(bookingId),
+                body: ["paymentMethod": method]
+            )
+            await loadOrders()
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
 }

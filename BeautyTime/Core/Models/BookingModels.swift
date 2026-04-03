@@ -22,6 +22,13 @@ struct Booking: Identifiable {
     let provider: Provider?
     let staff: StaffMember?
     let customer: User?
+
+    // Check-in & Balance
+    let checkinToken: String?
+    let checkinAt: Date?
+    let balanceAmount: Double?
+    let balancePaidAt: Date?
+    let paymentMethod: String?  // "ecpay" | "cash" | "transfer"
 }
 
 extension Booking: Codable {
@@ -32,6 +39,7 @@ extension Booking: Codable {
         case service, services
         case provider, providers
         case staff, staffMembers
+        case checkinToken, checkinAt, balanceAmount, balancePaidAt, paymentMethod
     }
 
     init(from decoder: Decoder) throws {
@@ -52,7 +60,12 @@ extension Booking: Codable {
         note = try c.decodeIfPresent(String.self, forKey: .note)
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt)
         customer = try c.decodeIfPresent(User.self, forKey: .customer)
-        // 容錯：後端 join 可能回傳不完整的物件（缺 id 等必填欄位）
+        checkinToken = try c.decodeIfPresent(String.self, forKey: .checkinToken)
+        checkinAt = try c.decodeIfPresent(Date.self, forKey: .checkinAt)
+        balanceAmount = try c.decodeIfPresent(Double.self, forKey: .balanceAmount)
+        balancePaidAt = try c.decodeIfPresent(Date.self, forKey: .balancePaidAt)
+        paymentMethod = try c.decodeIfPresent(String.self, forKey: .paymentMethod)
+        // 容錯：後端 join 可能回傳不完整的物件
         service = (try? c.decodeIfPresent(Service.self, forKey: .service))
             ?? (try? c.decodeIfPresent(Service.self, forKey: .services))
         provider = (try? c.decodeIfPresent(Provider.self, forKey: .provider))
@@ -68,7 +81,10 @@ extension Booking: Codable {
             duration: duration, totalPrice: totalPrice, depositAmount: depositAmount,
             depositPaid: depositPaid, status: newStatus, cancellationReason: cancellationReason,
             note: note, createdAt: createdAt, service: service, provider: provider,
-            staff: staff, customer: customer
+            staff: staff, customer: customer,
+            checkinToken: checkinToken, checkinAt: checkinAt,
+            balanceAmount: balanceAmount, balancePaidAt: balancePaidAt,
+            paymentMethod: paymentMethod
         )
     }
 
