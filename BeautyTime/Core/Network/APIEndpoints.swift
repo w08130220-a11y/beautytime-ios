@@ -120,7 +120,7 @@ enum APIEndpoints {
     enum Favorites {
         static let toggle = "/api/favorites/toggle"
         static let list = "/api/favorites"
-        static func check(_ providerId: String) -> String { "/api/favorites/check?providerId=\(providerId)" }
+        static let check = "/api/favorites/check"
     }
 
     // MARK: - Match

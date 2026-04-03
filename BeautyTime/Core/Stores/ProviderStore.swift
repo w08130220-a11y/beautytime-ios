@@ -176,7 +176,8 @@ class ProviderStore {
     func checkFavorite(providerId: String) async {
         do {
             let response: FavoriteCheckResponse = try await api.get(
-                path: APIEndpoints.Favorites.check(providerId)
+                path: APIEndpoints.Favorites.check,
+                queryItems: [URLQueryItem(name: "providerId", value: providerId)]
             )
             if response.favorited {
                 favoriteProviderIds.insert(providerId)

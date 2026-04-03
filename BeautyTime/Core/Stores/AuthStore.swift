@@ -124,16 +124,16 @@ class AuthStore {
         isLoading = true
         error = nil
 
-        // Validate OAuth state to prevent CSRF
-        if let expectedState = pendingOAuthState {
-            guard let receivedState = state, receivedState == expectedState else {
-                self.error = "登入驗證失敗，請重新嘗試"
-                isLoading = false
-                pendingOAuthState = nil
-                return
-            }
+        // Validate OAuth state to prevent CSRF — mandatory check
+        guard let expectedState = pendingOAuthState,
+              let receivedState = state,
+              receivedState == expectedState else {
+            self.error = "登入驗證失敗，請重新嘗試"
+            isLoading = false
             pendingOAuthState = nil
+            return
         }
+        pendingOAuthState = nil
 
         do {
             let response: AuthResponse = try await api.post(
