@@ -116,7 +116,7 @@ struct BookingDetailView: View {
                 Label("時間", systemImage: "clock")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(booking.time ?? "—")
+                Text(booking.time.map { String($0.prefix(5)) } ?? "—")
                     .font(.headline)
             }
             Spacer()

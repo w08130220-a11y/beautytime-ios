@@ -87,7 +87,7 @@ struct BusinessHoursView: View {
     private func dateFrom(timeString: String) -> Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        return formatter.date(from: timeString) ?? Date()
+        return formatter.date(from: timeString) ?? formatter.date(from: "09:00")!
     }
 }
 
