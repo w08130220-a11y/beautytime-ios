@@ -355,6 +355,8 @@
 				101CB85B34F1625C39761FF3 /* QRCodeView.swift */,
 				2F4A0C334CC9FCB387E56555 /* SearchBar.swift */,
 				7C72E9A4B5C3E5D344D61C1D /* StaffPicker.swift */,
+				53C5C0CE3DB2473A8C7CFEF0 /* ShareCardView.swift */,
+				DEA9B32C15DA4E6685DFD838 /* TodayDashboardCard.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -400,6 +402,10 @@
 				3BAA7F0FB9F292184AB74AB7 /* StaffManageStore.swift */,
 				60DAF79DFDE8869B4520C3FD /* UserStore.swift */,
 				E0464A58B4A2215089072AED /* VoucherManageStore.swift */,
+				FCBB74275F8548F8A93908D7 /* BookingAlertService.swift */,
+				8D82A4AB7575483D811EE202 /* DashboardStore.swift */,
+				001C113292544C0A88531DE1 /* CustomerManageStore.swift */,
+				03894A88E8B342FB89820BEB /* OrderManageStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -425,9 +431,6 @@
 				EE5CA8C66C37279AA941AA10 /* APIError.swift */,
 				D7EBB2023D701AFAF189340A /* HTTPMethod.swift */,
 				4B0DBE22E261E9144D343FED /* TokenManager.swift */,
-				8D82A4AB7575483D811EE202 /* DashboardStore.swift */,
-				001C113292544C0A88531DE1 /* CustomerManageStore.swift */,
-				03894A88E8B342FB89820BEB /* OrderManageStore.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
