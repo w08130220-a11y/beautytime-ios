@@ -1,0 +1,346 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4200 2800" width="4200" height="2800" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect width="4200" height="2800" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="2100" y="45" text-anchor="middle" font-size="28" font-weight="bold" fill="#1a1a1a">BeautyTime 頁面流程圖 (Screen Flow Diagram)</text>
+
+  <!-- ==================== APP ENTRY (Purple) ==================== -->
+  <rect x="1650" y="70" width="500" height="170" rx="12" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2"/>
+  <text x="1900" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#7C3AED">應用程式入口</text>
+  <!-- BeautyTimeApp -->
+  <rect x="1810" y="110" width="180" height="40" rx="6" fill="#fff" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="1900" y="135" text-anchor="middle" font-size="12" fill="#333">BeautyTimeApp</text>
+  <!-- Arrow -->
+  <line x1="1900" y1="150" x2="1900" y2="180" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- ContentView -->
+  <rect x="1790" y="180" width="220" height="40" rx="6" fill="#fff" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="1900" y="205" text-anchor="middle" font-size="12" fill="#333">ContentView 根視圖</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+    <marker id="arrow-dash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#999"/>
+    </marker>
+  </defs>
+
+  <!-- Arrows from ContentView -->
+  <!-- To Auth (left) -->
+  <path d="M1790,200 L600,200 L600,310" fill="none" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="1100" y="195" text-anchor="middle" font-size="11" fill="#666">未登入</text>
+  <!-- To Survey (center) -->
+  <line x1="1900" y1="240" x2="1900" y2="310" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="1920" y="280" font-size="11" fill="#666">首次登入</text>
+  <!-- To MainTab (right - down) -->
+  <path d="M2010,200 L2800,200 L2800,310" fill="none" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="2400" y="195" text-anchor="middle" font-size="11" fill="#666">已登入</text>
+
+  <!-- ==================== AUTH FLOW (Yellow) ==================== -->
+  <rect x="350" y="290" width="520" height="300" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="610" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400E">認證流程 Auth Flow</text>
+  <!-- SignInView -->
+  <rect x="490" y="330" width="230" height="40" rx="6" fill="#fff" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="605" y="355" text-anchor="middle" font-size="12" fill="#333">登入頁 SignInView</text>
+  <!-- Arrow to OTP -->
+  <line x1="550" y1="370" x2="480" y2="430" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="490" y="400" font-size="10" fill="#666">彈出sheet</text>
+  <!-- Arrow to SignUp -->
+  <line x1="660" y1="370" x2="700" y2="430" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="690" y="400" font-size="10" fill="#666">彈出sheet</text>
+  <!-- OTPInputView -->
+  <rect x="370" y="430" width="230" height="40" rx="6" fill="#fff" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="485" y="455" text-anchor="middle" font-size="12" fill="#333">OTP驗證碼 OTPInputView</text>
+  <!-- SignUpView -->
+  <rect x="620" y="430" width="230" height="40" rx="6" fill="#fff" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="735" y="455" text-anchor="middle" font-size="12" fill="#333">註冊頁 SignUpView</text>
+  <!-- SignUp to OTP -->
+  <line x1="620" y1="460" x2="600" y2="460" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="610" y="480" font-size="10" fill="#666">彈出sheet</text>
+  <!-- SurveyView -->
+  <rect x="1780" y="310" width="240" height="40" rx="6" fill="#fff" stroke="#7C3AED" stroke-width="1.5"/>
+  <text x="1900" y="335" text-anchor="middle" font-size="12" fill="#333">問卷調查 SurveyView 4步驟</text>
+  <!-- Survey to MainTab -->
+  <line x1="1900" y1="350" x2="1900" y2="430" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ==================== MAIN TAB VIEW (Blue) ==================== -->
+  <rect x="2550" y="310" width="500" height="190" rx="12" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+  <text x="2800" y="335" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E40AF">主頁面 MainTabView</text>
+  <!-- MainTabView node -->
+  <rect x="2670" y="350" width="260" height="40" rx="6" fill="#fff" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="2800" y="375" text-anchor="middle" font-size="12" fill="#333">MainTabView 五個Tab</text>
+  <!-- 5 Tab labels -->
+  <rect x="2570" y="410" width="80" height="30" rx="4" fill="#3B82F6" stroke="none"/>
+  <text x="2610" y="430" text-anchor="middle" font-size="10" fill="#fff">Tab1 探索</text>
+  <rect x="2660" y="410" width="80" height="30" rx="4" fill="#3B82F6" stroke="none"/>
+  <text x="2700" y="430" text-anchor="middle" font-size="10" fill="#fff">Tab2 預約</text>
+  <rect x="2750" y="410" width="80" height="30" rx="4" fill="#3B82F6" stroke="none"/>
+  <text x="2790" y="430" text-anchor="middle" font-size="10" fill="#fff">Tab3 配對</text>
+  <rect x="2840" y="410" width="80" height="30" rx="4" fill="#3B82F6" stroke="none"/>
+  <text x="2880" y="430" text-anchor="middle" font-size="10" fill="#fff">Tab4 個人</text>
+  <rect x="2930" y="410" width="100" height="30" rx="4" fill="#3B82F6" stroke="none"/>
+  <text x="2980" y="430" text-anchor="middle" font-size="10" fill="#fff">Tab5 管理</text>
+
+  <!-- Arrows from MainTab to each tab section -->
+  <path d="M2610,440 L600,540" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M2700,440 L1700,540" fill="none" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M2790,440 L2500,540" fill="none" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M2880,440 L3200,540" fill="none" stroke="#EC4899" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M2980,440 L3900,540" fill="none" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ==================== EXPLORE TAB (Green) ==================== -->
+  <rect x="80" y="540" width="950" height="850" rx="12" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="555" y="565" text-anchor="middle" font-size="14" font-weight="bold" fill="#065F46">探索 Explore Tab</text>
+
+  <!-- ExploreView -->
+  <rect x="420" y="580" width="230" height="40" rx="6" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+  <text x="535" y="605" text-anchor="middle" font-size="12" fill="#333">探索首頁 ExploreView</text>
+  <!-- to FilterSheet -->
+  <line x1="420" y1="610" x2="280" y2="660" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="330" y="635" font-size="10" fill="#666">彈出sheet</text>
+  <rect x="160" y="660" width="220" height="40" rx="6" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+  <text x="270" y="685" text-anchor="middle" font-size="12" fill="#333">篩選器 FilterSheet</text>
+  <!-- to ProviderDetail -->
+  <line x1="650" y1="610" x2="700" y2="660" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="700" y="640" font-size="10" fill="#666">點擊商家卡片</text>
+  <rect x="590" y="660" width="260" height="40" rx="6" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+  <text x="720" y="685" text-anchor="middle" font-size="12" fill="#333">商家詳情 ProviderDetailView</text>
+  <!-- to BookingFlow -->
+  <line x1="660" y1="700" x2="500" y2="760" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="550" y="730" font-size="10" fill="#666">立即預約</text>
+  <rect x="370" y="760" width="260" height="40" rx="6" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+  <text x="500" y="785" text-anchor="middle" font-size="12" fill="#333">預約流程 BookingFlowView</text>
+  <!-- to VoucherPurchase -->
+  <line x1="780" y1="700" x2="850" y2="760" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="840" y="735" font-size="10" fill="#666">彈出sheet</text>
+  <rect x="750" y="760" width="260" height="40" rx="6" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+  <text x="880" y="785" text-anchor="middle" font-size="12" fill="#333">購買優惠券 VoucherPurchaseView</text>
+
+  <!-- Booking Steps -->
+  <line x1="500" y1="800" x2="500" y2="840" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="380" y="840" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="500" y="863" text-anchor="middle" font-size="11" fill="#333">步驟1 選擇服務</text>
+  <line x1="500" y1="876" x2="500" y2="900" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="380" y="900" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="500" y="923" text-anchor="middle" font-size="11" fill="#333">步驟2 選擇師傅</text>
+  <line x1="500" y1="936" x2="500" y2="960" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="380" y="960" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="500" y="983" text-anchor="middle" font-size="11" fill="#333">步驟3 選擇日期時間</text>
+  <line x1="500" y1="996" x2="500" y2="1020" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="380" y="1020" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="500" y="1043" text-anchor="middle" font-size="11" fill="#333">步驟4 付款方式</text>
+  <line x1="500" y1="1056" x2="500" y2="1080" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="380" y="1080" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="500" y="1103" text-anchor="middle" font-size="11" fill="#333">步驟5 確認預約</text>
+  <!-- ECPay WebView -->
+  <line x1="620" y1="1038" x2="750" y2="1038" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="680" y="1030" font-size="10" fill="#666">WebView</text>
+  <rect x="750" y="1020" width="240" height="36" rx="6" fill="#fff" stroke="#059669" stroke-width="1"/>
+  <text x="870" y="1043" text-anchor="middle" font-size="11" fill="#333">綠界付款 ECPayWebView</text>
+
+  <!-- Dashed arrow: ConfirmStep -> MyBookings -->
+  <path d="M620,1098 L1050,1098 L1050,620 L1400,620" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-dash)"/>
+  <text x="1100" y="860" font-size="10" fill="#999" transform="rotate(-90,1100,860)">NotificationCenter 切換Tab</text>
+
+  <!-- ==================== MYBOOKINGS TAB (Cyan) ==================== -->
+  <rect x="1200" y="540" width="550" height="350" rx="12" fill="#CFFAFE" stroke="#06B6D4" stroke-width="2"/>
+  <text x="1475" y="565" text-anchor="middle" font-size="14" font-weight="bold" fill="#155E75">我的預約 MyBookings Tab</text>
+
+  <rect x="1340" y="590" width="270" height="40" rx="6" fill="#fff" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="1475" y="615" text-anchor="middle" font-size="12" fill="#333">預約列表 MyBookingsView</text>
+  <line x1="1475" y1="630" x2="1475" y2="670" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="1490" y="655" font-size="10" fill="#666">點擊預約</text>
+  <rect x="1340" y="670" width="270" height="40" rx="6" fill="#fff" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="1475" y="695" text-anchor="middle" font-size="12" fill="#333">預約詳情 BookingDetailView</text>
+  <line x1="1475" y1="710" x2="1475" y2="750" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="1490" y="735" font-size="10" fill="#666">已完成-彈出sheet</text>
+  <rect x="1340" y="750" width="270" height="40" rx="6" fill="#fff" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="1475" y="775" text-anchor="middle" font-size="12" fill="#333">撰寫評價 WriteReviewSheet</text>
+
+  <!-- ==================== MATCH TAB (Purple) ==================== -->
+  <rect x="1900" y="540" width="550" height="350" rx="12" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="2175" y="565" text-anchor="middle" font-size="14" font-weight="bold" fill="#5B21B6">配對 Match Tab</text>
+
+  <rect x="2040" y="590" width="270" height="40" rx="6" fill="#fff" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="2175" y="615" text-anchor="middle" font-size="12" fill="#333">配對列表 MatchListView</text>
+  <line x1="2100" y1="630" x2="2050" y2="690" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="2040" y="665" font-size="10" fill="#666">彈出sheet</text>
+  <line x1="2250" y1="630" x2="2300" y2="690" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="2290" y="665" font-size="10" fill="#666">點擊請求</text>
+  <rect x="1930" y="690" width="250" height="40" rx="6" fill="#fff" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="2055" y="715" text-anchor="middle" font-size="12" fill="#333">建立配對 CreateMatchView</text>
+  <rect x="2210" y="690" width="220" height="40" rx="6" fill="#fff" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="2320" y="715" text-anchor="middle" font-size="12" fill="#333">配對詳情 MatchDetailView</text>
+
+  <!-- ==================== PROFILE TAB (Pink) ==================== -->
+  <rect x="2600" y="540" width="700" height="900" rx="12" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/>
+  <text x="2950" y="565" text-anchor="middle" font-size="14" font-weight="bold" fill="#9D174D">個人 Profile Tab</text>
+
+  <rect x="2850" y="590" width="230" height="40" rx="6" fill="#fff" stroke="#EC4899" stroke-width="1.5"/>
+  <text x="2965" y="615" text-anchor="middle" font-size="12" fill="#333">個人首頁 ProfileView</text>
+
+  <!-- Profile sub-pages - Column 1 -->
+  <line x1="2850" y1="615" x2="2720" y2="660" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="660" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="683" text-anchor="middle" font-size="10" fill="#333">編輯資料 EditProfileView</text>
+
+  <line x1="2850" y1="615" x2="2720" y2="720" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="720" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="743" text-anchor="middle" font-size="10" fill="#333">收藏商家 FavoritesView</text>
+
+  <line x1="2850" y1="615" x2="2720" y2="780" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="780" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="803" text-anchor="middle" font-size="10" fill="#333">我的優惠券 MyCouponsView</text>
+
+  <line x1="2850" y1="615" x2="2720" y2="840" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="840" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="863" text-anchor="middle" font-size="10" fill="#333">我的票券 MyVouchersView</text>
+  <!-- VoucherDetail -->
+  <line x1="2620" y1="858" x2="2610" y2="900" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2610" y="900" width="200" height="36" rx="5" fill="#fff" stroke="#DB2777" stroke-width="1"/>
+  <text x="2710" y="923" text-anchor="middle" font-size="10" fill="#333">票券詳情 VoucherDetailView</text>
+
+  <line x1="2850" y1="615" x2="2720" y2="960" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="960" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="983" text-anchor="middle" font-size="10" fill="#333">通知設定 NotificationsView</text>
+
+  <line x1="2850" y1="615" x2="2720" y2="1020" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="2620" y="1020" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="2720" y="1043" text-anchor="middle" font-size="10" fill="#333">帳號邀請 InvitationsView</text>
+
+  <!-- Profile sub-pages - Column 2 -->
+  <line x1="3080" y1="615" x2="3180" y2="660" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="660" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="683" text-anchor="middle" font-size="10" fill="#333">付款方式 PaymentMethodsView</text>
+  <!-- PaymentFlow -->
+  <line x1="3180" y1="696" x2="3180" y2="720" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="720" width="200" height="36" rx="5" fill="#fff" stroke="#DB2777" stroke-width="1"/>
+  <text x="3180" y="743" text-anchor="middle" font-size="10" fill="#333">付款流程 PaymentFlowView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="780" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="780" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="803" text-anchor="middle" font-size="10" fill="#333">隱私權政策 PrivacyPolicyView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="840" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="840" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="863" text-anchor="middle" font-size="10" fill="#333">幫助中心 HelpCenterView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="900" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="900" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="923" text-anchor="middle" font-size="10" fill="#333">意見回饋 FeedbackView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="960" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="960" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="983" text-anchor="middle" font-size="10" fill="#333">語言設定 LanguageSettingsView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="1020" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="1020" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="1043" text-anchor="middle" font-size="10" fill="#333">關於我們 AboutView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="1080" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="1080" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="1103" text-anchor="middle" font-size="10" fill="#333">申請成為商家 ProviderRegisterView</text>
+
+  <line x1="3080" y1="615" x2="3180" y2="1140" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="1140" width="200" height="36" rx="5" fill="#fff" stroke="#EC4899" stroke-width="1"/>
+  <text x="3180" y="1163" text-anchor="middle" font-size="10" fill="#333">未付款訂單 UnpaidOrdersView</text>
+  <!-- VerifyPhone -->
+  <line x1="3180" y1="1176" x2="3180" y2="1200" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="3080" y="1200" width="200" height="36" rx="5" fill="#fff" stroke="#DB2777" stroke-width="1"/>
+  <text x="3180" y="1223" text-anchor="middle" font-size="10" fill="#333">手機驗證 VerifyPhoneView</text>
+
+  <!-- FavoritesView -> ProviderDetailView (cross-tab link) -->
+  <path d="M2620,738 L2500,738 L2500,1300 L720,1300 L720,700" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="6,4" marker-end="url(#arrow-dash)"/>
+  <text x="1600" y="1295" font-size="10" fill="#999">點擊商家 → 商家詳情</text>
+
+  <!-- ==================== MANAGE TAB (Red) ==================== -->
+  <rect x="80" y="1500" width="4040" height="550" rx="12" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+  <text x="2100" y="1530" text-anchor="middle" font-size="14" font-weight="bold" fill="#991B1B">管理 Manage Tab（僅商家）</text>
+
+  <rect x="1960" y="1560" width="260" height="40" rx="6" fill="#fff" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="2090" y="1585" text-anchor="middle" font-size="12" fill="#333">管理首頁 ManageView</text>
+
+  <!-- Row 1: Overview -->
+  <text x="300" y="1650" font-size="12" font-weight="bold" fill="#991B1B">總覽</text>
+  <line x1="2090" y1="1600" x2="350" y2="1670" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="200" y="1670" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="300" y="1693" text-anchor="middle" font-size="10" fill="#333">儀表板 DashboardView</text>
+  <line x1="2090" y1="1600" x2="600" y2="1670" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="450" y="1670" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="550" y="1693" text-anchor="middle" font-size="10" fill="#333">排程表 ScheduleView</text>
+
+  <!-- Row 2: Service Mgmt -->
+  <text x="300" y="1750" font-size="12" font-weight="bold" fill="#991B1B">服務管理</text>
+  <line x1="2090" y1="1600" x2="300" y2="1770" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <rect x="100" y="1770" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="200" y="1793" text-anchor="middle" font-size="10" fill="#333">服務管理 ServicesManageView</text>
+  <rect x="320" y="1770" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="420" y="1793" text-anchor="middle" font-size="10" fill="#333">員工管理 StaffManageView</text>
+  <rect x="540" y="1770" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="640" y="1793" text-anchor="middle" font-size="10" fill="#333">員工邀請 StaffInvitationsView</text>
+  <rect x="760" y="1770" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="870" y="1793" text-anchor="middle" font-size="10" fill="#333">班表編輯 StaffScheduleEditView</text>
+  <rect x="1000" y="1770" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="1100" y="1793" text-anchor="middle" font-size="10" fill="#333">時段封鎖 TimeSlotBlockView</text>
+  <rect x="1220" y="1770" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="1330" y="1793" text-anchor="middle" font-size="10" fill="#333">訂單管理 OrdersManageView</text>
+  <rect x="1460" y="1770" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="1560" y="1793" text-anchor="middle" font-size="10" fill="#333">客戶列表 CustomersView</text>
+  <rect x="1680" y="1770" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="1790" y="1793" text-anchor="middle" font-size="10" fill="#333">配對報價 MatchOffersView</text>
+
+  <!-- Row 3: Marketing -->
+  <text x="300" y="1860" font-size="12" font-weight="bold" fill="#991B1B">行銷與內容</text>
+  <rect x="100" y="1870" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="210" y="1893" text-anchor="middle" font-size="10" fill="#333">作品集管理 PortfolioManageView</text>
+  <rect x="340" y="1870" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="440" y="1893" text-anchor="middle" font-size="10" fill="#333">票券方案 VoucherPlansView</text>
+  <rect x="560" y="1870" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="660" y="1893" text-anchor="middle" font-size="10" fill="#333">行銷工具 MarketingView</text>
+
+  <!-- Row 4: Analytics -->
+  <text x="300" y="1960" font-size="12" font-weight="bold" fill="#991B1B">數據與報表</text>
+  <rect x="100" y="1970" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="200" y="1993" text-anchor="middle" font-size="10" fill="#333">數據分析 AnalyticsView</text>
+  <rect x="320" y="1970" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="420" y="1993" text-anchor="middle" font-size="10" fill="#333">績效報表 PerformanceView</text>
+  <rect x="540" y="1970" width="200" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="640" y="1993" text-anchor="middle" font-size="10" fill="#333">薪資管理 PayrollView</text>
+
+  <!-- Row 5: Settings -->
+  <text x="2800" y="1860" font-size="12" font-weight="bold" fill="#991B1B">設定</text>
+  <rect x="2700" y="1870" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="2810" y="1893" text-anchor="middle" font-size="10" fill="#333">營業時間 BusinessHoursView</text>
+  <rect x="2940" y="1870" width="240" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="3060" y="1893" text-anchor="middle" font-size="10" fill="#333">通知管理 ManageNotificationsView</text>
+  <rect x="3200" y="1870" width="220" height="36" rx="5" fill="#fff" stroke="#EF4444" stroke-width="1"/>
+  <text x="3310" y="1893" text-anchor="middle" font-size="10" fill="#333">商家設定 ProviderSettingsView</text>
+
+  <!-- ==================== LEGEND ==================== -->
+  <rect x="80" y="2150" width="600" height="200" rx="10" fill="#fff" stroke="#ccc" stroke-width="1"/>
+  <text x="380" y="2180" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">圖例 Legend</text>
+  <line x1="100" y1="2210" x2="200" y2="2210" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="220" y="2215" font-size="11" fill="#333">NavigationLink 導航</text>
+  <line x1="100" y1="2240" x2="200" y2="2240" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-dash)"/>
+  <text x="220" y="2245" font-size="11" fill="#333">跨Tab切換 / Sheet彈出</text>
+  <rect x="100" y="2260" width="100" height="24" rx="4" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+  <text x="220" y="2278" font-size="11" fill="#333">Tab分區背景色</text>
+  <rect x="100" y="2295" width="100" height="24" rx="4" fill="#fff" stroke="#555" stroke-width="1"/>
+  <text x="220" y="2313" font-size="11" fill="#333">畫面節點 (View/Screen)</text>
+
+  <!-- Color legend -->
+  <rect x="450" y="2200" width="14" height="14" rx="2" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="470" y="2212" font-size="10" fill="#333">認證</text>
+  <rect x="450" y="2220" width="14" height="14" rx="2" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
+  <text x="470" y="2232" font-size="10" fill="#333">探索</text>
+  <rect x="450" y="2240" width="14" height="14" rx="2" fill="#CFFAFE" stroke="#06B6D4" stroke-width="1"/>
+  <text x="470" y="2252" font-size="10" fill="#333">預約</text>
+  <rect x="530" y="2200" width="14" height="14" rx="2" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="550" y="2212" font-size="10" fill="#333">配對</text>
+  <rect x="530" y="2220" width="14" height="14" rx="2" fill="#FCE7F3" stroke="#EC4899" stroke-width="1"/>
+  <text x="550" y="2232" font-size="10" fill="#333">個人</text>
+  <rect x="530" y="2240" width="14" height="14" rx="2" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+  <text x="550" y="2252" font-size="10" fill="#333">管理</text>
+</svg>

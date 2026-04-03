@@ -1,0 +1,488 @@
+[
+  {
+    "id": "sheet001",
+    "class": "sheet",
+    "title": "BeautyTime 頁面流程圖",
+    "rootTopic": {
+      "id": "root",
+      "class": "topic",
+      "title": "BeautyTime App",
+      "structureClass": "org.xmind.ui.map.unbalanced",
+      "children": {
+        "attached": [
+          {
+            "id": "auth",
+            "class": "topic",
+            "title": "認證流程 Auth Flow",
+            "labels": ["未登入時顯示"],
+            "children": {
+              "attached": [
+                {
+                  "id": "auth_signin",
+                  "class": "topic",
+                  "title": "登入頁 SignInView",
+                  "labels": ["NavigationStack 根頁面"],
+                  "notes": {"plain": {"content": "入口頁面，提供4種登入方式。\n導航方式：作為 NavigationStack 的根視圖顯示。"}},
+                  "children": {
+                    "attached": [
+                      {"id": "auth_signin_1", "class": "topic", "title": "Email OTP 登入", "labels": ["點擊 → 彈出 OTPInputView (sheet)"]},
+                      {"id": "auth_signin_2", "class": "topic", "title": "Apple Sign In", "labels": ["成功 → 回到 ContentView"]},
+                      {"id": "auth_signin_3", "class": "topic", "title": "Google Sign In", "labels": ["成功 → 回到 ContentView"]},
+                      {"id": "auth_signin_4", "class": "topic", "title": "LINE Login", "labels": ["成功 → 回到 ContentView"]},
+                      {"id": "auth_signin_5", "class": "topic", "title": "註冊按鈕", "labels": ["點擊 → 彈出 SignUpView (sheet)"]}
+                    ]
+                  }
+                },
+                {
+                  "id": "auth_signup",
+                  "class": "topic",
+                  "title": "註冊頁 SignUpView",
+                  "labels": ["sheet 彈出"],
+                  "notes": {"plain": {"content": "從 SignInView 彈出的 sheet。\n填寫姓名、Email、手機號碼。\n提交後 → 彈出 OTPInputView (sheet)。"}}
+                },
+                {
+                  "id": "auth_otp",
+                  "class": "topic",
+                  "title": "OTP 驗證碼 OTPInputView",
+                  "labels": ["sheet 彈出"],
+                  "notes": {"plain": {"content": "從 SignInView 或 SignUpView 彈出的 sheet。\n6位數驗證碼輸入。\n驗證成功 → dismiss sheet → ContentView 刷新狀態。"}}
+                },
+                {
+                  "id": "auth_survey",
+                  "class": "topic",
+                  "title": "問卷調查 SurveyView",
+                  "labels": ["首次登入時顯示"],
+                  "notes": {"plain": {"content": "首次登入且未完成問卷時顯示。\n完成後 → 進入 MainTabView。"}},
+                  "children": {
+                    "attached": [
+                      {"id": "auth_survey_1", "class": "topic", "title": "步驟1 服務偏好（選擇服務類別）"},
+                      {"id": "auth_survey_2", "class": "topic", "title": "步驟2 地點偏好（選擇城市）"},
+                      {"id": "auth_survey_3", "class": "topic", "title": "步驟3 風格偏好（新增風格標籤）"},
+                      {"id": "auth_survey_4", "class": "topic", "title": "步驟4 預算範圍（滑桿選擇）"},
+                      {"id": "auth_survey_done", "class": "topic", "title": "完成 → 進入 MainTabView", "labels": ["dismiss → MainTabView"]}
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "maintab",
+            "class": "topic",
+            "title": "MainTabView 五個Tab",
+            "labels": ["已登入時顯示"],
+            "notes": {"plain": {"content": "每個 Tab 各自擁有獨立的 NavigationStack。\nTab 之間切換不會重置導航狀態。"}},
+            "children": {
+              "attached": [
+                {
+                  "id": "tab1",
+                  "class": "topic",
+                  "title": "Tab1 探索 Explore",
+                  "labels": ["NavigationStack"],
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "tab1_explore",
+                        "class": "topic",
+                        "title": "探索首頁 ExploreView",
+                        "labels": ["Tab1 根頁面"],
+                        "notes": {"plain": {"content": "顯示商家列表(Grid)、公告輪播、分類篩選、風格標籤。\n搜尋列可輸入關鍵字。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab1_explore_1", "class": "topic", "title": "點擊篩選按鈕 → FilterSheet", "labels": ["彈出 sheet"]},
+                            {"id": "tab1_explore_2", "class": "topic", "title": "點擊商家卡片 → ProviderDetailView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab1_filter",
+                        "class": "topic",
+                        "title": "篩選器 FilterSheet",
+                        "labels": ["sheet 彈出，dismiss 返回"],
+                        "notes": {"plain": {"content": "從 ExploreView 彈出。\n設定篩選條件後 dismiss 返回 ExploreView。"}}
+                      },
+                      {
+                        "id": "tab1_provider",
+                        "class": "topic",
+                        "title": "商家詳情 ProviderDetailView",
+                        "labels": ["NavigationLink push"],
+                        "notes": {"plain": {"content": "從 ExploreView 或 FavoritesView push 進入。\n包含6個子 Tab：服務/員工/作品集/方案/評價/營業時間。\n返回按鈕回到上一頁。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab1_provider_1", "class": "topic", "title": "服務列表 ServicesTab"},
+                            {"id": "tab1_provider_2", "class": "topic", "title": "員工列表 StaffTab"},
+                            {"id": "tab1_provider_3", "class": "topic", "title": "作品集 PortfolioSection"},
+                            {"id": "tab1_provider_4", "class": "topic", "title": "方案 PlansTab"},
+                            {"id": "tab1_provider_5", "class": "topic", "title": "評價 ReviewsSection"},
+                            {"id": "tab1_provider_6", "class": "topic", "title": "營業時間"},
+                            {"id": "tab1_provider_7", "class": "topic", "title": "收藏 ❤️ 按鈕（toggle ProviderStore）"},
+                            {"id": "tab1_provider_8", "class": "topic", "title": "點擊「立即預約」→ BookingFlowView", "labels": ["navigationDestination push"]},
+                            {"id": "tab1_provider_9", "class": "topic", "title": "點擊「購買優惠券」→ VoucherPurchaseView", "labels": ["彈出 sheet"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab1_booking",
+                        "class": "topic",
+                        "title": "預約流程 BookingFlowView",
+                        "labels": ["navigationDestination push"],
+                        "notes": {"plain": {"content": "從 ProviderDetailView push 進入。\n使用 BookingFlowStore 管理狀態。\n包含上一步/下一步按鈕。\n完成後 → 通知切換到 MyBookings Tab。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab1_booking_1", "class": "topic", "title": "步驟1 選擇服務 SelectServiceStep", "labels": ["內嵌步驟"]},
+                            {"id": "tab1_booking_2", "class": "topic", "title": "步驟2 選擇師傅 SelectStaffStep", "labels": ["內嵌步驟"]},
+                            {"id": "tab1_booking_3", "class": "topic", "title": "步驟3 選擇日期時間 SelectDateTimeStep", "labels": ["內嵌步驟"]},
+                            {"id": "tab1_booking_4", "class": "topic", "title": "步驟4 付款方式 PaymentStep", "labels": ["內嵌步驟"],
+                              "children": {
+                                "attached": [
+                                  {"id": "tab1_booking_4a", "class": "topic", "title": "選擇綠界付款 → ECPayWebView", "labels": ["WebView 嵌入"]}
+                                ]
+                              }
+                            },
+                            {"id": "tab1_booking_5", "class": "topic", "title": "步驟5 確認預約 ConfirmStep", "labels": ["內嵌步驟"],
+                              "children": {
+                                "attached": [
+                                  {"id": "tab1_booking_5a", "class": "topic", "title": "預約成功 → 彈出 Alert", "labels": ["Alert"]},
+                                  {"id": "tab1_booking_5b", "class": "topic", "title": "點擊「前往我的預約」→ 切換至 Tab2", "labels": ["NotificationCenter 切換 Tab"]}
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab1_voucher",
+                        "class": "topic",
+                        "title": "購買優惠券 VoucherPurchaseView",
+                        "labels": ["sheet 彈出"],
+                        "notes": {"plain": {"content": "從 ProviderDetailView 彈出的 sheet。\n選擇優惠券方案並購買。"}}
+                      },
+                      {
+                        "id": "tab1_ecpay",
+                        "class": "topic",
+                        "title": "綠界付款 ECPayWebView",
+                        "labels": ["WebView"],
+                        "notes": {"plain": {"content": "嵌入式 WebView 顯示綠界付款頁面。\n付款完成後 callback 回到 App。"}}
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "tab2",
+                  "class": "topic",
+                  "title": "Tab2 我的預約 MyBookings",
+                  "labels": ["NavigationStack"],
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "tab2_list",
+                        "class": "topic",
+                        "title": "預約列表 MyBookingsView",
+                        "labels": ["Tab2 根頁面"],
+                        "notes": {"plain": {"content": "顯示用戶的所有預約。\n支持狀態篩選：全部/待確認/已確認/已完成/已取消/爭議/未到。\n監聽 .switchToMyBookings 通知自動刷新。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab2_list_1", "class": "topic", "title": "點擊預約項目 → BookingDetailView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab2_detail",
+                        "class": "topic",
+                        "title": "預約詳情 BookingDetailView",
+                        "labels": ["NavigationLink push"],
+                        "notes": {"plain": {"content": "從 MyBookingsView push 進入。\n顯示：服務/師傅/日期時間/時長/價格/訂金/備註。\n操作按鈕依狀態而異。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab2_detail_1", "class": "topic", "title": "狀態=待確認 → 顯示「取消」按鈕", "labels": ["Alert 確認"]},
+                            {"id": "tab2_detail_2", "class": "topic", "title": "狀態=已確認 → 顯示「取消」「爭議」按鈕", "labels": ["Alert 確認"]},
+                            {"id": "tab2_detail_3", "class": "topic", "title": "狀態=已完成 → 顯示「撰寫評價」按鈕", "labels": ["彈出 WriteReviewSheet (sheet)"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab2_review",
+                        "class": "topic",
+                        "title": "撰寫評價 WriteReviewSheet",
+                        "labels": ["sheet 彈出"],
+                        "notes": {"plain": {"content": "從 BookingDetailView 彈出的 sheet。\n評分(1-5星) + 文字評論 + 照片上傳。\n提交後 dismiss 返回 BookingDetailView。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab2_review_1", "class": "topic", "title": "評分 RatingInput (1-5 星)"},
+                            {"id": "tab2_review_2", "class": "topic", "title": "文字評論"},
+                            {"id": "tab2_review_3", "class": "topic", "title": "照片上傳 (ImagePicker)"},
+                            {"id": "tab2_review_4", "class": "topic", "title": "提交 → dismiss 返回", "labels": ["dismiss sheet"]}
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "tab3",
+                  "class": "topic",
+                  "title": "Tab3 配對 Match",
+                  "labels": ["NavigationStack"],
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "tab3_list",
+                        "class": "topic",
+                        "title": "配對列表 MatchListView",
+                        "labels": ["Tab3 根頁面"],
+                        "notes": {"plain": {"content": "顯示用戶的配對請求列表。\ntoolbar 有「建立請求」按鈕。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab3_list_1", "class": "topic", "title": "點擊「建立請求」→ CreateMatchView", "labels": ["彈出 sheet"]},
+                            {"id": "tab3_list_2", "class": "topic", "title": "點擊請求項目 → MatchDetailView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab3_create",
+                        "class": "topic",
+                        "title": "建立配對 CreateMatchView",
+                        "labels": ["sheet 彈出"],
+                        "notes": {"plain": {"content": "從 MatchListView 彈出的 sheet。\n填寫配對需求表單。\n提交後 dismiss → 列表重載。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab3_create_1", "class": "topic", "title": "服務類型"},
+                            {"id": "tab3_create_2", "class": "topic", "title": "偏好日期時間"},
+                            {"id": "tab3_create_3", "class": "topic", "title": "地點（縣市+區）"},
+                            {"id": "tab3_create_4", "class": "topic", "title": "預算範圍"},
+                            {"id": "tab3_create_5", "class": "topic", "title": "備註 + 照片上傳"},
+                            {"id": "tab3_create_6", "class": "topic", "title": "提交 → dismiss 返回列表", "labels": ["dismiss sheet"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab3_detail",
+                        "class": "topic",
+                        "title": "配對詳情 MatchDetailView",
+                        "labels": ["NavigationLink push"],
+                        "notes": {"plain": {"content": "從 MatchListView push 進入。\n顯示請求詳情和收到的商家報價。"}},
+                        "children": {
+                          "attached": [
+                            {"id": "tab3_detail_1", "class": "topic", "title": "查看商家報價列表"},
+                            {"id": "tab3_detail_2", "class": "topic", "title": "接受報價 → API 呼叫", "labels": ["操作按鈕"]},
+                            {"id": "tab3_detail_3", "class": "topic", "title": "拒絕報價 → API 呼叫", "labels": ["操作按鈕"]},
+                            {"id": "tab3_detail_4", "class": "topic", "title": "關閉請求 → 確認 Dialog", "labels": ["確認對話框"]}
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "tab4",
+                  "class": "topic",
+                  "title": "Tab4 個人 Profile",
+                  "labels": ["NavigationStack"],
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "tab4_profile",
+                        "class": "topic",
+                        "title": "個人首頁 ProfileView",
+                        "labels": ["Tab4 根頁面"],
+                        "notes": {"plain": {"content": "顯示用戶頭像/名稱/Email。\n統計列：總預約數/評價數/收藏數。\n未付款 banner → 點擊前往 UnpaidOrdersView。\n多個 NavigationLink 選單區塊。\n底部有登出按鈕。"}}
+                      },
+                      {
+                        "id": "tab4_sec1",
+                        "class": "topic",
+                        "title": "個人資料區",
+                        "children": {
+                          "attached": [
+                            {"id": "tab4_edit", "class": "topic", "title": "編輯資料 EditProfileView", "labels": ["NavigationLink push"], "notes": {"plain": {"content": "編輯姓名/Email/手機/頭像。"}}},
+                            {"id": "tab4_fav", "class": "topic", "title": "收藏商家 FavoritesView", "labels": ["NavigationLink push"], "notes": {"plain": {"content": "Grid 顯示收藏的商家。\n點擊商家卡片 → push 到 ProviderDetailView（跨Tab導航到探索Tab的頁面）。"}}},
+                            {"id": "tab4_coupon", "class": "topic", "title": "我的優惠券 MyCouponsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab4_voucher", "class": "topic", "title": "我的票券 MyVouchersView", "labels": ["NavigationLink push"],
+                              "children": {
+                                "attached": [
+                                  {"id": "tab4_voucher_detail", "class": "topic", "title": "點擊票券 → VoucherDetailView", "labels": ["NavigationLink push"]}
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab4_sec2",
+                        "class": "topic",
+                        "title": "帳號設定區",
+                        "children": {
+                          "attached": [
+                            {"id": "tab4_notif", "class": "topic", "title": "通知設定 NotificationsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab4_invite", "class": "topic", "title": "帳號邀請 InvitationsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab4_payment", "class": "topic", "title": "付款方式 PaymentMethodsView", "labels": ["NavigationLink push"],
+                              "children": {
+                                "attached": [
+                                  {"id": "tab4_payment_flow", "class": "topic", "title": "新增卡片 → PaymentFlowView (WebView)", "labels": ["WebView 嵌入"]}
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab4_sec3",
+                        "class": "topic",
+                        "title": "支援與資訊區",
+                        "children": {
+                          "attached": [
+                            {"id": "tab4_privacy", "class": "topic", "title": "隱私權政策 PrivacyPolicyView", "labels": ["內嵌頁面"]},
+                            {"id": "tab4_help", "class": "topic", "title": "幫助中心 HelpCenterView", "labels": ["內嵌頁面"]},
+                            {"id": "tab4_feedback", "class": "topic", "title": "意見回饋 FeedbackView", "labels": ["內嵌頁面"]},
+                            {"id": "tab4_lang", "class": "topic", "title": "語言設定 LanguageSettingsView", "labels": ["內嵌頁面"], "notes": {"plain": {"content": "支援 zh-TW 和 en 兩種語言。"}}},
+                            {"id": "tab4_about", "class": "topic", "title": "關於我們 AboutView", "labels": ["內嵌頁面"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab4_sec4",
+                        "class": "topic",
+                        "title": "其他",
+                        "children": {
+                          "attached": [
+                            {"id": "tab4_register", "class": "topic", "title": "申請成為商家 ProviderRegisterView", "labels": ["NavigationLink push（僅顧客角色顯示）"]},
+                            {"id": "tab4_unpaid", "class": "topic", "title": "未付款訂單 UnpaidOrdersView", "labels": ["NavigationLink push"],
+                              "children": {
+                                "attached": [
+                                  {"id": "tab4_verify", "class": "topic", "title": "手機驗證 VerifyPhoneView", "labels": ["付款流程中嵌入"]}
+                                ]
+                              }
+                            },
+                            {"id": "tab4_signout", "class": "topic", "title": "登出按鈕", "labels": ["Alert 確認 → authStore.signOut() → 回到 SignInView"]}
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "tab5",
+                  "class": "topic",
+                  "title": "Tab5 管理 Manage（僅商家角色顯示）",
+                  "labels": ["NavigationStack"],
+                  "notes": {"plain": {"content": "僅當用戶角色為 provider 時才顯示此 Tab。\n管理首頁為 List 佈局，分多個 Section。"}},
+                  "children": {
+                    "attached": [
+                      {
+                        "id": "tab5_manage",
+                        "class": "topic",
+                        "title": "管理首頁 ManageView",
+                        "labels": ["Tab5 根頁面"]
+                      },
+                      {
+                        "id": "tab5_sec1",
+                        "class": "topic",
+                        "title": "總覽",
+                        "children": {
+                          "attached": [
+                            {"id": "tab5_dashboard", "class": "topic", "title": "儀表板 DashboardView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_schedule", "class": "topic", "title": "排程表 ScheduleView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab5_sec2",
+                        "class": "topic",
+                        "title": "服務管理",
+                        "children": {
+                          "attached": [
+                            {"id": "tab5_services", "class": "topic", "title": "服務管理 ServicesManageView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_staff", "class": "topic", "title": "員工管理 StaffManageView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_staff_inv", "class": "topic", "title": "員工邀請 StaffInvitationsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_staff_sch", "class": "topic", "title": "班表編輯 StaffScheduleEditView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_block", "class": "topic", "title": "時段封鎖 TimeSlotBlockView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_orders", "class": "topic", "title": "訂單管理 OrdersManageView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_customers", "class": "topic", "title": "客戶列表 CustomersView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_match_offers", "class": "topic", "title": "配對報價 MatchOffersView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab5_sec3",
+                        "class": "topic",
+                        "title": "行銷與內容",
+                        "children": {
+                          "attached": [
+                            {"id": "tab5_portfolio", "class": "topic", "title": "作品集管理 PortfolioManageView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_voucher_plans", "class": "topic", "title": "票券方案 VoucherPlansView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_marketing", "class": "topic", "title": "行銷工具 MarketingView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab5_sec4",
+                        "class": "topic",
+                        "title": "數據與報表",
+                        "children": {
+                          "attached": [
+                            {"id": "tab5_analytics", "class": "topic", "title": "數據分析 AnalyticsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_performance", "class": "topic", "title": "績效報表 PerformanceView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_payroll", "class": "topic", "title": "薪資管理 PayrollView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      },
+                      {
+                        "id": "tab5_sec5",
+                        "class": "topic",
+                        "title": "設定",
+                        "children": {
+                          "attached": [
+                            {"id": "tab5_hours", "class": "topic", "title": "營業時間 BusinessHoursView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_manage_notif", "class": "topic", "title": "通知管理 ManageNotificationsView", "labels": ["NavigationLink push"]},
+                            {"id": "tab5_settings", "class": "topic", "title": "商家設定 ProviderSettingsView", "labels": ["NavigationLink push"]}
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "relationships": [
+      {
+        "id": "rel001",
+        "end1Id": "tab1_booking_5b",
+        "end2Id": "tab2_list",
+        "title": "NotificationCenter 切換 Tab"
+      },
+      {
+        "id": "rel002",
+        "end1Id": "tab4_fav",
+        "end2Id": "tab1_provider",
+        "title": "點擊商家 → push ProviderDetailView"
+      },
+      {
+        "id": "rel003",
+        "end1Id": "tab4_signout",
+        "end2Id": "auth_signin",
+        "title": "登出 → 回到登入頁"
+      },
+      {
+        "id": "rel004",
+        "end1Id": "auth_signin_1",
+        "end2Id": "auth_otp",
+        "title": "發送驗證碼 → 彈出 OTP"
+      },
+      {
+        "id": "rel005",
+        "end1Id": "auth_signin_5",
+        "end2Id": "auth_signup",
+        "title": "點擊註冊 → 彈出 SignUpView"
+      },
+      {
+        "id": "rel006",
+        "end1Id": "auth_survey_done",
+        "end2Id": "maintab",
+        "title": "問卷完成 → 進入主頁"
+      }
+    ]
+  }
+]

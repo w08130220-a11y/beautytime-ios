@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BeautyTime Screen Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { margin: 20px; background: white; font-family: sans-serif; }
+  #diagram { background: white; }
+  button { padding: 10px 20px; font-size: 16px; margin: 10px 5px; cursor: pointer; }
+  .info { color: #666; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h2>BeautyTime 頁面流程圖</h2>
+<p class="info">點擊 "複製 SVG" 後到 Figma 貼上 (Ctrl+V)</p>
+<button onclick="copySVG()">複製 SVG 到剪貼板</button>
+<button onclick="downloadSVG()">下載 SVG</button>
+<hr>
+<div id="diagram">
+<pre class="mermaid">
+flowchart TD
+    subgraph ROOT["應用程式入口"]
+        A["BeautyTimeApp"] --> B["ContentView 根視圖"]
+    end
+
+    B -->|"未登入"| C
+    B -->|"首次登入"| F
+    B -->|"已登入"| G
+
+    subgraph AUTH["認證流程"]
+        C["登入頁 SignInView"] -->|"彈出sheet"| D["OTP驗證碼 OTPInputView"]
+        C -->|"彈出sheet"| E["註冊頁 SignUpView"]
+        E -->|"彈出sheet"| D
+    end
+
+    F["問卷調查 SurveyView 4步驟"] --> G
+
+    subgraph TABS["主頁面 MainTabView"]
+        G["MainTabView 五個Tab"]
+    end
+
+    G -->|"Tab1 探索"| H
+    G -->|"Tab2 預約"| M
+    G -->|"Tab3 配對"| P
+    G -->|"Tab4 個人"| S
+    G -->|"Tab5 管理"| T
+
+    subgraph EXPLORE["探索 Explore Tab"]
+        H["探索首頁 ExploreView"] -->|"彈出sheet"| I["篩選器 FilterSheet"]
+        H -->|"點擊商家卡片"| J["商家詳情 ProviderDetailView"]
+        J -->|"立即預約"| K["預約流程 BookingFlowView"]
+        J -->|"彈出sheet"| L["購買優惠券 VoucherPurchaseView"]
+        K --> K1["步驟1 選擇服務"]
+        K1 --> K2["步驟2 選擇師傅"]
+        K2 --> K3["步驟3 選擇日期時間"]
+        K3 --> K4["步驟4 付款方式"]
+        K4 --> K5["步驟5 確認預約"]
+        K4 -->|"WebView"| K6["綠界付款 ECPayWebView"]
+    end
+
+    subgraph BOOKINGS["我的預約 MyBookings Tab"]
+        M["預約列表 MyBookingsView"] -->|"點擊預約"| N["預約詳情 BookingDetailView"]
+        N -->|"已完成-彈出sheet"| O["撰寫評價 WriteReviewSheet"]
+    end
+
+    K5 -.->|"NotificationCenter 切換Tab"| M
+
+    subgraph MATCH["配對 Match Tab"]
+        P["配對列表 MatchListView"] -->|"彈出sheet"| Q["建立配對 CreateMatchView"]
+        P -->|"點擊請求"| R["配對詳情 MatchDetailView"]
+    end
+
+    subgraph PROFILE["個人 Profile Tab"]
+        S["個人首頁 ProfileView"] --> S1["編輯資料 EditProfileView"]
+        S --> S2["收藏商家 FavoritesView"]
+        S --> S3["我的優惠券 MyCouponsView"]
+        S --> S4["我的票券 MyVouchersView"]
+        S4 --> S4a["票券詳情 VoucherDetailView"]
+        S --> S5["通知設定 NotificationsView"]
+        S --> S6["帳號邀請 InvitationsView"]
+        S --> S7["付款方式 PaymentMethodsView"]
+        S7 --> S7a["付款流程 PaymentFlowView"]
+        S --> S8["隱私權政策 PrivacyPolicyView"]
+        S --> S9["幫助中心 HelpCenterView"]
+        S --> S10["意見回饋 FeedbackView"]
+        S --> S11["語言設定 LanguageSettingsView"]
+        S --> S12["關於我們 AboutView"]
+        S --> S13["申請成為商家 ProviderRegisterView"]
+        S --> S14["未付款訂單 UnpaidOrdersView"]
+        S14 --> S14a["手機驗證 VerifyPhoneView"]
+    end
+
+    S2 -->|"點擊商家"| J
+
+    subgraph MANAGE["管理 Manage Tab 僅商家"]
+        direction LR
+        T["管理首頁 ManageView"] --> T1["儀表板 DashboardView"]
+        T --> T2["排程表 ScheduleView"]
+        T --> T3["服務管理 ServicesManageView"]
+        T --> T4["員工管理 StaffManageView"]
+        T --> T5["員工邀請 StaffInvitationsView"]
+        T --> T6["班表編輯 StaffScheduleEditView"]
+        T --> T7["時段封鎖 TimeSlotBlockView"]
+        T --> T8["訂單管理 OrdersManageView"]
+        T --> T9["客戶列表 CustomersView"]
+        T --> T10["配對報價 MatchOffersView"]
+        T --> T11["作品集管理 PortfolioManageView"]
+        T --> T12["票券方案 VoucherPlansView"]
+        T --> T13["行銷工具 MarketingView"]
+        T --> T14["數據分析 AnalyticsView"]
+        T --> T15["績效報表 PerformanceView"]
+        T --> T16["薪資管理 PayrollView"]
+        T --> T17["營業時間 BusinessHoursView"]
+        T --> T18["通知管理 ManageNotificationsView"]
+        T --> T19["商家設定 ProviderSettingsView"]
+    end
+
+    style ROOT fill:#EDE9FE,stroke:#7C3AED,color:#000
+    style AUTH fill:#FEF3C7,stroke:#F59E0B,color:#000
+    style TABS fill:#DBEAFE,stroke:#3B82F6,color:#000
+    style EXPLORE fill:#D1FAE5,stroke:#10B981,color:#000
+    style BOOKINGS fill:#CFFAFE,stroke:#06B6D4,color:#000
+    style MATCH fill:#EDE9FE,stroke:#8B5CF6,color:#000
+    style PROFILE fill:#FCE7F3,stroke:#EC4899,color:#000
+    style MANAGE fill:#FEE2E2,stroke:#EF4444,color:#000
+</pre>
+</div>
+
+<script>
+mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: 'basis',
+        nodeSpacing: 30,
+        rankSpacing: 60
+    }
+});
+
+function inlineStyles(svg) {
+    const allElements = svg.querySelectorAll('*');
+    const props = ['fill','stroke','stroke-width','stroke-dasharray','font-family','font-size','font-weight','opacity','rx','ry','color','text-anchor','dominant-baseline'];
+    allElements.forEach(el => {
+        const computed = window.getComputedStyle(el);
+        props.forEach(p => {
+            const val = computed.getPropertyValue(p);
+            if (val && val !== '' && val !== 'none' && val !== 'normal' && val !== '0px') {
+                el.style.setProperty(p, val);
+            }
+        });
+        // Ensure text is visible
+        if (el.tagName === 'text' || el.tagName === 'tspan' || el.tagName === 'span') {
+            if (!el.style.fill || el.style.fill === 'rgb(0, 0, 0)') {
+                el.style.fill = '#333';
+            }
+        }
+    });
+    // Remove the style element since we've inlined everything
+    const styleEls = svg.querySelectorAll('style');
+    styleEls.forEach(s => s.remove());
+}
+
+function copySVG() {
+    const svg = document.querySelector('#diagram svg').cloneNode(true);
+    if (!svg) { alert('SVG not rendered yet'); return; }
+    inlineStyles(svg);
+    const svgData = new XMLSerializer().serializeToString(svg);
+
+    navigator.clipboard.writeText(svgData).then(() => {
+        alert('SVG copied with inline styles! Now paste (Ctrl+V) in Figma');
+    }).catch(err => {
+        alert('Clipboard error: ' + err.message);
+    });
+}
+
+function downloadSVG() {
+    const svg = document.querySelector('#diagram svg');
+    if (!svg) { alert('SVG not rendered yet'); return; }
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'beautytime-screen-flow.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

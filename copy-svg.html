@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Copy SVG</title></head>
+<body>
+<h2>Click button to copy SVG for Figma</h2>
+<button id="btn" style="padding:15px 30px;font-size:18px;cursor:pointer">Copy SVG to Clipboard</button>
+<p id="status"></p>
+<div id="preview" style="margin-top:20px;border:1px solid #ccc;overflow:auto;max-height:500px"></div>
+<script>
+fetch('/beautytime-mindmap.svg')
+  .then(r => r.text())
+  .then(svgText => {
+    document.getElementById('preview').innerHTML = svgText;
+    document.getElementById('btn').onclick = function() {
+      navigator.clipboard.writeText(svgText).then(() => {
+        document.getElementById('status').textContent = 'Copied! Go to Figma and press Ctrl+V';
+        document.getElementById('status').style.color = 'green';
+      }).catch(e => {
+        document.getElementById('status').textContent = 'Error: ' + e.message;
+        document.getElementById('status').style.color = 'red';
+      });
+    };
+    document.getElementById('status').textContent = 'SVG loaded (' + svgText.length + ' chars). Ready to copy.';
+  });
+</script>
+</body>
+</html>
