@@ -402,7 +402,6 @@
 				3BAA7F0FB9F292184AB74AB7 /* StaffManageStore.swift */,
 				60DAF79DFDE8869B4520C3FD /* UserStore.swift */,
 				E0464A58B4A2215089072AED /* VoucherManageStore.swift */,
-				FCBB74275F8548F8A93908D7 /* BookingAlertService.swift */,
 				8D82A4AB7575483D811EE202 /* DashboardStore.swift */,
 				001C113292544C0A88531DE1 /* CustomerManageStore.swift */,
 				03894A88E8B342FB89820BEB /* OrderManageStore.swift */,
@@ -489,6 +488,7 @@
 				2D2F1E7861BA173CAACC67CF /* Theme.swift */,
 				4E740F28ADCC4533DC9F29F7 /* Extensions */,
 				D65BDDA7EF39689D9068891A /* Models */,
+				D1A3BC9F00001234567890AB /* Services */,
 				A160569F68D813AB959CD1D1 /* Network */,
 				8D0C19831DEE82C3C86D8E7D /* Stores */,
 				D09F26CA6556ECB8D675FB5F /* Utilities */,
@@ -533,6 +533,14 @@
 				006CF799C4B8415E81117B00 /* AuthModels.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		D1A3BC9F00001234567890AB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FCBB74275F8548F8A93908D7 /* BookingAlertService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		DE66895D89D521F30CA0EAA6 /* Products */ = {
