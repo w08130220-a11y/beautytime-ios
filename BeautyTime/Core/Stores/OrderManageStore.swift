@@ -10,6 +10,10 @@ class OrderManageStore {
     var error: String?
 
     private let api = APIClient.shared
+    private let alertService = BookingAlertService.shared
+
+    /// Track known booking IDs so we can detect new ones on refresh
+    private var knownBookingIds: Set<String> = []
 
     func loadOrders() async {
         guard !providerId.isEmpty else { return }
@@ -18,10 +22,25 @@ class OrderManageStore {
             if let filter = orderFilter {
                 queryItems.append(URLQueryItem(name: "status", value: filter.rawValue))
             }
-            orders = try await api.get(
+            let newOrders: [Booking] = try await api.get(
                 path: APIEndpoints.Orders.list,
                 queryItems: queryItems
             )
+
+            // Detect new bookings and alert
+            if !knownBookingIds.isEmpty {
+                for booking in newOrders where !knownBookingIds.contains(booking.id) {
+                    alertService.showNewBookingAlert(
+                        customerName: booking.customer?.fullName ?? "顧客",
+                        serviceName: booking.service?.name ?? "服務",
+                        date: booking.date ?? "",
+                        time: booking.time ?? ""
+                    )
+                }
+            }
+
+            orders = newOrders
+            knownBookingIds = Set(newOrders.map(\.id))
         } catch {
             self.error = error.localizedDescription
         }

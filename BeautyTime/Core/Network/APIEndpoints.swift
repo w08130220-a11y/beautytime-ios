@@ -113,6 +113,7 @@ enum APIEndpoints {
     enum Reviews {
         static let list = "/api/reviews"
         static let create = "/api/reviews"
+        static func reply(_ reviewId: String) -> String { "/api/reviews/\(reviewId)/reply" }
     }
 
     // MARK: - Favorites
