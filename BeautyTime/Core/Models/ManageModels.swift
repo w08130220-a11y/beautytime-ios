@@ -60,6 +60,10 @@ struct CommissionSettings: Codable {
     let defaultCommissionRate: Double?
     let commissionType: CommissionType?
     let productCommissionRate: Double?
+    // Designation bonus
+    let enableDesignationBonus: Bool?
+    let designationBonusType: String?   // "fixed" | "percentage"
+    let designationBonusAmount: Double? // fixed $ or rate 0.0-1.0
 }
 
 enum CommissionType: String, Codable {
@@ -113,7 +117,8 @@ struct SalaryConfig: Codable, Identifiable {
     let mealAllowance: Double?
     let otherAllowance: Double?
     let useCustomCommission: Bool?
-    let customCommissionRate: Double?
+    let customCommissionRate: Double?       // service commission override for this staff
+    let customProductCommissionRate: Double? // product commission override for this staff
     let designationBonus: Double?
     let staff: StaffMember?
 }

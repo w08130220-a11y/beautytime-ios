@@ -60,43 +60,48 @@ class PayrollManageStore {
         }
     }
 
+    /// Calculate payroll from actual booking and sales records.
+    ///
+    /// Calculation flow per staff member:
+    ///   1. baseSalary + allowances (from SalaryConfig)
+    ///   2. + serviceCommission (from completed bookings × commission rate)
+    ///      Commission rate fallback: staff×service override > staff custom > provider default
+    ///   3. + productCommission (from product sales × product commission rate)
+    ///   4. + designationBonus (from bookings where client chose this staff or is returning)
+    ///   5. - deductions
+    ///   6. = totalPay
     func calculatePayroll(month: Int, year: Int) async {
         guard !providerId.isEmpty else {
             self.error = "尚未載入商家資料"
             return
         }
 
-        // 確保已載入薪資設定
-        if salaryConfigs.isEmpty {
-            await loadSalaryConfigs()
-        }
+        if salaryConfigs.isEmpty { await loadSalaryConfigs() }
+        if commissionSettings == nil { await loadCommissionSettings() }
 
         isLoading = true
         do {
-            // 用每位員工的薪資設定組裝 records
+            // The server will do the real calculation (fetch bookings + sales + overrides)
+            // We send salary configs so the server knows base salary + allowances
             let records: [[String: Any]] = salaryConfigs.map { config in
                 let totalAllowances = (config.transportationAllowance ?? 0)
                     + (config.mealAllowance ?? 0)
                     + (config.otherAllowance ?? 0)
                 let baseSalary = config.baseSalary ?? 0
-                let designationBonus = config.designationBonus ?? 0
-                let totalPay = baseSalary + totalAllowances + designationBonus
 
                 return [
                     "staffId": config.staffId,
                     "baseSalary": baseSalary,
                     "totalAllowances": totalAllowances,
-                    "serviceRevenue": 0,
-                    "serviceCommission": 0,
-                    "productRevenue": 0,
-                    "productCommission": 0,
-                    "designationBonus": designationBonus,
+                    "customCommissionRate": config.customCommissionRate as Any,
+                    "customProductCommissionRate": config.customProductCommissionRate as Any,
                     "deductions": 0,
-                    "deductionNote": "",
-                    "totalPay": totalPay
+                    "deductionNote": ""
                 ] as [String: Any]
             }
 
+            // Server calculates serviceRevenue, serviceCommission, productRevenue,
+            // productCommission, designationBonus from actual records
             payrollRecords = try await api.post(
                 path: APIEndpoints.Payroll.generate,
                 body: JSONBody([

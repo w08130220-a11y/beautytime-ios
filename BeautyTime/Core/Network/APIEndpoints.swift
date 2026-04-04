@@ -209,6 +209,31 @@ enum APIEndpoints {
         static let status = "/api/payroll/status"
     }
 
+    // MARK: - Products
+
+    enum Products {
+        static let list = "/api/products"
+        static let create = "/api/products"
+        static func update(_ id: String) -> String { "/api/products/\(id)" }
+        static func delete(_ id: String) -> String { "/api/products/\(id)" }
+    }
+
+    // MARK: - Product Sales
+
+    enum ProductSales {
+        static let list = "/api/product-sales"
+        static let create = "/api/product-sales"
+    }
+
+    // MARK: - Service Commission Overrides
+
+    enum CommissionOverrides {
+        static let list = "/api/commission-overrides"
+        static let create = "/api/commission-overrides"
+        static func update(_ id: String) -> String { "/api/commission-overrides/\(id)" }
+        static func delete(_ id: String) -> String { "/api/commission-overrides/\(id)" }
+    }
+
     // MARK: - Announcements
 
     enum Announcements {
