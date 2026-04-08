@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppConfig {
-    static let apiBaseURL = "https://api.btbeautytime.com"
+    static let apiBaseURL = "https://beautytime.zeabur.app"
     static let supabaseURL = "https://your-project.supabase.co"
     static let siteURL = "https://www.btbeautytime.com"
     static let ecpayMerchantID = "3002607"
