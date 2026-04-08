@@ -9,7 +9,6 @@ struct ManageView: View {
     @State private var analyticsStore = AnalyticsManageStore()
     @State private var payrollStore = PayrollManageStore()
     @State private var voucherStore = VoucherManageStore()
-    @State private var productStore = ProductStore()
     @Environment(AuthStore.self) private var authStore
 
     var body: some View {
@@ -87,19 +86,6 @@ struct ManageView: View {
                 }
 
                 Section("產品與行銷") {
-                    NavigationLink {
-                        ProductManageView()
-                            .environment(productStore)
-                    } label: {
-                        Label("產品管理", systemImage: "bag.fill")
-                    }
-                    NavigationLink {
-                        ProductSaleRecordView()
-                            .environment(productStore)
-                            .environment(staffStore)
-                    } label: {
-                        Label("記錄銷售", systemImage: "cart.fill")
-                    }
                     NavigationLink {
                         PortfolioManageView()
                             .environment(manageStore)
@@ -206,6 +192,5 @@ struct ManageView: View {
         analyticsStore.providerId = id
         payrollStore.providerId = id
         voucherStore.providerId = id
-        productStore.providerId = id
     }
 }
