@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 @Observable
 class AuthStore {
     var isAuthenticated = false
@@ -18,18 +19,21 @@ class AuthStore {
     /// State parameter for LINE OAuth CSRF protection
     var pendingOAuthState: String?
 
-    private var tokenExpiryObserver: Any?
+    // nonisolated(unsafe) 讓 deinit（非 actor 隔離）可存取此屬性
+    nonisolated(unsafe) private var tokenExpiryObserver: Any?
 
     init() {
         isAuthenticated = tokenManager.hasToken
 
-        // Listen for token expiry from APIClient
+        // 監聽 token 過期通知，回呼使用 Task 跳回 MainActor 執行 signOut
         tokenExpiryObserver = NotificationCenter.default.addObserver(
             forName: .authTokenExpired,
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.signOut()
+            Task { @MainActor [weak self] in
+                self?.signOut()
+            }
         }
     }
 
@@ -99,6 +103,7 @@ class AuthStore {
     }
 
     func signInWithGoogle(idToken: String) async {
+        print("[Auth][Google] signInWithGoogle 開始, thread=\(Thread.isMainThread ? "main" : "bg")")
         isLoading = true
         error = nil
         do {
@@ -106,10 +111,13 @@ class AuthStore {
                 path: APIEndpoints.Auth.google,
                 body: JSONBody(["idToken": idToken])
             )
+            print("[Auth][Google] API 回應成功, token=\(response.token != nil ? "有" : "無"), user=\(response.user?.email ?? "nil")")
             handleAuthResponse(response)
         } catch {
+            print("[Auth][Google] API 錯誤: \(error)")
             self.error = error.localizedDescription
         }
+        print("[Auth][Google] 結束, isAuthenticated=\(isAuthenticated), thread=\(Thread.isMainThread ? "main" : "bg")")
         isLoading = false
     }
 
@@ -152,8 +160,6 @@ class AuthStore {
     func fetchCurrentUser() async {
         guard tokenManager.hasToken else { return }
         do {
-            // API may return { user: {...} } or direct user object
-            // Try wrapped first, then direct
             let user: User = try await api.get(path: APIEndpoints.Auth.me)
             self.currentUser = user
             self.isAuthenticated = true
@@ -161,24 +167,12 @@ class AuthStore {
             print("[Auth] User loaded: role=\(user.role), email=\(user.email)")
             #endif
         } catch let apiError as APIError {
-            if case .decodingError = apiError {
-                // Maybe the response is wrapped in { user: {...} }
-                do {
-                    let wrapped: AuthResponse = try await api.get(path: APIEndpoints.Auth.me)
-                    if let user = wrapped.user {
-                        self.currentUser = user
-                        self.isAuthenticated = true
-                        #if DEBUG
-                        print("[Auth] User loaded (wrapped): role=\(user.role), email=\(user.email)")
-                        #endif
-                    }
-                } catch {
-                    #if DEBUG
-                    print("[Auth] fetchCurrentUser failed: \(error)")
-                    #endif
-                }
-            } else if case .unauthorized = apiError {
+            if case .unauthorized = apiError {
                 signOut()
+            } else {
+                #if DEBUG
+                print("[Auth] fetchCurrentUser failed: \(apiError)")
+                #endif
             }
         } catch {
             #if DEBUG
@@ -210,9 +204,14 @@ class AuthStore {
     // MARK: - Private
 
     private func handleAuthResponse(_ response: AuthResponse) {
+        print("[Auth] handleAuthResponse, token=\(response.token != nil ? "有" : "無"), user=\(response.user?.email ?? "nil"), thread=\(Thread.isMainThread ? "main" : "bg")")
         if let token = response.token {
             tokenManager.saveToken(token)
+            print("[Auth] token 已儲存, 設定 isAuthenticated = true")
             isAuthenticated = true
+            print("[Auth] isAuthenticated 設定完成: \(isAuthenticated)")
+        } else {
+            print("[Auth] ⚠️ response 沒有 token！isAuthenticated 不會更新")
         }
         if let user = response.user {
             currentUser = user

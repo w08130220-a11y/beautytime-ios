@@ -39,11 +39,17 @@ actor APIClient {
         body: (any Encodable)? = nil,
         queryItems: [URLQueryItem]? = nil
     ) async throws -> T {
-        let data = try await performRequest(path: path, method: method, body: body, queryItems: queryItems)
+        let rawData = try await performRequest(path: path, method: method, body: body, queryItems: queryItems)
+        // 後端統一回傳 { "success": bool, "data": T }，優先嘗試 unwrap data 欄位
+        if let wrapper = try? decoder.decode(DataWrapper<T>.self, from: rawData),
+           let unwrapped = wrapper.data {
+            return unwrapped
+        }
+        // fallback：直接 decode（部分端點回傳非包裝格式）
         do {
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            throw APIError.decodingError(error)
+            return try decoder.decode(T.self, from: rawData)
+        } catch let directError {
+            throw APIError.decodingError(directError)
         }
     }
 
@@ -85,6 +91,8 @@ actor APIClient {
         guard let url = components?.url else {
             throw APIError.invalidURL
         }
+        
+        print("[Auth], URL=\(url)")
 
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
@@ -243,6 +251,11 @@ private enum JSONValue: Encodable {
         case .null: try container.encodeNil()
         }
     }
+}
+
+/// 後端統一回傳格式 { "success": bool, "data": T }，用於自動 unwrap
+private struct DataWrapper<T: Decodable>: Decodable {
+    let data: T?
 }
 
 private struct DynamicCodingKey: CodingKey {

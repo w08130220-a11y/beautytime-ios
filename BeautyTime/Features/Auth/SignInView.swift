@@ -212,13 +212,17 @@ struct SignInView: View {
         GIDSignIn.sharedInstance.signIn(withPresenting: rootVC) { result, error in
             if let error {
                 if (error as NSError).code != GIDSignInError.canceled.rawValue {
-                    authStore.error = error.localizedDescription
+                    Task { @MainActor in
+                        authStore.error = error.localizedDescription
+                    }
                 }
                 return
             }
 
             guard let idToken = result?.user.idToken?.tokenString else {
-                authStore.error = "無法取得 Google ID Token"
+                Task { @MainActor in
+                    authStore.error = "無法取得 Google ID Token"
+                }
                 return
             }
 

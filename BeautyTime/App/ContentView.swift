@@ -23,6 +23,7 @@ struct ContentView: View {
             }
         }
         .task(id: authStore.isAuthenticated) {
+            print("[ContentView] task 觸發, isAuthenticated=\(authStore.isAuthenticated), thread=\(Thread.isMainThread ? "main" : "bg")")
             if authStore.isAuthenticated {
                 await authStore.fetchCurrentUser()
                 userStore.currentUser = authStore.currentUser
